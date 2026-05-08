@@ -1,0 +1,505 @@
+{
+  "summary": {
+    "total_return_pct": -0.17,
+    "ann_return_pct": -0.19,
+    "sharpe_ratio": 0.015,
+    "max_drawdown_pct": -6.44,
+    "win_rate_pct": 22.2,
+    "avg_win_pnl": 16640.37,
+    "avg_loss_pnl": 5678.72,
+    "profit_factor": 2.93,
+    "total_trades": 47,
+    "closed_trades": 9,
+    "total_fee": 1443.57,
+    "final_equity": 998319.73,
+    "trading_days": 223,
+    "years": 0.88
+  },
+  "trades": [
+    {
+      "date": "20250611",
+      "code": "002410",
+      "side": "buy",
+      "qty": 4600,
+      "price": 13.91,
+      "amount": 64005.2,
+      "reason": "评分83≥80"
+    },
+    {
+      "date": "20250616",
+      "code": "510300",
+      "side": "buy",
+      "qty": 16000,
+      "price": 3.779,
+      "amount": 60482.14,
+      "reason": "评分83≥75"
+    },
+    {
+      "date": "20250619",
+      "code": "002410",
+      "side": "sell",
+      "qty": 4600,
+      "price": 13.08,
+      "pnl": -3836.05,
+      "reason": "评分22≤30"
+    },
+    {
+      "date": "20250714",
+      "code": "002410",
+      "side": "buy",
+      "qty": 3600,
+      "price": 13.47,
+      "amount": 48506.55,
+      "reason": "评分72≥72"
+    },
+    {
+      "date": "20250718",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 33100,
+      "price": 4.009
+    },
+    {
+      "date": "20250718",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 8100,
+      "price": 13.94
+    },
+    {
+      "date": "20250725",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 23500,
+      "price": 4.08
+    },
+    {
+      "date": "20250725",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 6100,
+      "price": 13.37
+    },
+    {
+      "date": "20250801",
+      "code": "002410",
+      "side": "sell",
+      "qty": 17800,
+      "price": 13.25,
+      "pnl": -7183.76,
+      "reason": "评分22≤30"
+    },
+    {
+      "date": "20250822",
+      "code": "002410",
+      "side": "buy",
+      "qty": 3200,
+      "price": 13.84,
+      "amount": 44301.29,
+      "reason": "评分86≥72"
+    },
+    {
+      "date": "20250822",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 22500,
+      "price": 4.356
+    },
+    {
+      "date": "20250822",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 6000,
+      "price": 13.84
+    },
+    {
+      "date": "20250829",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 15800,
+      "price": 4.478
+    },
+    {
+      "date": "20250829",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 3900,
+      "price": 15.21
+    },
+    {
+      "date": "20250905",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 11600,
+      "price": 4.431
+    },
+    {
+      "date": "20250905",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 3100,
+      "price": 13.93
+    },
+    {
+      "date": "20250912",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 8300,
+      "price": 4.498
+    },
+    {
+      "date": "20250912",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 2200,
+      "price": 14.17
+    },
+    {
+      "date": "20250919",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 6000,
+      "price": 4.481
+    },
+    {
+      "date": "20250919",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 1600,
+      "price": 13.91
+    },
+    {
+      "date": "20250923",
+      "code": "002410",
+      "side": "sell",
+      "qty": 20000,
+      "price": 13.43,
+      "pnl": -14740.58,
+      "reason": "评分22≤30"
+    },
+    {
+      "date": "20251014",
+      "code": "002410",
+      "side": "buy",
+      "qty": 1400,
+      "price": 14.05,
+      "amount": 19675.9,
+      "reason": "评分78≥72"
+    },
+    {
+      "date": "20251017",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 12600,
+      "price": 4.501
+    },
+    {
+      "date": "20251017",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 3500,
+      "price": 13.85
+    },
+    {
+      "date": "20251024",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 2900,
+      "price": 14.2
+    },
+    {
+      "date": "20251031",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 2300,
+      "price": 14.71
+    },
+    {
+      "date": "20251107",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 2100,
+      "price": 14.18
+    },
+    {
+      "date": "20251114",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 1800,
+      "price": 13.7
+    },
+    {
+      "date": "20251117",
+      "code": "002410",
+      "side": "sell",
+      "qty": 14000,
+      "price": 13.83,
+      "pnl": -4034.09,
+      "reason": "评分19≤30"
+    },
+    {
+      "date": "20251121",
+      "code": "510300",
+      "side": "sell",
+      "qty": 149400,
+      "price": 4.441,
+      "pnl": 33150.45,
+      "reason": "评分27≤30"
+    },
+    {
+      "date": "20251223",
+      "code": "510300",
+      "side": "buy",
+      "qty": 14000,
+      "price": 4.617,
+      "amount": 64657.39,
+      "reason": "评分83≥72"
+    },
+    {
+      "date": "20260109",
+      "code": "002410",
+      "side": "buy",
+      "qty": 4600,
+      "price": 13.13,
+      "amount": 60416.12,
+      "reason": "评分88≥70"
+    },
+    {
+      "date": "20260109",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 27600,
+      "price": 4.762
+    },
+    {
+      "date": "20260109",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 8500,
+      "price": 13.13
+    },
+    {
+      "date": "20260116",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 20100,
+      "price": 4.736
+    },
+    {
+      "date": "20260116",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 5200,
+      "price": 15.27
+    },
+    {
+      "date": "20260123",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 14600,
+      "price": 4.704
+    },
+    {
+      "date": "20260130",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 12400,
+      "price": 4.711
+    },
+    {
+      "date": "20260203",
+      "code": "510300",
+      "side": "sell",
+      "qty": 88700,
+      "price": 4.664,
+      "pnl": -4784.91,
+      "reason": "评分28≤30"
+    },
+    {
+      "date": "20260205",
+      "code": "002410",
+      "side": "sell",
+      "qty": 18300,
+      "price": 13.51,
+      "pnl": -4248.17,
+      "reason": "评分28≤30"
+    },
+    {
+      "date": "20260225",
+      "code": "510300",
+      "side": "buy",
+      "qty": 13500,
+      "price": 4.75,
+      "amount": 64144.24,
+      "reason": "评分83≥72"
+    },
+    {
+      "date": "20260310",
+      "code": "510300",
+      "side": "sell",
+      "qty": 13500,
+      "price": 4.683,
+      "pnl": -923.47,
+      "reason": "评分22≤30"
+    },
+    {
+      "date": "20260415",
+      "code": "510300",
+      "side": "buy",
+      "qty": 13700,
+      "price": 4.694,
+      "amount": 64327.09,
+      "reason": "评分86≥80"
+    },
+    {
+      "date": "20260422",
+      "code": "002410",
+      "side": "buy",
+      "qty": 4100,
+      "price": 11.6,
+      "amount": 47574.27,
+      "reason": "评分75≥72"
+    },
+    {
+      "date": "20260424",
+      "code": "510300",
+      "side": "rebalance_buy",
+      "qty": 27600,
+      "price": 4.782
+    },
+    {
+      "date": "20260424",
+      "code": "002410",
+      "side": "rebalance_buy",
+      "qty": 10100,
+      "price": 11.02
+    },
+    {
+      "date": "20260506",
+      "code": "002410",
+      "side": "sell",
+      "qty": 14200,
+      "price": 11.2,
+      "pnl": 130.29,
+      "reason": "评分22≤30"
+    }
+  ],
+  "monthly_equity": [
+    {
+      "date": "20250508",
+      "equity": 1000000,
+      "cash": 1000000,
+      "market_value": 0,
+      "positions": 0,
+      "return_pct": 0.0
+    },
+    {
+      "date": "20250606",
+      "equity": 1000000,
+      "cash": 1000000,
+      "market_value": 0,
+      "positions": 0,
+      "return_pct": 0.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "20250704",
+      "equity": 998206.61,
+      "cash": 935662.61,
+      "market_value": 62544.0,
+      "positions": 1,
+      "return_pct": -0.18,
+      "dd_pct": -0.18
+    },
+    {
+      "date": "20250801",
+      "equity": 990885.5,
+      "cash": 699759.5,
+      "market_value": 291126.0,
+      "positions": 1,
+      "return_pct": -0.91,
+      "dd_pct": -1.41
+    },
+    {
+      "date": "20250829",
+      "equity": 1040104.67,
+      "cash": 344243.47,
+      "market_value": 695861.2,
+      "positions": 2,
+      "return_pct": 4.01,
+      "dd_pct": -0.0
+    },
+    {
+      "date": "20250926",
+      "equity": 1019897.62,
+      "cash": 400467.22,
+      "market_value": 619430.4,
+      "positions": 1,
+      "return_pct": 1.99,
+      "dd_pct": -1.95
+    },
+    {
+      "date": "20251103",
+      "equity": 1042424.66,
+      "cash": 200536.66,
+      "market_value": 841888.0,
+      "positions": 2,
+      "return_pct": 4.24,
+      "dd_pct": -1.14
+    },
+    {
+      "date": "20251201",
+      "equity": 1002930.6,
+      "cash": 1002930.6,
+      "market_value": 0,
+      "positions": 0,
+      "return_pct": 0.29,
+      "dd_pct": -4.89
+    },
+    {
+      "date": "20251229",
+      "equity": 1003233.21,
+      "cash": 938273.21,
+      "market_value": 64960.0,
+      "positions": 1,
+      "return_pct": 0.32,
+      "dd_pct": -4.86
+    },
+    {
+      "date": "20260128",
+      "equity": 1012691.5,
+      "cash": 391399.0,
+      "market_value": 621292.5,
+      "positions": 2,
+      "return_pct": 1.27,
+      "dd_pct": -3.96
+    },
+    {
+      "date": "20260305",
+      "equity": 992381.35,
+      "cash": 929552.35,
+      "market_value": 62829.0,
+      "positions": 1,
+      "return_pct": -0.76,
+      "dd_pct": -5.89
+    },
+    {
+      "date": "20260402",
+      "equity": 992753.89,
+      "cash": 992753.89,
+      "market_value": 0,
+      "positions": 0,
+      "return_pct": -0.72,
+      "dd_pct": -5.85
+    },
+    {
+      "date": "20260506",
+      "equity": 998361.03,
+      "cash": 796486.63,
+      "market_value": 201874.4,
+      "positions": 1,
+      "return_pct": -0.16,
+      "dd_pct": -5.32
+    }
+  ]
+}

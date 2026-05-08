@@ -1,0 +1,174 @@
+{
+  "records": [
+    {
+      "date": "20260507",
+      "stocks": {
+        "510300": {
+          "score": 74,
+          "operation": "持有",
+          "sentiment": "看多",
+          "rationale": "多头趋势向好，短期超买需警惕回调，建议持有或逢低加仓。"
+        },
+        "002410": {
+          "score": 45,
+          "operation": "持有",
+          "sentiment": "震荡偏空",
+          "rationale": "空头排列未确认反转，持有观望，等待均线修复。"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 75,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "多头排列缩量回踩MA5，可小仓介入，注意RSI超买回调风险。"
+        },
+        "002410": {
+          "score": 54,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "空头排列未扭转，现价贴近均线但趋势偏弱，建议观望或减仓"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 75,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "多头排列缩量回踩MA5，可小仓介入，注意RSI超买回调风险。"
+        },
+        "002410": {
+          "score": 54,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "空头排列未扭转，现价贴近均线但趋势偏弱，建议观望或减仓"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 75,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "多头排列缩量回踩MA5，可小仓介入，注意RSI超买回调风险。"
+        },
+        "002410": {
+          "score": 54,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "空头排列未扭转，现价贴近均线但趋势偏弱，建议观望或减仓"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 77,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "多头排列，缩量回踩均线，可逢低买入"
+        },
+        "002410": {
+          "score": 35,
+          "operation": "减仓",
+          "sentiment": "看空",
+          "rationale": "空头排列且放量下跌，建议减仓规避风险。"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 77,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "多头排列，缩量回踩均线，可逢低买入"
+        },
+        "002410": {
+          "score": 35,
+          "operation": "减仓",
+          "sentiment": "看空",
+          "rationale": "空头排列且放量下跌，建议减仓规避风险。"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 77,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "多头排列，缩量回踩均线，可逢低买入"
+        },
+        "002410": {
+          "score": 35,
+          "operation": "减仓",
+          "sentiment": "看空",
+          "rationale": "空头排列且放量下跌，建议减仓规避风险。"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 77,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "多头排列，缩量回踩均线，可逢低买入"
+        },
+        "002410": {
+          "score": 35,
+          "operation": "减仓",
+          "sentiment": "看空",
+          "rationale": "空头排列且放量下跌，建议减仓规避风险。"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 77,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "缩量回踩MA5，顺势低吸参与。"
+        },
+        "002410": {
+          "score": 30,
+          "operation": "卖出",
+          "sentiment": "看空",
+          "rationale": "均线空头排列，筹码不佳，建议减仓回避"
+        }
+      }
+    },
+    {
+      "date": "20260508",
+      "stocks": {
+        "510300": {
+          "score": 77,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "缩量回踩MA5，顺势低吸参与。"
+        },
+        "002410": {
+          "score": 30,
+          "operation": "卖出",
+          "sentiment": "看空",
+          "rationale": "均线空头排列，筹码不佳，建议减仓回避"
+        }
+      }
+    }
+  ]
+}
