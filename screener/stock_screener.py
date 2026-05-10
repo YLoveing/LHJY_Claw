@@ -13,6 +13,14 @@ stock_screener.py — A股选股器
 import json
 import logging
 import re
+import sys
+from pathlib import Path
+
+# 加入 data_provider 路径以便引入 DataCache
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from data_provider.data_cache import DataCache
+
+_cache = DataCache()
 import time
 from datetime import datetime
 from pathlib import Path
@@ -116,7 +124,20 @@ def basic_filter(stock: dict) -> bool:
 
 
 def fetch_kline_data(code: str, days: int = 60) -> Optional[pd.DataFrame]:
-    """获取某只股票的日K线数据（用于技术指标计算）。"""
+    """获取某只股票的日K线数据（用于技术指标计算）。
+
+    优先从磁盘缓存读取，缓存未命中或数据不足时从 API 拉取并缓存。
+    """
+    # ═══ 尝试从磁盘缓存读取 ═══
+    cached = _cache.get_kline(code)
+    if cached is not None and len(cached) >= days:
+        # 检查缓存天数是否够用（取最近 days 天）
+        cache_recent = cached.tail(min(days * 2, len(cached)))
+        if len(cache_recent) >= days:
+            logger.info(f"  [缓存] {code}: 磁盘缓存命中 ({len(cached)}行)，跳过API")
+            return cache_recent.reset_index(drop=True)
+
+    # ═══ 从 API 拉取 ═══
     url = f"https://push2his.eastmoney.com/api/qt/stock/kline/get"
     params = {
         "secid": f"1.{code}" if code.startswith("6") else f"0.{code}",
@@ -125,7 +146,7 @@ def fetch_kline_data(code: str, days: int = 60) -> Optional[pd.DataFrame]:
         "klt": "101",     # 日K
         "fqt": "1",       # 前复权
         "end": "20500101",
-        "lmt": days,
+        "lmt": max(days, 120),  # 多拉一些供缓存
     }
     try:
         r = requests.get(url, params=params, headers=EAST_MONEY_HEADERS, timeout=10)
@@ -144,10 +165,24 @@ def fetch_kline_data(code: str, days: int = 60) -> Optional[pd.DataFrame]:
                     "volume": float(parts[5]),
                     "amount": float(parts[6]),
                 })
-            return pd.DataFrame(records)
+            df = pd.DataFrame(records)
+
+            # ═══ 保存到磁盘缓存（合并已有缓存） ═══
+            try:
+                if cached is not None and not cached.empty:
+                    combined = pd.concat([cached, df], ignore_index=True)
+                    combined = combined.drop_duplicates(subset=["date"], keep="last")
+                    combined = combined.sort_values("date").reset_index(drop=True)
+                    _cache.save_kline(code, combined)
+                else:
+                    _cache.save_kline(code, df)
+            except Exception as cache_e:
+                logger.debug(f"  [缓存] {code}: 保存失败: {cache_e}")
+
+            return df
     except Exception:
         pass
-    return None
+    return cached  # API失败时返回已有的缓存（如果有）
 
 
 def compute_screening_indicators(df: pd.DataFrame) -> Dict:

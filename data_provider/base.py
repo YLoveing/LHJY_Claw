@@ -27,6 +27,7 @@ import numpy as np
 from src.data.stock_index_loader import get_index_stock_name
 from src.data.stock_mapping import STOCK_NAME_MAP, is_meaningful_stock_name
 from .fundamental_adapter import AkshareFundamentalAdapter
+from .data_cache import DataCache
 
 # 配置日志
 logger = logging.getLogger(__name__)
@@ -511,6 +512,7 @@ class DataFetcherManager:
         self._fundamental_cache_lock = RLock()
         self._fundamental_timeout_worker_limit = 8
         self._fundamental_timeout_slots = BoundedSemaphore(self._fundamental_timeout_worker_limit)
+        self._disk_cache = DataCache()
 
     def _ensure_concurrency_guards(self) -> None:
         """Lazily initialize thread-safety primitives for test scaffolds using __new__."""
@@ -858,6 +860,7 @@ class DataFetcherManager:
         """
         from .efinance_fetcher import EfinanceFetcher
         from .akshare_fetcher import AkshareFetcher
+        from .jqdata_fetcher import JQDataFetcher
         from .tushare_fetcher import TushareFetcher
         from .pytdx_fetcher import PytdxFetcher
         from .baostock_fetcher import BaostockFetcher
@@ -865,6 +868,7 @@ class DataFetcherManager:
         from .longbridge_fetcher import LongbridgeFetcher
         # 创建所有数据源实例（优先级在各 Fetcher 的 __init__ 中确定）
         efinance = EfinanceFetcher()
+        jqdata = JQDataFetcher()    # P0 - 聚宽 JQData（需JQD_PHONE/JQD_PWD）
         akshare = AkshareFetcher()
         tushare = TushareFetcher()  # 会根据 Token 配置自动调整优先级
         pytdx = PytdxFetcher()      # 通达信数据源（可配 PYTDX_HOST/PYTDX_PORT）
@@ -877,6 +881,7 @@ class DataFetcherManager:
         with self._fetchers_lock:
             self._fetchers = [
                 efinance,
+                jqdata,
                 akshare,
                 tushare,
                 pytdx,
@@ -933,6 +938,30 @@ class DataFetcherManager:
         # Normalize code (strip SH/SZ prefix etc.)
         stock_code = normalize_stock_code(stock_code)
 
+        # ═══ 磁盘缓存检查 ═══
+        # 历史日 K 线是 immutable 数据，缓存后无需重新拉取
+        try:
+            cached = self._disk_cache.get_kline(stock_code)
+            if cached is not None and not cached.empty:
+                # 检查缓存是否覆盖请求范围
+                if "date" in cached.columns:
+                    cache_dates = cached["date"]
+                    req_start = start_date or cache_dates.min()
+                    req_end = end_date or datetime.now().strftime("%Y-%m-%d")
+                    if cache_dates.min() <= req_start and cache_dates.max() >= req_end:
+                        logger.info(
+                            f"[磁盘缓存命中] {stock_code}: {len(cached)}行 "
+                            f"({cache_dates.min()} ~ {cache_dates.max()})"
+                        )
+                        return cached, "disk_cache"
+                    else:
+                        logger.info(
+                            f"[磁盘缓存不完整] {stock_code}: 缓存 {cache_dates.min()}~{cache_dates.max()}, "
+                            f"请求 {req_start}~{req_end}, 继续拉取增量"
+                        )
+        except Exception as e:
+            logger.debug(f"[磁盘缓存] {stock_code} 读取失败，继续拉取: {e}")
+
         fetchers = self._get_fetchers_snapshot()
         errors = []
         total_fetchers = len(fetchers)
@@ -975,6 +1004,12 @@ class DataFetcherManager:
                             days=days,
                         )
                         if df is not None and not df.empty:
+                            # ═══ 保存到磁盘缓存 ═══
+                            try:
+                                self._disk_cache.save_kline(stock_code, df)
+                            except Exception as cache_e:
+                                logger.debug(f"[磁盘缓存] {stock_code} 保存失败: {cache_e}")
+
                             elapsed = time.time() - request_start
                             logger.info(
                                 f"[数据源完成] {stock_code} 使用 [{fetcher.name}] 获取成功: "
@@ -1009,6 +1044,12 @@ class DataFetcherManager:
                 )
                 
                 if df is not None and not df.empty:
+                    # ═══ 保存到磁盘缓存 ═══
+                    try:
+                        self._disk_cache.save_kline(stock_code, df)
+                    except Exception as cache_e:
+                        logger.debug(f"[磁盘缓存] {stock_code} 保存失败: {cache_e}")
+
                     elapsed = time.time() - request_start
                     logger.info(
                         f"[数据源完成] {stock_code} 使用 [{fetcher.name}] 获取成功: "

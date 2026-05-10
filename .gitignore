@@ -1,0 +1,48 @@
+# 依赖
+.env
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 日志 & 临时文件
+# logs/
+*.log
+/tmp
+
+# 缓存
+screener/cache/*.pkl
+screener/cache/*.json
+!screener/candidates_*.json
+data/cache/
+
+# 报告 & 模拟交易输出
+# reports/
+# simulated_trading/state.json
+# simulated_trading/signal_trace.json
+simulated_trading/summary_*.txt
+simulated_trading/weekly_*.txt
+simulated_trading/backtest_*.json
+simulated_trading/*_result.json
+# simulated_trading/performance.json
+# simulated_trading/trades.json
+simulated_trading/backup_state*
+
+# 选股器输出
+screener/candidates_*.json
+screener/top5_*.txt
+
+# 量化引擎输出
+quant_engine/*_output.json
+sentiment_engine/adjustment.json
+sentiment_engine/history.json
+sentiment_engine/sentiment_*.txt
+
+# data/
+
+# 系统
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
