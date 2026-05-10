@@ -186,7 +186,7 @@ class BaostockFetcher(BaseFetcher):
         """
         # 美股不支持，抛出异常让 DataFetcherManager 切换到其他数据源
         if _is_us_code(stock_code):
-            raise DataFetchError(f"BaostockFetcher 不支持美股 {stock_code}，请使用 AkshareFetcher 或 YfinanceFetcher")
+            raise DataFetchError(f"BaostockFetcher 不支持美股 {stock_code}，请使用 AkshareFetcher 等 A 股数据源")
 
         # 港股不支持，抛出异常让 DataFetcherManager 切换到其他数据源
         if _is_hk_market(stock_code):

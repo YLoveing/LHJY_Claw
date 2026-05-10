@@ -29,7 +29,7 @@ TRADES_FILE = DATA_DIR / "trades.json"
 PERF_FILE = DATA_DIR / "performance.json"
 TRACE_FILE = DATA_DIR / "signal_trace.json"
 
-INITIAL_CAPITAL = 1_000_000
+INITIAL_CAPITAL = 30_000
 MAX_POSITIONS = 8
 
 # ── 风控参数 ──

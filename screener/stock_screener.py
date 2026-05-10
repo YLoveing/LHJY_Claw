@@ -412,6 +412,9 @@ def save_candidates(candidates: List[Dict], path: str = None) -> str:
     Path(path).write_text(
         json.dumps(candidates, ensure_ascii=False, indent=2, default=str)
     )
+    # 同时保存为 latest 供盘中监控读取
+    latest = Path(f"/opt/daily_stock_analysis/screener/candidates_latest.json")
+    latest.write_text(json.dumps(candidates, ensure_ascii=False, indent=2, default=str))
     log.info(f"  ✅ 候选名单已保存至 {path}")
     return path
 
