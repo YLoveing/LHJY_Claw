@@ -29,7 +29,9 @@ fi
 
 # ═══ 1. 从候选股提取代码列表，注入分析引擎 ═══
 # 把候选股 + 已有持仓股合并，让 main.py 分析并让模拟交易执行
-STOCK_LIST_ENV="STOCK_LIST=002410,510300"  # 默认自选股兜底
+# 注意：main.py(refresh_stock_list)直接从.env文件读取STOCK_LIST，环境变量覆盖无效
+# 因此需要临时覆写.env文件
+CANDIDATE_LIST="002410,510300"  # 默认自选股兜底
 if [ -f "$SCREENER_JSON" ]; then
     export SCREENER_JSON_PATH="$SCREENER_JSON"
     CANDIDATE_CODES=$(python3 -c "
@@ -42,15 +44,32 @@ if path:
     print(','.join(codes))
 " 2>/dev/null)
     if [ -n "$CANDIDATE_CODES" ]; then
-        STOCK_LIST_ENV="STOCK_LIST=${CANDIDATE_CODES},002410,510300"
+        CANDIDATE_LIST="${CANDIDATE_CODES},002410,510300"
         echo "[$(date '+%H:%M')] 候选股注入: ${CANDIDATE_CODES},002410,510300"
     fi
 fi
-export $STOCK_LIST_ENV
 
-# ═══ 2. 运行分析 ═══
-echo "[$(date '+%H:%M')] 开始分析 (STOCK_LIST已注入)..."
-docker compose run --rm analyzer bash -c "export $STOCK_LIST_ENV && python main.py --force-run" 2>&1 | tee -a /tmp/stock_analysis_cron.log
+# ═══ 2. 临时覆写.env的STOCK_LIST，运行分析 ═══
+# 备份原STOCK_LIST行，临时写入候选股列表，分析完恢复
+ORIG_ENV_LINE=$(grep '^STOCK_LIST=' .env 2>/dev/null || true)
+if [ -f ".env" ]; then
+    if grep -q '^STOCK_LIST=' .env; then
+        sed -i "s/^STOCK_LIST=.*/STOCK_LIST=${CANDIDATE_LIST}/" .env
+    else
+        echo "STOCK_LIST=${CANDIDATE_LIST}" >> .env
+    fi
+fi
+export STOCK_LIST="$CANDIDATE_LIST"
+
+echo "[$(date '+%H:%M')] 开始分析 (${CANDIDATE_LIST})..."
+docker compose run --rm analyzer python main.py --force-run 2>&1 | tee -a /tmp/stock_analysis_cron.log
+
+# ═══ 2b. docker运行完后恢复.env ═══
+if [ -f ".env" ] && [ -n "$ORIG_ENV_LINE" ]; then
+    sed -i "s/^STOCK_LIST=.*/${ORIG_ENV_LINE//\//\\/}/" .env
+else
+    sed -i '/^STOCK_LIST=/d' .env
+fi
 
 # ═══ 3. 模拟交易（紧接分析，确保使用最新评分）═══
 echo "[$(date '+%H:%M')] 运行模拟交易..."
