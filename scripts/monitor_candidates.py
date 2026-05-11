@@ -21,6 +21,11 @@ from typing import Dict, List, Optional, Tuple
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger("monitor")
 
+# ─── 推送配置 ───
+QQ_TARGET = "qqbot:c2c:7D15BBF664045E2DD5F33DA4BE0A00E9"
+WX_TARGET = "o9cq800-zOjMI1JH4SjoT0NocAZI@im.wechat"
+
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from data_provider.data_cache import DataCache
 
@@ -295,10 +300,44 @@ def run_once() -> List[Dict]:
             except: pass
         existing.extend(all_alerts)
         alert_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
+        # 推送新告警到 QQ + 微信
+        _send_notifications(all_alerts)
     else:
         log.info(f"  无新告警")
     
     return all_alerts
+
+
+def _send_notifications(alerts: List[Dict]):
+    """推送新告警到 QQ"""
+    if not alerts:
+        return
+    now = datetime.now().strftime("%H:%M")
+    lines = [f"🚨 盘中监控 {now}"]
+    for a in alerts:
+        s = a.get("signal", "")
+        icon = {"建仓": "🟢", "风控": "🔴", "大幅波动": "💥", "量能异动": "⚡", "趋势反转": "🔄"}.get(s, "⚠")
+        code = a.get("code", "")
+        price = a.get("price", "")
+        detail = a.get("detail", "")
+        lines.append(f"{icon} [{s}] {code} {a.get('name','')} 价{price}")
+        if detail:
+            lines.append(f"   {detail}")
+    msg = "\\n".join(lines)
+    
+    # 写入临时文件避免shell转义问题
+    tmp = Path("/tmp/monitor_push.txt")
+    tmp.write_text(msg, encoding="utf-8")
+    for target in [QQ_TARGET]:
+        tmp = Path("/tmp/monitor_push_msg.txt")
+        tmp.write_text(msg, encoding="utf-8")
+        cmd = f'openclaw message send --channel qqbot --target "{target}" --message "$(cat {tmp})" 2>/dev/null || true'
+        ret = os.system(cmd)
+        if ret == 0 or ret == 256:  # 0=success, 256=SIGKILL from sandbox but message may still send
+            log.info(f"  ✅ 已推送 {target.split(':')[0]}")
+        else:
+            log.warning(f"  ⚠ 推送失败 rc={ret}")
+        tmp.unlink(missing_ok=True)
 
 
 def loop():

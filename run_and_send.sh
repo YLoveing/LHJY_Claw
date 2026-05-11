@@ -31,7 +31,11 @@ fi
 echo "[$(date '+%H:%M')] 开始分析..."
 docker compose run --rm analyzer python main.py --force-run 2>&1 | tee -a /tmp/stock_analysis_cron.log
 
-# ═══ 2. 检查报告是否生成 ═══
+# ═══ 2. 模拟交易（紧接分析，确保使用最新评分）═══
+echo "[$(date '+%H:%M')] 运行模拟交易..."
+python3 simulated_trading.py 2>&1 | tee -a /tmp/stock_analysis_cron.log
+
+# ═══ 3. 检查报告是否生成 ═══
 if [ ! -f "$REPORT_FILE" ]; then
     echo "未生成报告，检查旧报告..."
     for i in 1 2 3; do
@@ -40,7 +44,7 @@ if [ ! -f "$REPORT_FILE" ]; then
     done
 fi
 
-# ═══ 3. 盘后量化引擎（18:00 仅）═══
+# ═══ 4. 盘后量化引擎（18:00 仅）═══
 if [ "$HOUR" = "18" ]; then
     echo "[$(date '+%H:%M')] 运行量化引擎..."
     python3 -m quant_engine.run_quant 2>&1 | tee -a /tmp/stock_analysis_cron.log
@@ -48,10 +52,6 @@ if [ "$HOUR" = "18" ]; then
     echo "[$(date '+%H:%M')] 运行情绪引擎..."
     python3 -m sentiment_engine.sentiment_index 2>&1 | tee -a /tmp/stock_analysis_cron.log
 fi
-
-# ═══ 4. 模拟交易 ═══
-echo "[$(date '+%H:%M')] 运行模拟交易..."
-python3 simulated_trading.py 2>&1 | tee -a /tmp/stock_analysis_cron.log
 
 # ═══ 5. 推送 ═══
 case $HOUR in

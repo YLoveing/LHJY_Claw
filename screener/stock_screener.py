@@ -51,11 +51,23 @@ def fetch_realtime_snapshot() -> List[Dict]:
     """
     获取全A股实时行情快照。
     
-    东方财富行情接口 (fid=f3=涨跌幅排序):
-      f2=最新价, f3=涨跌幅%, f5=成交量, f6=成交额, 
-      f12=代码, f14=名称, f15=最高, f16=最低, f17=今开, f18=昨收,
-      f20=成交额(元), f21=流通市值
+    优先使用东方财富行情接口；若失败则自动回退到新浪接口（akshare）。
     """
+    items = _fetch_em_snapshot()
+    if items:
+        log.info(f"  → 东方财富: {len(items)} 只")
+        return items
+    log.warning("  ⚠ 东方财富接口无响应，尝试新浪接口回退...")
+    items = _fetch_sina_snapshot_fallback()
+    if items:
+        log.info(f"  → 新浪接口(akshare): {len(items)} 只")
+    else:
+        log.warning("  ⚠ 新浪接口也失败，返回空列表")
+    return items
+
+
+def _fetch_em_snapshot() -> List[Dict]:
+    """东方财富 push2 行情接口 (主数据源)。"""
     url = "https://push2.eastmoney.com/api/qt/clist/get"
     items = []
     page = 1
@@ -83,8 +95,46 @@ def fetch_realtime_snapshot() -> List[Dict]:
             page += 1
             time.sleep(0.5)
         except Exception as e:
-            log.warning(f"分页 {page} 失败: {e}")
+            log.warning(f"  分页 {page} 失败: {e}")
             break
+    return items
+
+
+def _fetch_sina_snapshot_fallback() -> List[Dict]:
+    """新浪接口回退（通过 akshare 库），盘前/盘后可正常返回。
+    
+    返回格式兼容东方财富字段，便于 extract_stock_data 处理。
+    """
+    try:
+        import akshare as ak
+        df = ak.stock_zh_a_spot()  # 使用新浪接口（不需要东方财富API）
+    except ImportError:
+        log.warning("  akshare 未安装，无法使用新浪回退")
+        return []
+    except Exception as e:
+        log.warning(f"  akshare 新浪接口失败: {e}")
+        return []
+
+    import re
+    items = []
+    for _, row in df.iterrows():
+        code = str(row.get("代码", ""))
+        # 新浪接口返回的代码可能带交易所前缀，去掉它
+        code = re.sub(r'^(sh|sz|bj)', '', code)
+        # 映射到东方财富字段格式
+        items.append({
+            "f12": code,
+            "f14": str(row.get("名称", "")),
+            "f2": float(row.get("最新价", 0) or 0),
+            "f3": float(row.get("涨跌幅", 0) or 0),
+            "f15": float(row.get("最高", 0) or 0),
+            "f16": float(row.get("最低", 0) or 0),
+            "f17": float(row.get("今开", 0) or 0),
+            "f18": float(row.get("昨收", 0) or 0),
+            "f20": float(row.get("成交额", 0) or 0),  # 元
+            "f6": float(row.get("成交量", 0) or 0),
+            "f21": 0,  # 流通市值（新浪不提供，设为0不影响基础过滤）
+        })
     return items
 
 
@@ -113,7 +163,8 @@ def basic_filter(stock: dict) -> bool:
         return False
     if stock["amount_yi"] < MIN_VOLUME_Yi:
         return False
-    if stock["market_cap_yi"] < 20:  # 流通市值 < 20亿
+    mcap = stock.get("market_cap_yi")
+    if mcap is not None and mcap > 0 and mcap < 20:  # 流通市值 < 20亿（数据源未知时跳过）
         return False
     # 排除 ST、*ST、退市、新股（代码含字母或特殊前缀）
     if re.match(r'^[0-9]{6}$', stock["code"]) is None:
@@ -134,7 +185,7 @@ def fetch_kline_data(code: str, days: int = 60) -> Optional[pd.DataFrame]:
         # 检查缓存天数是否够用（取最近 days 天）
         cache_recent = cached.tail(min(days * 2, len(cached)))
         if len(cache_recent) >= days:
-            logger.info(f"  [缓存] {code}: 磁盘缓存命中 ({len(cached)}行)，跳过API")
+            log.info(f"  [缓存] {code}: 磁盘缓存命中 ({len(cached)}行)，跳过API")
             return cache_recent.reset_index(drop=True)
 
     # ═══ 从 API 拉取 ═══
@@ -177,7 +228,7 @@ def fetch_kline_data(code: str, days: int = 60) -> Optional[pd.DataFrame]:
                 else:
                     _cache.save_kline(code, df)
             except Exception as cache_e:
-                logger.debug(f"  [缓存] {code}: 保存失败: {cache_e}")
+                log.debug(f"  [缓存] {code}: 保存失败: {cache_e}")
 
             return df
     except Exception:
