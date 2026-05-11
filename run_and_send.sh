@@ -21,21 +21,42 @@ SCREENER_JSON="screener/candidates_${RUN_DATE}.json"
 
 HOUR=$(date +%H)
 
-# ═══ 0. 选股器扫描 ═══
+# ═══ 0. 选股器扫描（9:25 和 18:00 可选股）═══
 if [ "$HOUR" = "09" ] || [ "$HOUR" = "18" ]; then
     echo "[$(date '+%H:%M')] 选股器扫描..."
     python3 run_screener.py --max=15 2>&1 | tee -a /tmp/stock_analysis_cron.log
 fi
 
-# ═══ 1. 运行分析 ═══
-echo "[$(date '+%H:%M')] 开始分析..."
-docker compose run --rm analyzer python main.py --force-run 2>&1 | tee -a /tmp/stock_analysis_cron.log
+# ═══ 1. 从候选股提取代码列表，注入分析引擎 ═══
+# 把候选股 + 已有持仓股合并，让 main.py 分析并让模拟交易执行
+STOCK_LIST_ENV="STOCK_LIST=002410,510300"  # 默认自选股兜底
+if [ -f "$SCREENER_JSON" ]; then
+    export SCREENER_JSON_PATH="$SCREENER_JSON"
+    CANDIDATE_CODES=$(python3 -c "
+import json, os
+path = os.environ.get('SCREENER_JSON_PATH', '')
+if path:
+    with open(path) as f:
+        data = json.load(f)
+    codes = [s['code'] for s in data[:15]]
+    print(','.join(codes))
+" 2>/dev/null)
+    if [ -n "$CANDIDATE_CODES" ]; then
+        STOCK_LIST_ENV="STOCK_LIST=${CANDIDATE_CODES},002410,510300"
+        echo "[$(date '+%H:%M')] 候选股注入: ${CANDIDATE_CODES},002410,510300"
+    fi
+fi
+export $STOCK_LIST_ENV
 
-# ═══ 2. 模拟交易（紧接分析，确保使用最新评分）═══
+# ═══ 2. 运行分析 ═══
+echo "[$(date '+%H:%M')] 开始分析 (STOCK_LIST已注入)..."
+docker compose run --rm analyzer bash -c "export $STOCK_LIST_ENV && python main.py --force-run" 2>&1 | tee -a /tmp/stock_analysis_cron.log
+
+# ═══ 3. 模拟交易（紧接分析，确保使用最新评分）═══
 echo "[$(date '+%H:%M')] 运行模拟交易..."
 python3 simulated_trading.py 2>&1 | tee -a /tmp/stock_analysis_cron.log
 
-# ═══ 3. 检查报告是否生成 ═══
+# ═══ 4. 检查报告是否生成 ═══
 if [ ! -f "$REPORT_FILE" ]; then
     echo "未生成报告，检查旧报告..."
     for i in 1 2 3; do
@@ -44,7 +65,7 @@ if [ ! -f "$REPORT_FILE" ]; then
     done
 fi
 
-# ═══ 4. 盘后量化引擎（18:00 仅）═══
+# ═══ 5. 盘后量化引擎（18:00 仅）═══
 if [ "$HOUR" = "18" ]; then
     echo "[$(date '+%H:%M')] 运行量化引擎..."
     python3 -m quant_engine.run_quant 2>&1 | tee -a /tmp/stock_analysis_cron.log
@@ -53,7 +74,7 @@ if [ "$HOUR" = "18" ]; then
     python3 -m sentiment_engine.sentiment_index 2>&1 | tee -a /tmp/stock_analysis_cron.log
 fi
 
-# ═══ 5. 推送 ═══
+# ═══ 6. 推送 ═══
 case $HOUR in
     09) PERIOD="早盘" ;;
     13) PERIOD="午盘" ;;

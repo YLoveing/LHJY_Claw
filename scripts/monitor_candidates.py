@@ -323,21 +323,19 @@ def _send_notifications(alerts: List[Dict]):
         lines.append(f"{icon} [{s}] {code} {a.get('name','')} 价{price}")
         if detail:
             lines.append(f"   {detail}")
-    msg = "\\n".join(lines)
+    msg = "\n".join(lines)  # 使用真实换行符，发给QQ才有换行
     
     # 写入临时文件避免shell转义问题
-    tmp = Path("/tmp/monitor_push.txt")
+    tmp = Path("/tmp/monitor_push_msg.txt")
     tmp.write_text(msg, encoding="utf-8")
     for target in [QQ_TARGET]:
-        tmp = Path("/tmp/monitor_push_msg.txt")
-        tmp.write_text(msg, encoding="utf-8")
         cmd = f'openclaw message send --channel qqbot --target "{target}" --message "$(cat {tmp})" 2>/dev/null || true'
         ret = os.system(cmd)
-        if ret == 0 or ret == 256:  # 0=success, 256=SIGKILL from sandbox but message may still send
+        if ret == 0 or ret == 256:
             log.info(f"  ✅ 已推送 {target.split(':')[0]}")
         else:
             log.warning(f"  ⚠ 推送失败 rc={ret}")
-        tmp.unlink(missing_ok=True)
+    tmp.unlink(missing_ok=True)
 
 
 def loop():

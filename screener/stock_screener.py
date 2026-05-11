@@ -54,10 +54,13 @@ def fetch_realtime_snapshot() -> List[Dict]:
     优先使用东方财富行情接口；若失败则自动回退到新浪接口（akshare）。
     """
     items = _fetch_em_snapshot()
-    if items:
+    if len(items) >= 3000:
         log.info(f"  → 东方财富: {len(items)} 只")
         return items
-    log.warning("  ⚠ 东方财富接口无响应，尝试新浪接口回退...")
+    if items:
+        log.warning(f"  ⚠ 东方财富仅返回 {len(items)} 只(不全)，尝试新浪接口回退...")
+    else:
+        log.warning("  ⚠ 东方财富接口无响应，尝试新浪接口回退...")
     items = _fetch_sina_snapshot_fallback()
     if items:
         log.info(f"  → 新浪接口(akshare): {len(items)} 只")
