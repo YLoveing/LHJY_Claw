@@ -2171,23 +2171,30 @@ class Config:
         """
         热读取 STOCK_LIST 环境变量并更新配置中的自选股列表
         
-        支持两种配置方式：
-        1. .env 文件（本地开发、定时任务模式） - 修改后下次执行自动生效
-        2. 系统环境变量（GitHub Actions、Docker） - 启动时固定，运行中不变
+        优先级（由高到低）：
+        1. 系统环境变量 STOCK_LIST（Docker -e / docker compose environment）
+        2. .env 文件（本地开发、定时任务模式）
         """
-        # 优先从 .env 文件读取最新配置，这样即使在容器环境中修改了 .env 文件，
-        # 也能获取到最新的股票列表配置
+        stock_list_str = ''
+        
+        # 1. 优先使用系统环境变量（传入 docker -e 或 compose environment）
+        env_val = os.getenv('STOCK_LIST', '')
+        env_val_from_file = None
         env_file = os.getenv("ENV_FILE")
         env_path = Path(env_file) if env_file else (Path(__file__).parent.parent / '.env')
-        stock_list_str = ''
         if env_path.exists():
-            # 直接从 .env 文件读取最新的配置
-            env_values = dotenv_values(env_path)
-            stock_list_str = (env_values.get('STOCK_LIST') or '').strip()
-
-        # 如果 .env 文件不存在或未配置，才尝试从系统环境变量读取
-        if not stock_list_str:
-            stock_list_str = os.getenv('STOCK_LIST', '')
+            env_file_vals = dotenv_values(env_path)
+            env_val_from_file = (env_file_vals.get('STOCK_LIST') or '').strip()
+        
+        # 检查是否是真正的系统环境变量（非从 .env 文件加载的）
+        # docker compose 的 env_file 会设环境变量，但 refresh_stock_list 直接读文件
+        # 所以如果 os.getenv 有值且不等于 .env 文件值，说明是外部传入的
+        if env_val and env_val != env_val_from_file:
+            stock_list_str = env_val
+        elif env_val_from_file:
+            stock_list_str = env_val_from_file
+        else:
+            stock_list_str = env_val
 
         stock_list = [
             (c or "").strip().upper()

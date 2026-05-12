@@ -8,12 +8,12 @@ set -e
 
 cd /opt/daily_stock_analysis
 
+# 加载 .env 配置（通知目标等从 .env 读取，不硬编码）
+set -a; source .env 2>/dev/null; set +a
+
 RUN_DATE=$(date +%Y%m%d)
 REPORT_FILE="reports/report_${RUN_DATE}.md"
 MARKET_REVIEW_FILE="reports/market_review_${RUN_DATE}.md"
-QQ_TARGET="qqbot:c2c:7D15BBF664045E2DD5F33DA4BE0A00E9"
-WX_TARGET="o9cq800-zOjMI1JH4SjoT0NocAZI@im.wechat"
-WX_ACCOUNT="a463c42ba2be-im-bot"
 SIMULATED_SUMMARY="simulated_trading/summary_${RUN_DATE}.txt"
 SIMULATED_WEEKLY="simulated_trading/weekly_${RUN_DATE}.txt"
 SCREENER_TOP5="screener/top5_${RUN_DATE}.txt"
@@ -49,27 +49,13 @@ if path:
     fi
 fi
 
-# ═══ 2. 临时覆写.env的STOCK_LIST，运行分析 ═══
-# 备份原STOCK_LIST行，临时写入候选股列表，分析完恢复
-ORIG_ENV_LINE=$(grep '^STOCK_LIST=' .env 2>/dev/null || true)
-if [ -f ".env" ]; then
-    if grep -q '^STOCK_LIST=' .env; then
-        sed -i "s/^STOCK_LIST=.*/STOCK_LIST=${CANDIDATE_LIST}/" .env
-    else
-        echo "STOCK_LIST=${CANDIDATE_LIST}" >> .env
-    fi
-fi
+# ═══ 2. 用环境变量注入候选股，运行分析 ═══
+# 不再 sed 修改 .env 文件（避免竞态条件），改用 -e 直接传入容器环境变量
+# refresh_stock_list() 已改为优先使用系统环境变量
 export STOCK_LIST="$CANDIDATE_LIST"
 
 echo "[$(date '+%H:%M')] 开始分析 (${CANDIDATE_LIST})..."
-docker compose run --rm analyzer python main.py --force-run 2>&1 | tee -a /tmp/stock_analysis_cron.log
-
-# ═══ 2b. docker运行完后恢复.env ═══
-if [ -f ".env" ] && [ -n "$ORIG_ENV_LINE" ]; then
-    sed -i "s/^STOCK_LIST=.*/${ORIG_ENV_LINE//\//\\/}/" .env
-else
-    sed -i '/^STOCK_LIST=/d' .env
-fi
+docker compose run --rm -e STOCK_LIST="$CANDIDATE_LIST" analyzer python main.py --force-run 2>&1 | tee -a /tmp/stock_analysis_cron.log
 
 # ═══ 3. 模拟交易（紧接分析，确保使用最新评分）═══
 echo "[$(date '+%H:%M')] 运行模拟交易..."

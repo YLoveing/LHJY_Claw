@@ -395,7 +395,13 @@ def run_markowitz_and_save(stock_codes: Optional[List[str]] = None) -> Dict[str,
         "timestamp": datetime.now().isoformat(),
     }
     _OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    _OUTPUT_FILE.write_text(json.dumps(output, ensure_ascii=False, indent=2))
+    import tempfile, os
+    tmp = tempfile.NamedTemporaryFile(mode='w', dir=_OUTPUT_FILE.parent, suffix='.tmp', delete=False)
+    json.dump(output, tmp, ensure_ascii=False, indent=2)
+    tmp.flush()
+    os.fsync(tmp.fileno())
+    tmp.close()
+    os.replace(tmp.name, str(_OUTPUT_FILE))
     logger.info(f"[马科维茨] 保存至 {_OUTPUT_FILE}")
     return output
 

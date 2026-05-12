@@ -32,6 +32,27 @@ TRACE_FILE = DATA_DIR / "signal_trace.json"
 INITIAL_CAPITAL = 30_000
 MAX_POSITIONS = 8
 
+# ── 交易费用参数（A股真实费率） ──
+COMMISSION_RATE = 0.00025       # 佣金万2.5（买卖均收，最低5元）
+STAMP_TAX_RATE = 0.0005         # 印花税万5（仅卖出时收）
+TRANSFER_FEE_RATE = 0.00001     # 过户费万0.1（买卖均收）
+MIN_COMMISSION = 5.0            # 佣金最低收费5元
+
+
+def calc_buy_fees(cost: float) -> float:
+    """买入费用 = 佣金（最低5元）+ 过户费"""
+    commission = max(cost * COMMISSION_RATE, MIN_COMMISSION)
+    transfer_fee = cost * TRANSFER_FEE_RATE
+    return commission + transfer_fee
+
+
+def calc_sell_fees(proceeds_before_fees: float) -> float:
+    """卖出费用 = 佣金（最低5元）+ 过户费 + 印花税"""
+    commission = max(proceeds_before_fees * COMMISSION_RATE, MIN_COMMISSION)
+    transfer_fee = proceeds_before_fees * TRANSFER_FEE_RATE
+    stamp_tax = proceeds_before_fees * STAMP_TAX_RATE
+    return commission + transfer_fee + stamp_tax
+
 # ── 风控参数 ──
 STOP_LOSS_PCT = -15.0       # 单只从均价跌15% → 强制平仓
 TAKE_PROFIT_PCT = 25.0      # 单只浮盈25% → 减半仓锁利
@@ -374,8 +395,9 @@ def execute_trades(stocks, report_date_str):
         price = extract_stock_price(code, report_date_str) or pos["current_price"]
         action, reason = check_stop_loss(pos, price, code, report_date_str)
         if action != "hold":
-            fee = pos["quantity"] * price * 0.0003
-            proceeds = pos["quantity"] * price - fee
+            proceeds_before = pos["quantity"] * price
+            fee = calc_sell_fees(proceeds_before)
+            proceeds = proceeds_before - fee
             pnl = (price - pos["avg_cost"]) * pos["quantity"] - fee
 
             state["cash"] += proceeds
@@ -411,8 +433,9 @@ def execute_trades(stocks, report_date_str):
         if info["score"] <= sell_threshold and code in state["positions"]:
             pos = state["positions"][code]
             price = extract_stock_price(code, report_date_str) or pos["current_price"]
-            fee = pos["quantity"] * price * 0.0003
-            proceeds = pos["quantity"] * price - fee
+            proceeds_before = pos["quantity"] * price
+            fee = calc_sell_fees(proceeds_before)
+            proceeds = proceeds_before - fee
             pnl = (price - pos["avg_cost"]) * pos["quantity"] - fee
 
             state["cash"] += proceeds
@@ -439,7 +462,15 @@ def execute_trades(stocks, report_date_str):
     sentiment_factor = _load_sentiment_adjustment()
     adjusted_max_pos = max(2, int(MAX_POSITIONS * sentiment_factor))
 
-    if can_buy and not force_sells:
+    # force_sells 只在高比例时阻断买入（超过30%持仓被强制卖出才触发熔断）
+    force_sell_ratio = len(force_sells) / max(len(state["positions"]) + len(force_sells), 1)
+    buy_blocked_by_fs = can_buy and force_sell_ratio > 0.3
+    if force_sells and not buy_blocked_by_fs:
+        print(f"[风控] 强制卖出 {len(force_sells)} 笔（占比{force_sell_ratio:.0%}），低于30%熔断阈值，允许继续买入")
+    if buy_blocked_by_fs:
+        print(f"[风控] 强制卖出 {len(force_sells)} 笔（占比{force_sell_ratio:.0%}），触发买入熔断")
+
+    if can_buy and not buy_blocked_by_fs:
         buy_candidates = [(c, i) for c, i in stocks.items()
                           if i["score"] >= buy_threshold and c not in state["positions"]]
         buy_candidates.sort(key=lambda x: x[1]["score"], reverse=True)
@@ -465,14 +496,14 @@ def execute_trades(stocks, report_date_str):
                 continue
 
             cost = quantity * price
-            fee = cost * 0.0003
+            fee = calc_buy_fees(cost)
             total_cost = cost + fee
             if total_cost > state["cash"]:
                 quantity = int((state["cash"] - fee) / price / 100) * 100
                 if quantity < 100:
                     continue
                 cost = quantity * price
-                fee = cost * 0.0003
+                fee = calc_buy_fees(cost)
                 total_cost = cost + fee
 
             kelly_pct = _kelly_fraction(info["score"]) * 100
@@ -676,14 +707,14 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
             if qty < 100:
                 continue
             cost = qty * price
-            fee = cost * 0.0003
+            fee = calc_buy_fees(cost)
             total_cost = cost + fee
             if total_cost > state["cash"]:
                 qty = int((state["cash"] - fee) / price / 100) * 100
                 if qty < 100:
                     continue
                 cost = qty * price
-                fee = cost * 0.0003
+                fee = calc_buy_fees(cost)
                 total_cost = cost + fee
 
             state["cash"] -= total_cost
@@ -709,11 +740,11 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
             qty = int(qty / 100) * 100
             if qty < 100:
                 continue
-            proceeds = qty * price
-            fee = proceeds * 0.0003
+            proceeds_before = qty * price
+            fee = calc_sell_fees(proceeds_before)
             pnl_partial = (price - pos["avg_cost"]) * qty - fee
 
-            state["cash"] += proceeds - fee
+            state["cash"] += proceeds_before - fee
             state["total_pnl"] += pnl_partial
             state["total_fee"] += fee
             pos["quantity"] -= qty
@@ -721,7 +752,7 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
             trade = {
                 "date": report_date_str, "code": adj["code"],
                 "side": "rebalance_sell", "quantity": qty, "price": round(price, 3),
-                "proceeds": round(proceeds - fee, 2), "fee": round(fee, 2),
+                "proceeds": round(proceeds_before - fee, 2), "fee": round(fee, 2),
                 "pnl": round(pnl_partial, 2),
                 "reason": f"组合再平衡（偏离{adj['deviation_pct']:+.0f}%）",
             }
@@ -1002,23 +1033,20 @@ def generate_performance_card():
 # ── 信号准确率验证 ──
 
 def verify_signal_accuracy():
-    """检查历史信号与实际后续涨跌的对应关系（仅看收盘数据，非未来函数）。"""
+    """统计历史信号数量（仅计数，不含准确率验证——待补全实现）。"""
     trace = load_signal_trace()
     records = trace.get("records", [])
     if len(records) < 2:
         return None
 
-    results = {"buy_signals": 0, "sell_signals": 0, "buy_correct": 0, "sell_correct": 0,
-               "accuracy": {"high_score_70plus": {}, "low_score_30minus": {}}}
+    results = {"buy_signals": 0, "sell_signals": 0}
 
-    # 遍历历史信号，跳过最后一张（最新的还未验证）
     for i in range(len(records) - 1):
         rec = records[i]
         for code, info in rec.get("stocks", {}).items():
             score = info["score"]
             if score >= 70:
                 results["buy_signals"] += 1
-                # 检查后续T+1~T+5的价格表现（基于后续报告中的价格）
             elif score <= 30:
                 results["sell_signals"] += 1
 

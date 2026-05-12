@@ -325,7 +325,13 @@ def run_garch_and_save(stock_code: Optional[str] = None) -> Dict[str, Any]:
         "timestamp": datetime.now().isoformat(),
     }
     _OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    _OUTPUT_FILE.write_text(json.dumps(output, ensure_ascii=False, indent=2))
+    import tempfile, os
+    tmp = tempfile.NamedTemporaryFile(mode='w', dir=_OUTPUT_FILE.parent, suffix='.tmp', delete=False)
+    json.dump(output, tmp, ensure_ascii=False, indent=2)
+    tmp.flush()
+    os.fsync(tmp.fileno())
+    tmp.close()
+    os.replace(tmp.name, str(_OUTPUT_FILE))
     logger.info(f"[GARCH] 输出已保存至 {_OUTPUT_FILE}")
     return output
 

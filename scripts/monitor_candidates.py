@@ -297,7 +297,7 @@ def run_once() -> List[Dict]:
         if alert_file.exists():
             try:
                 existing = json.loads(alert_file.read_text())
-            except: pass
+            except (json.JSONDecodeError, OSError) as e: log.debug(f"读取告警文件失败(可能为空): {e}")
         existing.extend(all_alerts)
         alert_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
         # 推送新告警到 QQ + 微信
