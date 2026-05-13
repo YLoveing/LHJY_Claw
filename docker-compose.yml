@@ -12,6 +12,8 @@ services:
       - ./logs:/app/logs
       - ./reports:/app/reports
       - ./.env:/app/.env
+      # 覆盖容器内代码（本地开发模式），确保 refresh_stock_list 等修改生效
+      - ./src/config.py:/app/src/config.py
     environment:
       - TZ=Asia/Shanghai
     deploy:
