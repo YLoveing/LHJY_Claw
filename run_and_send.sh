@@ -47,7 +47,7 @@ if [ -f "$SCREENER_JSON" ]; then
 import json
 with open('$SCREENER_JSON') as f:
     data = json.load(f)
-codes = [s['code'] for s in data[:15]]
+codes = [s['code'] for s in data[:5]]
 print(','.join(codes))
 " 2>/dev/null)
     if [ -n "$CANDIDATE_CODES" ]; then
@@ -59,7 +59,7 @@ export STOCK_LIST="$CANDIDATE_LIST"
 
 # ── Step 0: 选股器扫描 ──
 if [ "$HOUR" = "09" ] || [ "$HOUR" = "18" ]; then
-    run_step "选股器" python3 run_screener.py --max=15
+    run_step "选股器" python3 run_screener.py --max=5
 fi
 
 # ── Step 1: 全量分析（Docker） ──

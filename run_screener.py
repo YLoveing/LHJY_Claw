@@ -3,7 +3,7 @@
 run_screener.py — 选股器命令行入口，供 run_and_send.sh 调用。
 
 用法:
-  python3 run_screener.py [--max 15] [--fast]
+  python3 run_screener.py [--max 5] [--fast]
 
 输出:
   screener/candidates_{YYYYMMDD}.json  — 当日候选清单
@@ -35,7 +35,7 @@ def main():
     )
     from strategies.engine import batch_match
 
-    max_candidates = 15
+    max_candidates = 5
     fast_mode = False
     enable_llm_scoring = True
     enable_strategy = True
