@@ -31,16 +31,24 @@ def main():
         compute_screening_indicators, screen_score,
         condition_uptrend, condition_oversold,
         condition_breakout, condition_ma_cross,
+        llm_multi_factor_score,
     )
+    from strategies.engine import batch_match
 
     max_candidates = 15
     fast_mode = False
+    enable_llm_scoring = True
+    enable_strategy = True
     
     for arg in sys.argv[1:]:
         if arg.startswith("--max="):
             max_candidates = int(arg.split("=")[1])
         elif arg == "--fast":
             fast_mode = True
+        elif arg == "--no-llm":
+            enable_llm_scoring = False
+        elif arg == "--no-strategy":
+            enable_strategy = False
 
     logging.basicConfig(level=logging.INFO, 
                         format="[%(asctime)s] %(message)s",
@@ -110,6 +118,31 @@ def main():
     selected = scored[:max_candidates]
     log.info(f"  → {len(selected)} 只候选, 跳过{skipped}只K线不足, {time.time()-t0:.0f}s")
 
+    # Step 3b: LLM 多因子评分（可选）
+    if enable_llm_scoring and selected:
+        t0 = time.time()
+        log.info(f"[3.5/4] LLM 多因子评分 (DeepSeek, {len(selected)} 只)...")
+        try:
+            selected = llm_multi_factor_score(selected)
+            log.info(f"  → LLM 评分完成, {time.time()-t0:.0f}s")
+        except Exception as e:
+            log.warning(f"  ⚠ LLM 评分失败: {e}, 使用纯技术评分")
+            selected.sort(key=lambda x: x["screen_score"], reverse=True)
+    else:
+        selected.sort(key=lambda x: x["screen_score"], reverse=True)
+    selected = selected[:max_candidates]
+
+    # Step 3c: 策略引擎匹配
+    if enable_strategy and selected:
+        t0 = time.time()
+        log.info(f"[3.6/4] 策略引擎匹配 ({len(selected)} 只)...")
+        try:
+            selected = batch_match(selected, top_n=3, min_score=15.0)
+            matched_count = sum(1 for s in selected if s.get("matched_strategies"))
+            log.info(f"  → {matched_count} 只有策略匹配, {time.time()-t0:.1f}s")
+        except Exception as e:
+            log.warning(f"  ⚠ 策略匹配失败: {e}")
+
     # 保存 JSON
     json_path = f"screener/candidates_{date_str}.json"
     save_candidates(selected, json_path)
@@ -122,11 +155,18 @@ def main():
     
     for i, s in enumerate(selected[:5], 1):
         conds_str = "|".join(s["conditions"])
-        lines.append(
+        line = (
             f"#{i} {s['code']} {s['name']} "
             f"评分{s['screen_score']:.0f} [{conds_str}] "
             f"价{s['price']:.2f}"
         )
+        if s.get("llm_total_score") is not None:
+            line += f" LLM:{s['llm_total_score']:.0f}"
+        if s.get("llm_reasoning"):
+            line += f" ({s['llm_reasoning'][:20]})"
+        if s.get("strategy_names"):
+            line += f" | {s['strategy_names']}"
+        lines.append(line)
 
     if len(selected) > 5:
         lines.append(f"... 共{len(selected)}只候选，详情见筛选清单")

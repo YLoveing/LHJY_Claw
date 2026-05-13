@@ -458,6 +458,127 @@ def run_screener(
     return selected
 
 
+def llm_multi_factor_score(stocks: List[Dict]) -> List[Dict]:
+    """对技术初筛后的候选股列表调用 LLM 做多因子权重评分。
+
+    从 src/agent/llm_adapter.py 调用 LLM，输出 JSON：
+    {trend_score, volume_price_score, fundamental_score, market_env_score, total_score, reasoning}
+
+    每个因子 0-30/0-20，总分 0-100。返回按 total_score 降序排列的列表。
+    """
+    import importlib, inspect
+
+    if not stocks:
+        return stocks
+
+    # 构造个股概要数据（供 LLM 分析）
+    summaries = []
+    for s in stocks:
+        ind = s.get("indicators", {})
+        summaries.append({
+            "code": s["code"],
+            "name": s["name"],
+            "price": s["price"],
+            "change_pct": s.get("change_pct", 0),
+            "amount_yi": s.get("amount_yi", 0),
+            "conditions": s.get("conditions", []),
+            "screen_score": s.get("screen_score", 0),
+            "MA5": ind.get("MA5", 0),
+            "MA10": ind.get("MA10", 0),
+            "MA20": ind.get("MA20", 0),
+            "RSI": ind.get("RSI", 0),
+            "vol_ratio": ind.get("vol_ratio", 0),
+            "price_MA20_pct": ind.get("price_MA20_pct", 0),
+        })
+
+    prompt = f"""你是一位量化选股专家。对以下 {len(summaries)} 只 A 股候选股票进行多因子评分。
+
+评分框架（每只总分 100）：
+- 趋势因子（0-30）：MA 多头排列强度、价格相对 MA20 位置、RSI 健康度
+- 量价因子（0-20）：成交量配合（量比）、价格位置合理性
+- 基本面因子（0-30）：已知的基本面线索判断（营收 YoY、ROE、毛利率 等）
+- 市场环境因子（0-20）：所属板块热度、市场整体情绪
+
+候选股票数据：
+{json.dumps(summaries, ensure_ascii=False, indent=2)}
+
+返回 JSON 数组，每只股票一个对象：
+[
+  {{
+    "code": "股票代码",
+    "trend_score": 数字,
+    "volume_price_score": 数字,
+    "fundamental_score": 数字,
+    "market_env_score": 数字,
+    "total_score": 数字,
+    "reasoning": "不超过 30 字的评分理由"
+  }}
+]
+只返回 JSON 数组，不要其他内容。"""
+
+    # 走现有 llm_adapter 通道
+    try:
+        module = importlib.import_module("src.agent.llm_adapter")
+        # 查找 LLMToolAdapter 类或直接获取实例
+        adapter_cls = getattr(module, "LLMToolAdapter", None)
+        if adapter_cls is None:
+            log.warning("LLMToolAdapter 未找到，回退纯技术评分")
+            return sorted(stocks, key=lambda x: x.get("screen_score", 0), reverse=True)
+
+        adapter = adapter_cls()
+        if not adapter.is_available:
+            log.warning("LLM 不可用，回退纯技术评分")
+            return sorted(stocks, key=lambda x: x.get("screen_score", 0), reverse=True)
+
+        messages = [{"role": "user", "content": prompt}]
+        resp = adapter.call_text(messages)
+        raw_text = (resp.content or "").strip()
+
+        # 提取 JSON
+        import re
+        json_match = re.search(r"\[.*]", raw_text, re.DOTALL)
+        if json_match:
+            llm_scores = json.loads(json_match.group())
+        else:
+            # 尝试直接解析
+            llm_scores = json.loads(raw_text)
+
+        if isinstance(llm_scores, dict):
+            llm_scores = [llm_scores]
+
+        # 合并评分到原数据
+        score_map = {}
+        for item in llm_scores:
+            code = str(item.get("code", ""))
+            score_map[code] = {
+                "trend_score": item.get("trend_score", 0),
+                "volume_price_score": item.get("volume_price_score", 0),
+                "fundamental_score": item.get("fundamental_score", 0),
+                "market_env_score": item.get("market_env_score", 0),
+                "total_score": item.get("total_score", 0),
+                "reasoning": item.get("reasoning", ""),
+            }
+
+        for s in stocks:
+            sm = score_map.get(s["code"], {})
+            s["trend_score"] = sm.get("trend_score", 0)
+            s["volume_price_score"] = sm.get("volume_price_score", 0)
+            s["fundamental_score"] = sm.get("fundamental_score", 0)
+            s["market_env_score"] = sm.get("market_env_score", 0)
+            s["llm_total_score"] = sm.get("total_score", s["screen_score"])
+            s["llm_reasoning"] = sm.get("reasoning", "")
+            # 综合评分：LLM 评分 60% + 技术评分 40%
+            s["final_score"] = s["llm_total_score"] * 0.6 + s["screen_score"] * 0.4
+
+        result = sorted(stocks, key=lambda x: x.get("final_score", 0), reverse=True)
+        log.info(f"  LLM 多因子评分完成 ({len(stocks)} 只)")
+        return result
+
+    except Exception as e:
+        log.warning(f"LLM 多因子评分失败: {e}，回退纯技术评分")
+        return sorted(stocks, key=lambda x: x.get("screen_score", 0), reverse=True)
+
+
 def save_candidates(candidates: List[Dict], path: str = None) -> str:
     """保存候选名单到JSON。"""
     if path is None:
