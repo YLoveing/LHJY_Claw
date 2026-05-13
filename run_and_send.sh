@@ -62,10 +62,8 @@ if [ "$HOUR" = "09" ] || [ "$HOUR" = "18" ]; then
     run_step "选股器" python3 run_screener.py --max=5
 fi
 
-# ── Step 1: 全量分析（Docker） ──
-run_step "全量分析" docker compose run --rm \
-    -e STOCK_LIST="$CANDIDATE_LIST" \
-    analyzer python main.py --force-run
+# ── Step 1: 全量分析（直接 Python） ──
+run_step "全量分析" python3 main.py --force-run
 
 # ── Step 2: 模拟交易 ──
 run_step "模拟交易" python3 simulated_trading.py
