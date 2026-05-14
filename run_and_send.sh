@@ -86,7 +86,7 @@ fi
 
 case $HOUR in
     09) PERIOD="早盘" ;;
-    13) PERIOD="午盘" ;;
+    14) PERIOD="尾盘" ;;
     18) PERIOD="收盘" ;;
     *)  PERIOD="盘中" ;;
 esac
@@ -101,7 +101,7 @@ _push() {
 _push "📊【${PERIOD}分析】${RUN_DATE} ⏰ 分析完成"
 
 # 选股器候选推送
-if [ -f "$SCREENER_TOP5" ] && { [ "$HOUR" = "09" ] || [ "$HOUR" = "13" ]; }; then
+if [ -f "$SCREENER_TOP5" ] && { [ "$HOUR" = "09" ] || [ "$HOUR" = "14" ]; }; then
     _push "$(cat "$SCREENER_TOP5")"
 fi
 

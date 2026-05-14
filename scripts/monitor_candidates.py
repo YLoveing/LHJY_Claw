@@ -21,6 +21,10 @@ from typing import Dict, List, Optional, Tuple
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger("monitor")
 
+# 导入盘中自动交易模块
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+import intraday_trading
+
 # ─── 推送配置 ───
 QQ_TARGET = "qqbot:c2c:7D15BBF664045E2DD5F33DA4BE0A00E9"
 WX_TARGET = "o9cq800-zOjMI1JH4SjoT0NocAZI@im.wechat"
@@ -286,7 +290,30 @@ def run_once() -> List[Dict]:
                     state["signals"][c].append(a["signal"])
                     all_alerts.append(a)
     
-    if all_alerts:
+    # ── 盘中自动交易：先检查已有持仓风控 ──
+    closed = intraday_trading.check_positions()
+    if closed:
+        log.info(f"  → [日内交易] 平仓 {len(closed)} 笔")
+
+    # ── 盘中自动交易：建仓信号 → 自动买入 ──
+    opened_trades = []
+    for a in all_alerts:
+        if a.get("type") == "建仓" and a.get("signal") in intraday_trading.AUTO_BUY_SIGNALS:
+            code = a["code"]
+            live_data = live.get(code, {})
+            trade = intraday_trading.maybe_open_position(
+                code=code,
+                name=a.get("name", ""),
+                signal=a["signal"],
+                detail=a.get("detail", ""),
+                price=live_data.get("price", 0),
+                volume=live_data.get("volume", 0),
+                vol_ratio=None,  # 已在 check_signals 中计算，但这里简化
+            )
+            if trade:
+                opened_trades.append(trade)
+
+    if all_alerts or opened_trades or closed:
         save_state(state)
         log.info(f"  → {len(all_alerts)} 条新告警")
         for a in all_alerts:
@@ -300,20 +327,22 @@ def run_once() -> List[Dict]:
             except (json.JSONDecodeError, OSError) as e: log.debug(f"读取告警文件失败(可能为空): {e}")
         existing.extend(all_alerts)
         alert_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
-        # 推送新告警到 QQ + 微信
-        _send_notifications(all_alerts)
+        # 推送（含开仓/平仓信息）
+        _send_notifications(all_alerts, opened_trades, closed)
     else:
         log.info(f"  无新告警")
     
     return all_alerts
 
 
-def _send_notifications(alerts: List[Dict]):
-    """推送新告警到 QQ"""
-    if not alerts:
+def _send_notifications(alerts: List[Dict], opened_trades: List[Dict] = None, closed: List[Dict] = None):
+    """推送新告警 + 自动交易动态到 QQ"""
+    if not any([alerts, opened_trades, closed]):
         return
     now = datetime.now().strftime("%H:%M")
-    lines = [f"🚨 盘中监控 {now}"]
+    lines = [f"⏰ 盘中监控 {now}"]
+    
+    # 告警
     for a in alerts:
         s = a.get("signal", "")
         icon = {"建仓": "🟢", "风控": "🔴", "大幅波动": "💥", "量能异动": "⚡", "趋势反转": "🔄"}.get(s, "⚠")
@@ -323,7 +352,36 @@ def _send_notifications(alerts: List[Dict]):
         lines.append(f"{icon} [{s}] {code} {a.get('name','')} 价{price}")
         if detail:
             lines.append(f"   {detail}")
-    msg = "\n".join(lines)  # 使用真实换行符，发给QQ才有换行
+    
+    # 自动交易 - 开仓
+    if opened_trades:
+        lines.append("")
+        lines.append("🟢【自动交易】开仓：")
+        for t in opened_trades:
+            lines.append(f"  买入 {t.get('name','')}({t['code']}) × {t['quantity']}股 @ ¥{t['price']:.3f} 信号:{t.get('signal','')}")
+    
+    # 自动交易 - 平仓
+    if closed:
+        lines.append("")
+        lines.append("🔴【自动交易】平仓：")
+        for t in closed:
+            pnl_str = f"盈亏{t['pnl']:+,.2f}"
+            lines.append(f"  卖出 {t.get('name','')}({t['code']}) × {t['quantity']}股 @ ¥{t['price']:.3f} {pnl_str} — {t.get('reason','')}")
+    
+    # 日内交易状态摘要
+    try:
+        status_text = intraday_trading.get_status_text()
+        # 只取第一段（持仓状态）+ 资金
+        lines.append("")
+        for line in status_text.split("\n"):
+            if line.startswith("💰") or line.startswith("📋 当前持仓"):
+                lines.append(line)
+            elif "日内交易" in line:
+                lines.append(line)
+    except Exception:
+        pass
+    
+    msg = "\n".join(lines)
     
     # 写入临时文件避免shell转义问题
     tmp = Path("/tmp/monitor_push_msg.txt")
