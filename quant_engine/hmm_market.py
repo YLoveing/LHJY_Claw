@@ -230,7 +230,8 @@ def _extract_market_features() -> np.ndarray:
     if not prices:
         return np.array([])
 
-    codes = sorted(prices.keys())
+    # 只取数据最长的 top 50 只（避免全量2020只股票日期交集为空）
+    codes = sorted(prices.keys(), key=lambda c: len(prices[c]), reverse=True)[:50]
 
     # 找共同日期
     common_dates: set = set(p[0] for p in prices[codes[0]])

@@ -645,6 +645,36 @@ def execute_trades(stocks, report_date_str):
                 pos["tp_level"] = pos.get("tp_level", 0) + 1
                 print(f"[风控] {action} {code} 减仓{close_qty}股 (剩余{pos['quantity']}股) @ {price:.3f} 盈亏{pnl:+.2f} - {reason}")
 
+
+    sentiment_score = _load_sentiment_index_score()
+    buy_threshold, sell_threshold = _compute_dynamic_thresholds(sentiment_score)
+
+    # ── 1.5️⃣ 低评分清理：entry_score < buy_threshold 的持仓强制卖出 ──
+    for code, pos in list(state["positions"].items()):
+        entry_score = pos.get("entry_score", 70)
+        if entry_score < buy_threshold:
+            price = extract_stock_price(code, report_date_str) or pos["current_price"]
+            price = _apply_slippage(price, direction="sell", amount=pos["quantity"] * price)
+            proceeds_before = pos["quantity"] * price
+            fee = calc_sell_fees(proceeds_before)
+            proceeds = proceeds_before - fee
+            pnl = (price - pos["avg_cost"]) * pos["quantity"] - fee
+            state["cash"] += proceeds
+            state["total_pnl"] += pnl
+            state["total_fee"] += fee
+            trade = {
+                "date": report_date_str, "code": code, "side": "low_score_sell",
+                "quantity": pos["quantity"], "price": round(price, 3),
+                "proceeds": round(proceeds, 2), "fee": round(fee, 2),
+                "pnl": round(pnl, 2),
+                "reason": f"低评分清理：进场{entry_score}<阈值{buy_threshold}"
+            }
+            force_sells.append(trade)
+            trades.append(trade)
+            new_trades.append(trade)
+            del state["positions"][code]
+            print(f"[风控] 低评分清理 {code} × {pos['quantity']} @ {price:.3f} 盈亏{pnl:+.2f}")
+
     # ── 2️⃣ 账户总回撤检查 ──
     can_buy, dd_pct = check_account_drawdown(state)
     if not can_buy:
