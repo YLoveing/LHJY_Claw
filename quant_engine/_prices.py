@@ -1,25 +1,58 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""统一价格数据提取 — 供 GARCH / HMM / 马科维茨共用"""
+"""统一价格数据提取 — 供 GARCH / HMM / 马科维茨共用
 
+数据源优先级:
+1. K线磁盘缓存 (data/cache/kline/*.pkl) — 主力来源, 300行/只, 覆盖2000+只
+2. 报告文件 (reports/report_*.md) — 补充最新一日数据
+"""
+
+import pickle
 import re
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+import pandas as pd
 
 _REPORTS_DIR = Path("/opt/daily_stock_analysis/reports")
+_CACHE_DIR = Path("/opt/daily_stock_analysis/data/cache/kline")
+
+
+def _load_cache_prices(code: str) -> Optional[List[Tuple[str, float]]]:
+    """从K线磁盘缓存读取日收盘价序列（主力数据源）"""
+    cache_file = _CACHE_DIR / f"{code}.pkl"
+    if not cache_file.exists():
+        return None
+    try:
+        df = pd.read_pickle(cache_file)
+        if "close" not in df.columns or "date" not in df.columns:
+            return None
+        df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y%m%d")
+        result = list(zip(df["date"].tolist(), df["close"].tolist()))
+        return sorted(result, key=lambda x: x[0])
+    except Exception:
+        return None
 
 
 def extract_all_prices() -> Dict[str, List[Tuple[str, float]]]:
     """
-    从所有历史报告提取全部股票的日收盘价序列。
+    从K线缓存 + 报告文件提取全部股票的日收盘价序列。
 
     Returns:
         {"code": [("20260505", 4.82), ("20260506", 4.90), ...]}
     """
     prices: Dict[str, List[Tuple[str, float]]] = {}
 
+    # ── 源1：K线缓存（主力来源，每只300行） ──
+    if _CACHE_DIR.exists():
+        for cache_file in sorted(_CACHE_DIR.glob("*.pkl")):
+            code = cache_file.stem
+            series = _load_cache_prices(code)
+            if series and len(series) >= 2:
+                prices[code] = series
+
+    # ── 源2：报告文件（补充最新价格，覆盖最近10天） ──
     for report_file in sorted(_REPORTS_DIR.glob("report_*.md")):
         report_date = report_file.stem.replace("report_", "")
         content = report_file.read_text(encoding="utf-8")
@@ -33,11 +66,9 @@ def extract_all_prices() -> Dict[str, List[Tuple[str, float]]]:
 
             price = _find_current_price(sec)
             if price is not None:
-                prices.setdefault(code, []).append((report_date, price))
-
-    # 按日期排序
-    for code in prices:
-        prices[code].sort(key=lambda x: x[0])
+                existing = dict(prices.get(code, []))
+                existing[report_date] = price
+                prices[code] = sorted(existing.items(), key=lambda x: x[0])
 
     return prices
 
@@ -48,13 +79,11 @@ def extract_price_matrix() -> Tuple[np.ndarray, List[str], List[str]]:
 
     Returns:
         (price_matrix, stock_codes, date_labels)
-        price_matrix: (n_dates, n_stocks) float64
     """
     all_prices = extract_all_prices()
     if not all_prices:
         return np.array([]), [], []
 
-    # 收集所有日期
     all_dates: set = set()
     for code, series in all_prices.items():
         for d, _ in series:
@@ -99,7 +128,6 @@ def aggregated_returns() -> np.ndarray:
             all_ret.append(np.diff(np.log(vals)))
     if not all_ret:
         return np.array([])
-    # 截取到最小长度
     min_len = min(len(r) for r in all_ret)
     if min_len < 2:
         return np.array([])
@@ -111,7 +139,6 @@ def _find_current_price(section_text: str) -> Optional[float]:
     """从报告的一个股票段落中提取当前价。"""
     lines = section_text.split('\n')
 
-    # 方法一：从 "当前价" 标记行后第二行提取数字
     for i, line in enumerate(lines):
         if '当前价' in line and i + 2 < len(lines):
             nums = re.findall(r'[\d.]+', lines[i + 2])
@@ -124,7 +151,6 @@ def _find_current_price(section_text: str) -> Optional[float]:
                     pass
             break
 
-    # 方法二：从表格行 "| 当前价 | X.XX |"
     for line in lines:
         if '当前价' in line:
             cells = [c.strip() for c in line.split('|') if c.strip()]
@@ -138,7 +164,6 @@ def _find_current_price(section_text: str) -> Optional[float]:
                     except ValueError:
                         pass
 
-    # 方法三：从 "收盘" 表格行取第一列
     for i, line in enumerate(lines):
         if ('| 收盘 |' in line or line.strip().startswith('| 收盘 ')) and i + 1 < len(lines):
             cells = [c.strip() for c in lines[i + 1].split('|') if c.strip()]
@@ -157,12 +182,10 @@ def _find_current_price(section_text: str) -> Optional[float]:
 if __name__ == "__main__":
     print("=== 价格提取测试 ===")
     p = extract_all_prices()
+    print(f"提取了 {len(p)} 只股票")
     for code, series in sorted(p.items()):
-        print(f"  {code}: {[f'{x[0]}={x[1]}' for x in series]}")
+        print(f"  {code}: {len(series)}天 [{series[0][0]}→{series[-1][0]}] 最新={series[-1][1]}")
 
     mat, codes, dates = extract_price_matrix()
     if mat.size > 0:
         print(f"\n矩阵: {mat.shape} = {len(dates)}天 × {len(codes)}只")
-        print(f"  日期: {dates}")
-        print(f"  代码: {codes}")
-        print(mat)
