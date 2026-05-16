@@ -127,35 +127,9 @@ if [ -n "$SIGNAL_OUTPUT" ]; then
     _push "$SIGNAL_OUTPUT"
 fi
 
-# ── 情绪极值告警（18:00 独立推） ──
+# ── 信号统计（极值告警已由 generate_signal_push.py 纳入） ──
 if [ "$HOUR" = "18" ]; then
-    SENTIMENT_FILE="sentiment_engine/sentiment_${RUN_DATE}.txt"
-    if [ -f "$SENTIMENT_FILE" ]; then
-        SENTINEL=$(python3 -c "
-import re
-try:
-    with open('$SENTIMENT_FILE') as f:
-        text = f.read()
-    m = re.search(r'综合情绪指数[：:]\s*(\d+)', text)
-    if m:
-        v = int(m.group(1))
-        print(v)
-        if v <= 20:
-            print('PANIC')
-        elif v >= 80:
-            print('GREED')
-except: pass
-" 2>/dev/null)
-        if echo "$SENTINEL" | grep -q 'PANIC'; then
-            VALUE=$(echo "$SENTINEL" | head -1)
-            _push "⚠️ 市场恐慌指数${VALUE}/100，建议减仓观望"
-        elif echo "$SENTINEL" | grep -q 'GREED'; then
-            VALUE=$(echo "$SENTINEL" | head -1)
-            _push "⚠️ 市场贪婪指数${VALUE}/100，注意回调风险"
-        fi
-    fi
-
-    # 信号统计
+# 信号统计
     VERIFY_RESULT=$(python3 -c "
 from simulated_trading import verify_signal_accuracy
 r = verify_signal_accuracy()

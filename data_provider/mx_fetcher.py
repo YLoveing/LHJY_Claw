@@ -79,7 +79,7 @@ def _run_script(script_key: str, query: str) -> bool:
             cwd=str(script.parent),
             capture_output=True,
             text=True,
-            env={"MX_APIKEY": _get_apikey(), **os.environ},
+            env={**os.environ, "MX_APIKEY": _get_apikey()},
             timeout=60,
         )
         return True
@@ -141,7 +141,7 @@ def search_news(keyword: str, count: int = 10) -> List[Dict[str, str]]:
             [sys.executable, str(script), keyword],
             cwd=str(script.parent),
             capture_output=True, text=True, timeout=60,
-            env={"MX_APIKEY": _get_apikey(), **os.environ},
+            env={**os.environ, "MX_APIKEY": _get_apikey()},
         )
     except Exception:
         return []

@@ -303,7 +303,7 @@ def execute_pending_signals() -> List[Dict]:
             "current_price": round(price, 3),
             "invested": round(cost, 2),
             "entry_date": today,
-            "entry_time": today,  # 兼容旧state中可能存在的字段
+            "entry_time": "09:25",  # 执行时刻，固定为开盘执行
             "entry_signal": signal,
             "highest_price": price,
             "trailing_stop": None,
