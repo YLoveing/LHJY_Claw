@@ -20,6 +20,8 @@ import sys
 from collections import OrderedDict
 from datetime import date, datetime, timedelta
 from pathlib import Path
+from scripts.trading_calendar import eastmoney_secid
+import sys
 
 logger = logging.getLogger("simulated_trading")
 
@@ -31,7 +33,7 @@ PERF_FILE = DATA_DIR / "performance.json"
 TRACE_FILE = DATA_DIR / "signal_trace.json"
 
 INITIAL_CAPITAL = 30_000
-MAX_POSITIONS = 8
+MAX_POSITIONS = 3
 
 # ── 交易费用参数（A股真实费率） ──
 COMMISSION_RATE = 0.00025       # 佣金万2.5（买卖均收，最低5元）
@@ -72,13 +74,15 @@ def _apply_slippage(price: float, direction: str = "buy", amount: float = 0) -> 
     return round(price * mult, 3)
 
 # ── 风控参数 ──
-STOP_LOSS_PCT = -15.0       # 单只从均价跌15% → 强制平仓
+MEDIUM_STOP_PCT = -5.0     # 日频持仓浮亏-5% → 减半仓（P1风控补洞）
+HARD_STOP_PCT = -8.0        # 日频持仓浮亏-8% → 全平（替代旧-15%）
+STOP_LOSS_PCT = -8.0        # 硬止损阈值（原-15%收窄）
 TAKE_PROFIT_PCT = 25.0      # 单只浮盈25% → 减半仓锁利
 ACCOUNT_DRAWDOWN_LIMIT = -20.0  # 账户总回撤超过20% → 暂停所有买入
 
 # ── P2 时间止损参数 ──
-TIME_STOP_DAYS = 10          # 持有超过10个交易日
-TIME_STOP_LOSS_PCT = -5.0    # 且浮亏超过-5% → 强制平仓
+TIME_STOP_DAYS = 20          # 持有超过20个交易日
+TIME_STOP_LOSS_PCT = -8.0    # 且浮亏超过-8% → 强制平仓
 
 # ── P2 多级止盈参数 ──
 TP_LEVELS = [
@@ -187,7 +191,7 @@ def _get_sector(code: str) -> str:
     prefix = code[:3] if len(code) >= 3 else code
     try:
         # 尝试从东方财富获取实时行业
-        secid = f"1.{code}" if code.startswith("6") else f"0.{code}"
+        secid = eastmoney_secid(code)
         url = "https://push2.eastmoney.com/api/qt/stock/get"
         params = {
             "secid": secid,
@@ -297,9 +301,9 @@ def _compute_dynamic_thresholds(sentiment_score: int = 50) -> tuple:
     elif sentiment_score >= 65:
         return (73, 40)
     elif sentiment_score <= 20:
-        return (62, 48)
+        return (70, 48)  # 硬锁定阈值≥70（原为62，P1风控收紧）
     elif sentiment_score <= 35:
-        return (67, 43)
+        return (70, 43)  # 硬锁定阈值≥70（原为67，P1风控收紧）
     else:
         return (70, 40)
 
@@ -530,8 +534,12 @@ def check_stop_loss(pos, current_price, code, report_date_str):
     pnl_pct = (current_price - avg_cost) / avg_cost * 100
 
     # ── 硬止损（P0） ──
-    if pnl_pct <= STOP_LOSS_PCT:
-        return "stop_loss", f"止损触发：{pnl_pct:+.1f}%（阈值{STOP_LOSS_PCT}%）", 1.0
+    # ── 硬止损（P0）：-8% 全平 ──
+    if pnl_pct <= HARD_STOP_PCT:
+        return "stop_loss", f"硬止损触发：{pnl_pct:+.1f}%（阈值{HARD_STOP_PCT}%）", 1.0
+    # ── 中等止损（P1）：日频持仓-5%减半仓 ──
+    if pnl_pct <= MEDIUM_STOP_PCT:
+        return "stop_loss", f"中等止损：{pnl_pct:+.1f}%（阈值{MEDIUM_STOP_PCT}%，减半仓）", 0.5
 
     # ── 时间止损（P2）: 持有超过N天且亏损超过M% → 平仓释放资金 ──
     if pos.get("mode") == "daily" and pos.get("entry_date"):
@@ -723,6 +731,12 @@ def execute_trades(stocks, report_date_str):
             # P3 滑点：买入价上浮
             price = _apply_slippage(price, direction="buy", amount=state["cash"])
 
+            # ── AI评分确定性校验（P0） ──
+            # AI评分≥70的候选股必须通过量化指标的硬性校验，防止AI幻觉导致错误买入
+            if not _verify_ai_score(code, info["score"]):
+                print(f"[确定性校验] {code} 评分{info['score']} 未通过量化校验，跳过买入")
+                continue
+
             # ── 行业集中度检查（P1） ──
             sector = _get_sector(code)
             sector_ratio = sector_ratios.get(sector, 0.0)
@@ -733,7 +747,7 @@ def execute_trades(stocks, report_date_str):
             # ── 开盘价偏差校验（P1） ──
             try:
                 import requests as _req
-                secid = f"1.{code}" if code.startswith("6") else f"0.{code}"
+                secid = eastmoney_secid(code)
                 ref_url = "https://push2.eastmoney.com/api/qt/stock/get"
                 ref_params = {
                     "secid": secid,
@@ -1020,6 +1034,13 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
             pos["quantity"] = total_qty
             pos["invested"] = round(total_invested, 2)
 
+            # P1: 禁止对浮亏超过-3%的持仓加仓（打工马风控规则）
+            pos_pnl = (price - pos["avg_cost"]) / pos["avg_cost"] * 100
+            if pos_pnl < -3:
+                logger.warning(f"[风控] 跳过加仓{adj['code']}：浮亏{pos_pnl:.1f}% < -3%")
+                print(f"[风控] 跳过加仓{adj['code']}：浮亏{pos_pnl:.1f}% < -3%")
+                continue
+
             trade = {
                 "date": report_date_str, "code": adj["code"],
                 "side": "rebalance_buy", "quantity": qty, "price": round(price, 3),
@@ -1137,12 +1158,14 @@ def compute_daily_perf(state, trades, report_date_str):
         d = datetime.strptime(report_date_str, "%Y%m%d")
         week_key = d.strftime("%Y-W%W")
         if not perf["weekly"] or perf["weekly"][-1]["week"] != week_key:
+            # 新周的第一天：start_equity 应为上周收盘权益或初始资本
+            # 不能用 total_equity - 今日买入（未计持仓市值，会导致周收益虚高）
+            prev_end = perf["weekly"][-1]["end_equity"] if perf["weekly"] else INITIAL_CAPITAL
             perf["weekly"].append({
                 "week": week_key,
                 "start_date": report_date_str,
                 "end_date": report_date_str,
-                "start_equity": state["total_equity"] - sum(t.get("cost", 0) - t.get("proceeds", 0)
-                                                           for t in daily_trades),
+                "start_equity": round(prev_end, 2),
                 "end_equity": state["total_equity"],
                 "buy_count": buy_count,
                 "sell_count": sell_count,
@@ -1327,6 +1350,78 @@ def generate_performance_card():
 
 
 # ── 信号准确率验证 ──
+
+def _verify_ai_score(code: str, ai_score: float) -> bool:
+    """
+    AI评分确定性校验：评分≥70的候选股必须通过量化指标的硬性过滤。
+    
+    校验项：
+    1. 成交量 > 5日均量 × 1.2
+    2. 收盘价在 MA20 上方
+    3. RSI ≤ 70（不超买）
+    
+    任一项不满足 → 跳过该买入信号。
+    """
+    if ai_score < 70:
+        return True  # 评分不足70的不需要此校验（由阈值控制）
+
+    try:
+        from data_provider.data_cache import DataCache
+        cache = DataCache()
+        df = cache.get_kline(code)
+        if df is None or len(df) < 25:
+            print(f"  [确定性校验] {code} 数据不足，放行")
+            return True
+
+        df = df.sort_values("date")
+        latest = df.iloc[-1]
+        closes = df["close"].values
+        volumes = df["volume"].values
+
+        # ① 成交量 > 5日均量 × 1.2
+        vol_ma5 = volumes[-6:-1].mean()  # 排除当天
+        if len(volumes) >= 6:
+            if volumes[-1] < vol_ma5 * 1.2:
+                print(f"  [确定性校验✗] {code} 成交量不足：当日{volumes[-1]:.0f} < 5日均量{vol_ma5:.0f}×1.2={vol_ma5*1.2:.0f}")
+                return False
+
+        # ② 收盘价在 MA20 上方
+        if len(closes) >= 20:
+            ma20 = closes[-20:].mean()
+            if latest["close"] < ma20:
+                print(f"  [确定性校验✗] {code} 收盘价{latest['close']:.2f} < MA20{ma20:.2f}")
+                return False
+
+        # ③ RSI(14) ≤ 70
+        if len(closes) >= 15:
+            gains = []
+            losses = []
+            for i in range(len(closes)-14, len(closes)):
+                diff = closes[i] - closes[i-1]
+                if diff >= 0:
+                    gains.append(diff)
+                    losses.append(0)
+                else:
+                    gains.append(0)
+                    losses.append(-diff)
+            avg_gain = sum(gains[-14:]) / 14
+            avg_loss = sum(losses[-14:]) / 14
+            if avg_loss == 0:
+                rsi = 100
+            else:
+                rs = avg_gain / avg_loss
+                rsi = 100 - (100 / (1 + rs))
+            if rsi > 70:
+                print(f"  [确定性校验✗] {code} RSI={rsi:.1f} > 70（超买），跳过")
+                return False
+
+        print(f"  [确定性校验✓] {code} 通过量化校验，放行")
+        return True
+
+    except Exception as e:
+        print(f"  [确定性校验] {code} 校验异常: {e}，保守跳过")
+        return False
+
 
 def verify_signal_accuracy():
     """统计历史信号数量（仅计数，不含准确率验证——待补全实现）。"""
