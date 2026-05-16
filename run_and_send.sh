@@ -59,7 +59,24 @@ export STOCK_LIST="$CANDIDATE_LIST"
 
 # ── Step 0: 选股器扫描 ──
 if [ "$HOUR" = "09" ] || [ "$HOUR" = "18" ]; then
-    run_step "选股器" python3 run_screener.py --max=5
+    if [ -n "$MX_APIKEY" ]; then
+        run_step "妙想选股" python3 run_screener.py --max=5 --mx
+    else
+        run_step "选股器" python3 run_screener.py --max=5
+    fi
+fi
+
+# ── Step 0.5: 执行昨日待执信号（仅09:25）──
+# A股T+1制度下，盘中检测到的建仓信号记录到待执行队列，次日开盘执行
+if [ "$HOUR" = "09" ]; then
+    run_step "信号执行" python3 scripts/intraday_trading.py execute
+fi
+
+# ── Step 0.8: 妙想财务预取（09:00 和 14:00） ──
+if [ "$HOUR" = "09" ] || [ "$HOUR" = "14" ]; then
+    if [ -n "$MX_APIKEY" ] && [ -n "$CANDIDATE_LIST" ]; then
+        run_step "妙想财务预取" python3 scripts/mx_enrich.py --codes="${CANDIDATE_LIST}"
+    fi
 fi
 
 # ── Step 1: 全量分析（直接 Python） ──

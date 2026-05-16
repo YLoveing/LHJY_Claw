@@ -685,6 +685,15 @@ class StockAnalysisPipeline:
             )
         )
 
+        # P0: merge MX 妙想基本面数据（如有）
+        code = context.get("code", "")
+        mx_data = getattr(self, "mx_fundamentals", {}).get(code, {})
+        if mx_data:
+            enhanced["mx_fundamentals"] = mx_data
+            # 也同时合并到 fundamental_context 中的 mx 字段
+            if isinstance(enhanced.get("fundamental_context"), dict):
+                enhanced["fundamental_context"]["mx_enrichment"] = mx_data
+
         return enhanced
 
     def _attach_belong_boards_to_fundamental_context(

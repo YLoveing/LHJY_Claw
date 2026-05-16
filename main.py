@@ -42,6 +42,7 @@ if os.getenv("GITHUB_ACTIONS") != "true" and os.getenv("USE_PROXY", "false").low
     os.environ["https_proxy"] = proxy_url
 
 import argparse
+import json
 import logging
 import sys
 import time
@@ -461,6 +462,18 @@ def run_full_analysis(
             query_source="cli",
             save_context_snapshot=save_context_snapshot
         )
+
+        # ── 读取妙想基本面数据（由 mx_enrich 预生成）──
+        mx_fundamentals = {}
+        base_dir = Path(__file__).resolve().parent
+        fundamentals_file = base_dir / "reports" / f"fundamentals_{datetime.now():%Y%m%d}.json"
+        if fundamentals_file.exists():
+            try:
+                mx_fundamentals = json.loads(fundamentals_file.read_text(encoding="utf-8"))
+                logger.info(f"📊 已加载妙想基本面数据: {len(mx_fundamentals)} 只股票")
+            except Exception as e:
+                logger.warning(f"妙想基本面文件读取失败: {e}")
+        pipeline.mx_fundamentals = mx_fundamentals
 
         # 1. 运行个股分析
         results = pipeline.run(

@@ -12,8 +12,29 @@ run_screener.py — 选股器命令行入口，供 run_and_send.sh 调用。
 
 import json
 import logging
+import os
+import re
 import sys
 import time
+
+
+def _parse_num(v, default=0.0) -> float:
+    """解析中文数字格式（1.73亿 → 173000000, 152.95 → 152.95）"""
+    try:
+        s = str(v).replace(",", "").strip()
+        if not s:
+            return default
+        if "亿" in s:
+            return float(s.replace("亿", "")) * 1e8
+        if "万" in s:
+            return float(s.replace("万", "")) * 1e4
+        if "％" in s or "%" in s:
+            return float(s.replace("％", "").replace("%", ""))
+        if "倍" in s:
+            return float(s.replace("倍", ""))
+        return float(s)
+    except (ValueError, TypeError):
+        return default
 from datetime import datetime
 from pathlib import Path
 
@@ -39,6 +60,7 @@ def main():
     fast_mode = False
     enable_llm_scoring = True
     enable_strategy = True
+    enable_mx = "--mx" in sys.argv or bool(os.environ.get("MX_APIKEY", ""))
     
     for arg in sys.argv[1:]:
         if arg.startswith("--max="):
@@ -55,23 +77,70 @@ def main():
                         datefmt="%H:%M:%S")
 
     date_str = datetime.now().strftime("%Y%m%d")
-    log.info(f"选股器启动: {date_str} max={max_candidates}")
+    log.info(f"选股器启动: {date_str} max={max_candidates} mx={enable_mx}")
 
-    # Step 1: 全A快照
-    t0 = time.time()
-    log.info("[1/3] 获取全A股实时行情...")
-    snapshot = fetch_realtime_snapshot()
-    log.info(f"  → {len(snapshot)} 只, {time.time()-t0:.0f}s")
-
-    # Step 2: 基础过滤
-    t0 = time.time()
-    log.info("[2/3] 基础过滤...")
+    # Step 0: 妙想选股（如启用）
     candidates = []
-    for item in snapshot:
-        stock = extract_stock_data(item)
-        if basic_filter(stock):
-            candidates.append(stock)
-    log.info(f"  → {len(candidates)} 只通过, {time.time()-t0:.0f}s")
+    if enable_mx:
+        try:
+            from data_provider.mx_fetcher import screen_stocks
+        except ImportError as e:
+            log.warning(f"妙想模块导入失败: {e}, 回退到全A扫描")
+            enable_mx = False
+
+    if enable_mx:
+        t0 = time.time()
+        log.info("[0/3] 妙想选股...")
+        mx_results = screen_stocks("沪深300成分股 今日涨幅排名前20 换手率大于1%")
+        if mx_results:
+            for s in mx_results:
+                code = str(s.get("code", "")).replace("SH", "").replace("SZ", "").replace(".SH", "").replace(".SZ", "").strip()
+                if not code or not s.get("name"):
+                    continue
+                candidates.append({
+                    "code": code,
+                    "name": s.get("name", ""),
+                    "price": _parse_num(s.get("price", 0)),
+                    "change_pct": _parse_num(s.get("change_pct", 0)),
+                    "high": _parse_num(s.get("high", 0)),
+                    "low": _parse_num(s.get("low", 0)),
+                    "open": _parse_num(s.get("open", 0)),
+                    "prev_close": _parse_num(s.get("prev_close", 0)),
+                    "volume": _parse_num(s.get("volume", 0)),
+                    "amount_yi": _parse_num(s.get("amount", 0)) / 1e8 if s.get("amount") else 0,
+                    "market_cap_yi": _parse_num(s.get("market_cap", 0)) / 1e8 if s.get("market_cap") else 0,
+                    "pe": _parse_num(s.get("pe", 0)),
+                    "turnover_rate": _parse_num(s.get("turnover_rate", 0)),
+                })
+            # 去重
+            seen = set()
+            deduped = []
+            for c in candidates:
+                if c["code"] not in seen:
+                    seen.add(c["code"])
+                    deduped.append(c)
+            candidates = deduped
+            log.info(f"  → 妙想选股获得 {len(candidates)} 只候选, {time.time()-t0:.0f}s")
+        else:
+            log.warning("妙想选股无结果, 回退到全A扫描")
+            enable_mx = False
+            candidates = []
+
+    if not enable_mx:
+        # Step 1: 全A快照
+        t0 = time.time()
+        log.info("[1/3] 获取全A股实时行情...")
+        snapshot = fetch_realtime_snapshot()
+        log.info(f"  → {len(snapshot)} 只, {time.time()-t0:.0f}s")
+
+        # Step 2: 基础过滤
+        t0 = time.time()
+        log.info("[2/3] 基础过滤...")
+        for item in snapshot:
+            stock = extract_stock_data(item)
+            if basic_filter(stock):
+                candidates.append(stock)
+        log.info(f"  → {len(candidates)} 只通过, {time.time()-t0:.0f}s")
 
     # Step 3: 技术面筛选
     t0 = time.time()

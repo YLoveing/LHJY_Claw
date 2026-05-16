@@ -1881,6 +1881,28 @@ class GeminiAnalyzer:
 > 若上述字段为 N/A 或缺失，请明确写“数据缺失，无法判断”，禁止编造。
 """
 
+        # 添加妙想基本面增强（mx_fundamentals / fundamental_context.mx_enrichment）
+        mx_data = context.get("mx_fundamentals", {}) or {}
+        if not mx_data:
+            # 也可以从 fundamental_context 的子字段取出
+            fc = context.get("fundamental_context", {}) if isinstance(context, dict) else {}
+            if isinstance(fc, dict):
+                mx_data = fc.get("mx_enrichment", {}) or {}
+        if isinstance(mx_data, dict) and mx_data and any(k for k in mx_data if k not in ("kline_count", "date")):
+            # 过滤 K 线字段（已在系统其他地方提供）和纯元数据字段
+            _KLINE_FIELDS = {"close", "open", "high", "low", "volume", "amount", "price",
+                             "change_pct", "change", "prev_close", "pct_chg"}
+            mx_indicators = {k: v for k, v in mx_data.items()
+                            if k not in _KLINE_FIELDS | {"kline_count", "date", "code", "name"} and v}
+            if mx_indicators:
+                mx_rows = "\n".join(f"| {k} | {v} |" for k, v in mx_indicators.items())
+                prompt += f"""
+### 妙想基本面增强（MX 数据源）
+| 指标 | 数值 |
+|------|------|
+{mx_rows}
+"""
+
         # 添加筹码分布数据
         if 'chip' in context:
             chip = context['chip']
