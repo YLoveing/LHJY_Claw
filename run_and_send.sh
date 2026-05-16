@@ -106,23 +106,11 @@ fi
 
 # 时段报告文件名（避免一天被覆盖3次）
 case $HOUR in
-    09) PERIOD="早盘"; PERIOD_TAG="morning"; SCREENER_PUSH=true ;;
-    11) PERIOD="午盘"; PERIOD_TAG="noon";    SCREENER_PUSH=false ;;
-    18) PERIOD="收盘"; PERIOD_TAG="night";   SCREENER_PUSH=false ;;
-    *)  PERIOD="盘中"; PERIOD_TAG="intra";   SCREENER_PUSH=false ;;
+    09) PERIOD="早盘"; PERIOD_TAG="morning" ;;
+    11) PERIOD="午盘"; PERIOD_TAG="noon"    ;;
+    18) PERIOD="收盘"; PERIOD_TAG="night"   ;;
+    *)  PERIOD="盘中"; PERIOD_TAG="intra"   ;;
 esac
-
-REPORT_FILE_PERIOD="reports/report_${RUN_DATE}_${PERIOD_TAG}.md"
-
-# 优先读分时段报告，没有则回退到当日通用报告
-if [ -f "$REPORT_FILE_PERIOD" ]; then
-    REPORT_FILE="$REPORT_FILE_PERIOD"
-elif [ ! -f "$REPORT_FILE" ]; then
-    for i in 1 2 3; do
-        PAST_DATE=$(date -d "-${i} day" +%Y%m%d 2>/dev/null || date -v-${i}d +%Y%m%d)
-        [ -f "reports/report_${PAST_DATE}.md" ] && REPORT_FILE="reports/report_${PAST_DATE}.md" && break
-    done
-fi
 
 _push() {
     local content="$1"
@@ -133,48 +121,41 @@ _push() {
 
 _push "📊【${PERIOD}分析】${RUN_DATE} ⏰ 分析完成"
 
-# 选股器候选推送（仅早盘）
-if [ -f "$SCREENER_TOP5" ] && [ "$SCREENER_PUSH" = true ]; then
-    _push "$(cat "$SCREENER_TOP5")"
+# ── 三句话信号推送（替代老的长报告） ──
+SIGNAL_OUTPUT=$(python3 scripts/generate_signal_push.py --hour="${HOUR}" --date="${RUN_DATE}" 2>/dev/null)
+if [ -n "$SIGNAL_OUTPUT" ]; then
+    _push "$SIGNAL_OUTPUT"
 fi
 
-# 个股分析摘要
-if [ -f "$REPORT_FILE" ]; then
-    REPORT_SUMMARY=$(sed -n '/核心结论/,/报告生成时间/p' "$REPORT_FILE" 2>/dev/null | head -30)
-    QUOTE_INFO=$(sed -n '/当日行情/,/数据透视/p' "$REPORT_FILE" 2>/dev/null | head -10)
-    _push "📊【${PERIOD}分析】${RUN_DATE}
-
-${REPORT_SUMMARY}
-
-${QUOTE_INFO}"
-fi
-
-# 大盘复盘（仅收盘档有完整复盘数据）
-if [ "$HOUR" = "18" ] && [ -f "$MARKET_REVIEW_FILE" ]; then
-    REVIEW_FULL=$(sed -n '/一、盘面总览/,/七、风险提示/p' "$MARKET_REVIEW_FILE" 2>/dev/null)
-    _push "📈【大盘复盘】${REVIEW_FULL}"
-fi
-
-# 午盘轻量简报（不推大盘复盘，只推核心要点）
-if [ "$HOUR" = "11" ]; then
-    _push "📌【午间简报】上午行情过半，关注下午变盘信号"
-fi
-
-# 模拟交易快照（仅早盘/收盘跑过模拟交易才推）
-if [ "$HOUR" != "11" ] && [ -f "$SIMULATED_SUMMARY" ]; then
-    _push "$(cat "$SIMULATED_SUMMARY")"
-fi
-
-# 周五周报
-if [ -f "$SIMULATED_WEEKLY" ]; then
-    _push "$(cat "$SIMULATED_WEEKLY")"
-fi
-
-# 盘后：情绪指数 + 信号统计
+# ── 情绪极值告警（18:00 独立推） ──
 if [ "$HOUR" = "18" ]; then
     SENTIMENT_FILE="sentiment_engine/sentiment_${RUN_DATE}.txt"
-    [ -f "$SENTIMENT_FILE" ] && _push "$(cat "$SENTIMENT_FILE")"
+    if [ -f "$SENTIMENT_FILE" ]; then
+        SENTINEL=$(python3 -c "
+import re
+try:
+    with open('$SENTIMENT_FILE') as f:
+        text = f.read()
+    m = re.search(r'综合情绪指数[：:]\s*(\d+)', text)
+    if m:
+        v = int(m.group(1))
+        print(v)
+        if v <= 20:
+            print('PANIC')
+        elif v >= 80:
+            print('GREED')
+except: pass
+" 2>/dev/null)
+        if echo "$SENTINEL" | grep -q 'PANIC'; then
+            VALUE=$(echo "$SENTINEL" | head -1)
+            _push "⚠️ 市场恐慌指数${VALUE}/100，建议减仓观望"
+        elif echo "$SENTINEL" | grep -q 'GREED'; then
+            VALUE=$(echo "$SENTINEL" | head -1)
+            _push "⚠️ 市场贪婪指数${VALUE}/100，注意回调风险"
+        fi
+    fi
 
+    # 信号统计
     VERIFY_RESULT=$(python3 -c "
 from simulated_trading import verify_signal_accuracy
 r = verify_signal_accuracy()
@@ -184,6 +165,11 @@ if r:
     print(f'看空信号(评分≤30): {r[\"sell_signals\"]}次')
 " 2>/dev/null)
     [ -n "$VERIFY_RESULT" ] && _push "$VERIFY_RESULT"
+fi
+
+# 周五周报（若有）
+if [ -f "$SIMULATED_WEEKLY" ]; then
+    _push "$(cat "$SIMULATED_WEEKLY")"
 fi
 
 log "✅ 流水线完成"
