@@ -1,8 +1,9 @@
 #!/bin/bash
 # ===========================================
 # run_and_send.sh — 股票智能分析流水线
-# 每天 9:25 / 13:00 / 18:00 由 cron 触发
-# _v2: 加入错误告警 + set -e 前捕获
+# 每天 09:25 / 11:30 / 18:00 由 cron 触发
+# 09:25=早盘(选股+信号执行+全量), 11:30=午盘(精简快照), 18:00=收盘(完整+量化)
+# v3: 14:30→11:30, 分时段报告文件名
 # ===========================================
 
 # ── 错误捕获 ──
@@ -15,6 +16,7 @@ DETAIL_LOG="/tmp/stock_analysis_error_detail.txt"
 set -a; source .env 2>/dev/null; set +a
 
 RUN_DATE=$(date +%Y%m%d)
+RUN_HMS=$(date +%H%M)
 REPORT_FILE="reports/report_${RUN_DATE}.md"
 MARKET_REVIEW_FILE="reports/market_review_${RUN_DATE}.md"
 SIMULATED_SUMMARY="simulated_trading/summary_${RUN_DATE}.txt"
@@ -57,7 +59,9 @@ print(','.join(codes))
 fi
 export STOCK_LIST="$CANDIDATE_LIST"
 
-# ── Step 0: 选股器扫描 ──
+# ═══ 时段分支逻辑 ═══
+
+# ── Step 0: 选股器扫描（09:25 选当日候选 + 18:00 选次日候选）──
 if [ "$HOUR" = "09" ] || [ "$HOUR" = "18" ]; then
     if [ -n "$MX_APIKEY" ]; then
         run_step "妙想选股" python3 run_screener.py --max=5 --mx
@@ -72,18 +76,25 @@ if [ "$HOUR" = "09" ]; then
     run_step "信号执行" python3 scripts/intraday_trading.py execute
 fi
 
-# ── Step 0.8: 妙想财务预取（09:00 和 14:00） ──
-if [ "$HOUR" = "09" ] || [ "$HOUR" = "14" ]; then
+# ── Step 0.8: 妙想财务预取（09:25 和 11:30）──
+if [ "$HOUR" = "09" ] || [ "$HOUR" = "11" ]; then
     if [ -n "$MX_APIKEY" ] && [ -n "$CANDIDATE_LIST" ]; then
         run_step "妙想财务预取" python3 scripts/mx_enrich.py --codes="${CANDIDATE_LIST}"
     fi
 fi
 
-# ── Step 1: 全量分析（直接 Python） ──
-run_step "全量分析" python3 main.py --force-run
+# ── Step 1: 全量分析（09:25/18:00 完整, 11:30 精简）──
+if [ "$HOUR" = "11" ]; then
+    # 午盘精简：只用 MX 快照数据快速跑 main.py
+    run_step "午盘快照" python3 main.py --force-run
+else
+    run_step "全量分析" python3 main.py --force-run
+fi
 
-# ── Step 2: 模拟交易 ──
-run_step "模拟交易" python3 simulated_trading.py
+# ── Step 2: 模拟交易（仅早盘+收盘跑，午盘数据不完整跳过）──
+if [ "$HOUR" != "11" ]; then
+    run_step "模拟交易" python3 simulated_trading.py
+fi
 
 # ── Step 3: 盘后量化引擎（18:00 仅） ──
 if [ "$HOUR" = "18" ]; then
@@ -93,20 +104,25 @@ fi
 
 # ── Step 4: 推送 ──
 
-# 找报告
-if [ ! -f "$REPORT_FILE" ]; then
+# 时段报告文件名（避免一天被覆盖3次）
+case $HOUR in
+    09) PERIOD="早盘"; PERIOD_TAG="morning"; SCREENER_PUSH=true ;;
+    11) PERIOD="午盘"; PERIOD_TAG="noon";    SCREENER_PUSH=false ;;
+    18) PERIOD="收盘"; PERIOD_TAG="night";   SCREENER_PUSH=false ;;
+    *)  PERIOD="盘中"; PERIOD_TAG="intra";   SCREENER_PUSH=false ;;
+esac
+
+REPORT_FILE_PERIOD="reports/report_${RUN_DATE}_${PERIOD_TAG}.md"
+
+# 优先读分时段报告，没有则回退到当日通用报告
+if [ -f "$REPORT_FILE_PERIOD" ]; then
+    REPORT_FILE="$REPORT_FILE_PERIOD"
+elif [ ! -f "$REPORT_FILE" ]; then
     for i in 1 2 3; do
         PAST_DATE=$(date -d "-${i} day" +%Y%m%d 2>/dev/null || date -v-${i}d +%Y%m%d)
         [ -f "reports/report_${PAST_DATE}.md" ] && REPORT_FILE="reports/report_${PAST_DATE}.md" && break
     done
 fi
-
-case $HOUR in
-    09) PERIOD="早盘" ;;
-    14) PERIOD="尾盘" ;;
-    18) PERIOD="收盘" ;;
-    *)  PERIOD="盘中" ;;
-esac
 
 _push() {
     local content="$1"
@@ -117,8 +133,8 @@ _push() {
 
 _push "📊【${PERIOD}分析】${RUN_DATE} ⏰ 分析完成"
 
-# 选股器候选推送
-if [ -f "$SCREENER_TOP5" ] && { [ "$HOUR" = "09" ] || [ "$HOUR" = "14" ]; }; then
+# 选股器候选推送（仅早盘）
+if [ -f "$SCREENER_TOP5" ] && [ "$SCREENER_PUSH" = true ]; then
     _push "$(cat "$SCREENER_TOP5")"
 fi
 
@@ -133,14 +149,19 @@ ${REPORT_SUMMARY}
 ${QUOTE_INFO}"
 fi
 
-# 大盘复盘
-if [ -f "$MARKET_REVIEW_FILE" ]; then
+# 大盘复盘（仅收盘档有完整复盘数据）
+if [ "$HOUR" = "18" ] && [ -f "$MARKET_REVIEW_FILE" ]; then
     REVIEW_FULL=$(sed -n '/一、盘面总览/,/七、风险提示/p' "$MARKET_REVIEW_FILE" 2>/dev/null)
     _push "📈【大盘复盘】${REVIEW_FULL}"
 fi
 
-# 模拟交易快照
-if [ -f "$SIMULATED_SUMMARY" ]; then
+# 午盘轻量简报（不推大盘复盘，只推核心要点）
+if [ "$HOUR" = "11" ]; then
+    _push "📌【午间简报】上午行情过半，关注下午变盘信号"
+fi
+
+# 模拟交易快照（仅早盘/收盘跑过模拟交易才推）
+if [ "$HOUR" != "11" ] && [ -f "$SIMULATED_SUMMARY" ]; then
     _push "$(cat "$SIMULATED_SUMMARY")"
 fi
 
