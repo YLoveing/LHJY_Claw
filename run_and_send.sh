@@ -64,9 +64,9 @@ export STOCK_LIST="$CANDIDATE_LIST"
 # ── Step 0: 选股器扫描（09:25 选当日候选 + 18:00 选次日候选）──
 if [ "$HOUR" = "09" ] || [ "$HOUR" = "18" ]; then
     if [ -n "$MX_APIKEY" ]; then
-        run_step "妙想选股" python3 run_screener.py --max=5 --mx
+        run_step "妙想选股" python3 run_screener.py --max=10 --mx
     else
-        run_step "选股器" python3 run_screener.py --max=5
+        run_step "选股器" python3 run_screener.py --max=10
     fi
 fi
 
