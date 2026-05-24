@@ -182,8 +182,8 @@ def compute_volatility_signal(df: pd.DataFrame) -> dict:
         "signal_label": signal_label,
         "signal_icon": signal_icon,
         "signal_description": signal_desc,
-        "hs300_close": round(today["close"], 2),
-        "hs300_change_pct": round(today.get("returns", 0) * 100, 2),
+        "index_close": round(today["close"], 2),
+        "index_change_pct": round(today.get("returns", 0) * 100, 2),
         "vol_percentile_curve": vol_curve,
     }
     return result
@@ -204,9 +204,6 @@ def compute_broad_market_signal() -> dict:
         logger.error(f"中证全指信号计算失败: {signal.get('error', 'unknown')}")
         return None
 
-    # 将 hs300 相关字段改为 broad_market 通用字段名
-    signal["broad_close"] = signal.pop("hs300_close", 0)
-    signal["broad_change_pct"] = signal.pop("hs300_change_pct", 0)
     signal["date_source"] = "broad_market"
     logger.info(f"中证全指信号: 百分位={signal['historical_percentile']:.1%} 仓位={signal['position_scale']:.0%}")
     return signal
@@ -233,8 +230,8 @@ def save_signal(hs300_signal: dict, broad_market_signal: dict = None):
             "signal_description": hs300_signal.get("signal_description", ""),
             "date": hs300_signal.get("date", ""),
             "date_ymd": hs300_signal.get("date_ymd", ""),
-            "hs300_close": hs300_signal.get("hs300_close", 0),
-            "hs300_change_pct": hs300_signal.get("hs300_change_pct", 0),
+            "index_close": hs300_signal.get("index_close", 0),
+            "index_change_pct": hs300_signal.get("index_change_pct", 0),
         },
         "combined": {
             "position_scale": combined_scale,
@@ -250,8 +247,8 @@ def save_signal(hs300_signal: dict, broad_market_signal: dict = None):
             "signal_label": broad_market_signal.get("signal_label", "默认"),
             "signal_icon": broad_market_signal.get("signal_icon", "⚪"),
             "signal_description": broad_market_signal.get("signal_description", ""),
-            "broad_close": broad_market_signal.get("broad_close", 0),
-            "broad_change_pct": broad_market_signal.get("broad_change_pct", 0),
+            "index_close": broad_market_signal.get("index_close", 0),
+            "index_change_pct": broad_market_signal.get("index_change_pct", 0),
         }
 
     out_file = OUTPUT_DIR / "vol_timing.json"
@@ -292,7 +289,7 @@ def generate_report(hs300_signal: dict, broad_market_signal: dict = None, combin
     pct = hs300_signal["historical_percentile"] * 100
     vol_ann = hs300_signal["vol_annualized_pct"]
     desc = hs300_signal["signal_description"]
-    hs300_close = hs300_signal["hs300_close"]
+    hs300_close = hs300_signal["index_close"]
 
     if combined_scale is None:
         combined_scale = scale
@@ -313,7 +310,7 @@ def generate_report(hs300_signal: dict, broad_market_signal: dict = None, combin
         f"🌊 **波动率择时信号**  {hs300_signal['date']}\n",
         f"{icon} **沪深300：{label}**（年化波动 {vol_ann:.1f}%，百分位 {pct:.0f}%）",
         f"{desc}",
-        f"· 沪深300收盘：{hs300_close:.2f} ({hs300_signal['hs300_change_pct']:+.2f}%)",
+        f"· 沪深300收盘：{hs300_close:.2f} ({hs300_signal['index_change_pct']:+.2f}%)",
     ]
 
     if broad_market_signal and "error" not in broad_market_signal:
@@ -321,8 +318,8 @@ def generate_report(hs300_signal: dict, broad_market_signal: dict = None, combin
         bm_vol = broad_market_signal["vol_annualized_pct"]
         bm_icon = broad_market_signal["signal_icon"]
         bm_label = broad_market_signal["signal_label"]
-        bm_close = broad_market_signal.get("broad_close", 0)
-        bm_chg = broad_market_signal.get("broad_change_pct", 0)
+        bm_close = broad_market_signal.get("index_close", 0)
+        bm_chg = broad_market_signal.get("index_change_pct", 0)
         lines.append(f"")
         lines.append(f"{bm_icon} **中证全指：{bm_label}**（年化波动 {bm_vol:.1f}%，百分位 {bm_pct:.0f}%）")
         lines.append(f"· 中证全指收盘：{bm_close:.2f} ({bm_chg:+.2f}%)")
@@ -363,8 +360,8 @@ def main():
             "signal_description": "沪深300数据异常，回退默认满仓",
             "historical_percentile": 0.5,
             "vol_annualized_pct": 0,
-            "hs300_close": 0,
-            "hs300_change_pct": 0,
+            "index_close": 0,
+            "index_change_pct": 0,
             "vol_percentile_curve": [],
         }
 
