@@ -46,3 +46,4 @@ sentiment_engine/sentiment_*.txt
 Thumbs.db
 *.swp
 *.swo
+sentiment_engine/vol_timing.json
