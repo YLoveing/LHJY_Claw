@@ -139,15 +139,25 @@ import json
 from pathlib import Path
 f = Path('sentiment_engine/vol_timing.json')
 s = json.loads(f.read_text())
-if 'error' not in s:
-    icon = s.get('signal_icon','⚪')
-    label = s.get('signal_label','?')
-    pct = int(s.get('historical_percentile',0)*100)
-    scale = s.get('position_scale',1.0)
-    desc = s.get('signal_description','')
-    print(f'{icon} 波动率择时：{label}（百分位{pct}%）')
-    print(f'{desc}')
-    print(f'🎯 建议仓位：{scale:.0%}')
+if 'combined' in s:
+    hs = s.get('hs300', {})
+    bm = s.get('broad_market', {})
+    combined = s.get('combined', {})
+    scale = combined.get('position_scale', 1.0)
+    icon_hs = hs.get('signal_icon', '⚪')
+    label_hs = hs.get('signal_label', '?')
+    pct_hs = int(hs.get('historical_percentile', 0) * 100)
+    vol_hs = hs.get('vol_annualized_pct', 0)
+    pct_bm = int(bm.get('historical_percentile', 0) * 100) if bm else None
+    print(f'{icon_hs} 波动率择时（沪深300）：{label_hs}（百分位{pct_hs}%）')
+    print(f'  年化波动率 {vol_hs:.1f}%')
+    if pct_bm is not None:
+        icon_bm = bm.get('signal_icon', '⚪')
+        label_bm = bm.get('signal_label', '?')
+        vol_bm = bm.get('vol_annualized_pct', 0)
+        print(f'{icon_bm} 波动率择时（全市场）：{label_bm}（百分位{pct_bm}%）')
+        print(f'  年化波动率 {vol_bm:.1f}%')
+    print(f'🎯 综合仓位建议：{scale:.0%}')
 " 2>/dev/null)
     [ -n "$VOL_REPORT" ] && _push "$VOL_REPORT"
 fi
