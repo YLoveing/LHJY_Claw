@@ -100,17 +100,27 @@ SLIPPAGE_RATE = 0.001  # 0.1% 基础滑点
 SENTIMENT_ADJ_FILE = DATA_DIR / "sentiment_adjustment.json"
 
 def _load_sentiment_adjustment() -> float:
-    """从情绪引擎加载仓位调节系数。文件由 sentiment_engine 每次盘后写入。"""
+    """从情绪引擎加载仓位调节系数，同时读取波动率择时信号，取保守值。"""
     si_file = Path("/opt/daily_stock_analysis/sentiment_engine/adjustment.json")
+    factor = 1.0
+    source_desc = "默认满仓"
     if si_file.exists():
         try:
             with open(si_file) as f:
                 data = json.load(f)
-            factor = float(data.get("factor", 1.0))
-            logger.info(f"[模拟交易] 应用情绪仓位系数: {factor} ({data.get('label','?')} {data.get('score','?')}/100)")
+            # 优先读取波动率择时信号（更准确的风控）
+            vol_factor = data.get("vol_timing_factor")
+            if vol_factor is not None:
+                factor = float(vol_factor)
+                source_desc = f"波动率择时 {factor}"
+            else:
+                # Fallback: 情绪引擎仓位
+                factor = float(data.get("factor", 1.0))
+                source_desc = f"情绪引擎 {factor}"
+            logger.info(f"[模拟交易] 应用仓位系数: {factor} ({source_desc})")
             return factor
         except (json.JSONDecodeError, ValueError, TypeError) as e:
-            logger.warning(f"[模拟交易] 情绪系数读取失败: {e}")
+            logger.warning(f"[模拟交易] 仓位系数读取失败: {e}")
     return 1.0
 
 # ── 行业分类（申万一级行业，实时查询 + 前缀回退） ──

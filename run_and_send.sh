@@ -102,6 +102,11 @@ if [ "$HOUR" = "18" ]; then
     run_step "情绪引擎" python3 -m sentiment_engine.sentiment_index
 fi
 
+# ── Step 3b: 波动率择时信号（早盘+盘后运行，模拟交易需要它的仓位建议）──
+if [ "$HOUR" != "11" ]; then
+    run_step "波动率择时" python3 -m sentiment_engine.vol_timing
+fi
+
 # ── Step 4: 推送 ──
 
 # 时段报告文件名（避免一天被覆盖3次）
@@ -121,10 +126,30 @@ _push() {
 
 _push "📊【${PERIOD}分析】${RUN_DATE} ⏰ 分析完成"
 
-# ── 三句话信号推送（替代老的长报告） ──
+# ── 三句话信号推送 ──
 SIGNAL_OUTPUT=$(python3 scripts/generate_signal_push.py --hour="${HOUR}" --date="${RUN_DATE}" 2>/dev/null)
 if [ -n "$SIGNAL_OUTPUT" ]; then
     _push "$SIGNAL_OUTPUT"
+fi
+
+# ── 波动率择时信号推送（午盘跳过，早盘+收盘推送） ──
+if [ "$HOUR" != "11" ] && [ -f "sentiment_engine/vol_timing.json" ]; then
+    VOL_REPORT=$(python3 -c "
+import json
+from pathlib import Path
+f = Path('sentiment_engine/vol_timing.json')
+s = json.loads(f.read_text())
+if 'error' not in s:
+    icon = s.get('signal_icon','⚪')
+    label = s.get('signal_label','?')
+    pct = int(s.get('historical_percentile',0)*100)
+    scale = s.get('position_scale',1.0)
+    desc = s.get('signal_description','')
+    print(f'{icon} 波动率择时：{label}（百分位{pct}%）')
+    print(f'{desc}')
+    print(f'🎯 建议仓位：{scale:.0%}')
+" 2>/dev/null)
+    [ -n "$VOL_REPORT" ] && _push "$VOL_REPORT"
 fi
 
 # ── 信号统计（极值告警已由 generate_signal_push.py 纳入） ──
