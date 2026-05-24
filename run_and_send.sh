@@ -140,23 +140,31 @@ from pathlib import Path
 f = Path('sentiment_engine/vol_timing.json')
 s = json.loads(f.read_text())
 if 'combined' in s:
-    hs = s.get('hs300', {})
-    bm = s.get('broad_market', {})
+    factors = s.get('factors', {})
     combined = s.get('combined', {})
+    hs = s.get('hs300', {})
     scale = combined.get('position_scale', 1.0)
-    icon_hs = hs.get('signal_icon', '⚪')
-    label_hs = hs.get('signal_label', '?')
-    pct_hs = int(hs.get('historical_percentile', 0) * 100)
-    vol_hs = hs.get('vol_annualized_pct', 0)
-    pct_bm = int(bm.get('historical_percentile', 0) * 100) if bm else None
-    print(f'{icon_hs} 波动率择时（沪深300）：{label_hs}（百分位{pct_hs}%）')
-    print(f'  年化波动率 {vol_hs:.1f}%')
-    if pct_bm is not None:
-        icon_bm = bm.get('signal_icon', '⚪')
-        label_bm = bm.get('signal_label', '?')
-        vol_bm = bm.get('vol_annualized_pct', 0)
-        print(f'{icon_bm} 波动率择时（全市场）：{label_bm}（百分位{pct_bm}%）')
-        print(f'  年化波动率 {vol_bm:.1f}%')
+    icon = combined.get('signal_icon', '⚪')
+    label = combined.get('signal_label', '?')
+    print(f'{icon} 五因子择时：{label}（仓位{scale:.0%}）')
+    # 各因子明细
+    name_map = {'hv':'HV波动','money_flow':'资金','volume':'量能','ma':'均线','macd':'MACD'}
+    if factors:
+        parts = []
+        for fk in ['hv','money_flow','volume','ma','macd']:
+            fd = factors.get(fk, {})
+            fs = fd.get('position_scale', '?')
+            if isinstance(fs, (int, float)):
+                parts.append(f'{name_map.get(fk, fk)}={fs:.0%}')
+            else:
+                parts.append(f'{name_map.get(fk, fk)}={fs}')
+        print(f'  {" | ".join(parts)}')
+    # HV 参考（一行）
+    if hs.get('historical_percentile') is not None:
+        pct_hs = int(hs.get('historical_percentile', 0) * 100)
+        label_hs = hs.get('signal_label', '?')
+        vol_hs = hs.get('vol_annualized_pct', 0)
+        print(f'  参考HV(沪深300): {label_hs} 百分位{pct_hs}% 年化波动{vol_hs:.1f}%')
     print(f'🎯 综合仓位建议：{scale:.0%}')
 " 2>/dev/null)
     [ -n "$VOL_REPORT" ] && _push "$VOL_REPORT"
