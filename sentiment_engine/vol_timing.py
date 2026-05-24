@@ -29,6 +29,8 @@ BASE_DIR = Path("/opt/daily_stock_analysis")
 CACHE_DIR = BASE_DIR / "data" / "cache"
 OUTPUT_DIR = BASE_DIR / "sentiment_engine"
 HS300_PKL = CACHE_DIR / "hs300_index.pkl"
+BROAD_MARKET_PKL = CACHE_DIR / "market_index" / "000985.pkl"
+MARKET_INDEX_CACHE_DIR = CACHE_DIR / "market_index"
 
 # ── 参数 ──
 VOL_WINDOW = 20          # 波动率计算窗口
@@ -61,6 +63,37 @@ def load_hs300() -> pd.DataFrame:
     df["date"] = pd.to_datetime(df["date"])
     df = df.sort_values("date").reset_index(drop=True)
     return df
+
+
+def load_broad_market() -> pd.DataFrame:
+    """加载中证全指(000985)日K线数据，优先读缓存，首次通过akshare获取。"""
+    if BROAD_MARKET_PKL.exists():
+        try:
+            df = pd.read_pickle(str(BROAD_MARKET_PKL))
+            df["date"] = pd.to_datetime(df["date"])
+            df = df.sort_values("date").reset_index(drop=True)
+            logger.info(f"中证全指数据从缓存读取: {BROAD_MARKET_PKL} ({len(df)}条)")
+            return df
+        except Exception as e:
+            logger.warning(f"缓存读取失败: {e}，重新获取")
+
+    # 通过 akshare 获取
+    try:
+        import akshare as ak
+        df = ak.stock_zh_index_daily_tx(symbol="sh000985")
+        if df is None or len(df) == 0:
+            logger.error("中证全指数据为空")
+            return None
+        df["date"] = pd.to_datetime(df["date"])
+        df = df.sort_values("date").reset_index(drop=True)
+        # 缓存
+        MARKET_INDEX_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        df.to_pickle(str(BROAD_MARKET_PKL))
+        logger.info(f"中证全指数据已缓存: {BROAD_MARKET_PKL} ({len(df)}条)")
+        return df
+    except Exception as e:
+        logger.error(f"中证全指数据获取失败: {e}")
+        return None
 
 
 def compute_volatility_signal(df: pd.DataFrame) -> dict:
@@ -156,15 +189,77 @@ def compute_volatility_signal(df: pd.DataFrame) -> dict:
     return result
 
 
-def save_signal(signal: dict):
-    """保存信号到 JSON 文件"""
+def compute_broad_market_signal() -> dict:
+    """
+    计算中证全指的波动率择时信号，复用 compute_volatility_signal 逻辑。
+    返回与 HS300 信号相同结构的 dict。
+    """
+    df = load_broad_market()
+    if df is None:
+        logger.error("中证全指数据加载失败，跳过宽基信号")
+        return None
+
+    signal = compute_volatility_signal(df)
+    if signal is None or "error" in signal:
+        logger.error(f"中证全指信号计算失败: {signal.get('error', 'unknown')}")
+        return None
+
+    # 将 hs300 相关字段改为 broad_market 通用字段名
+    signal["broad_close"] = signal.pop("hs300_close", 0)
+    signal["broad_change_pct"] = signal.pop("hs300_change_pct", 0)
+    signal["date_source"] = "broad_market"
+    logger.info(f"中证全指信号: 百分位={signal['historical_percentile']:.1%} 仓位={signal['position_scale']:.0%}")
+    return signal
+
+
+def save_signal(hs300_signal: dict, broad_market_signal: dict = None):
+    """保存信号到 JSON 文件，包含沪深300和中证全指双信号"""
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    # 计算 combined 信号（取最保守的 scale）
+    hs300_scale = hs300_signal.get("position_scale", 1.0)
+    broad_scale = broad_market_signal.get("position_scale", 1.0) if broad_market_signal else 1.0
+    combined_scale = min(hs300_scale, broad_scale)
+
+    # ── 写入 vol_timing.json（嵌套结构） ──
+    vol_timing = {
+        "hs300": {
+            "position_scale": hs300_scale,
+            "vol_annualized_pct": hs300_signal.get("vol_annualized_pct", 0),
+            "historical_percentile": hs300_signal.get("historical_percentile", 0.5),
+            "vol_20d": hs300_signal.get("vol_20d", 0),
+            "signal_label": hs300_signal.get("signal_label", "默认"),
+            "signal_icon": hs300_signal.get("signal_icon", "⚪"),
+            "signal_description": hs300_signal.get("signal_description", ""),
+            "date": hs300_signal.get("date", ""),
+            "date_ymd": hs300_signal.get("date_ymd", ""),
+            "hs300_close": hs300_signal.get("hs300_close", 0),
+            "hs300_change_pct": hs300_signal.get("hs300_change_pct", 0),
+        },
+        "combined": {
+            "position_scale": combined_scale,
+        }
+    }
+
+    if broad_market_signal:
+        vol_timing["broad_market"] = {
+            "position_scale": broad_scale,
+            "vol_annualized_pct": broad_market_signal.get("vol_annualized_pct", 0),
+            "historical_percentile": broad_market_signal.get("historical_percentile", 0.5),
+            "vol_20d": broad_market_signal.get("vol_20d", 0),
+            "signal_label": broad_market_signal.get("signal_label", "默认"),
+            "signal_icon": broad_market_signal.get("signal_icon", "⚪"),
+            "signal_description": broad_market_signal.get("signal_description", ""),
+            "broad_close": broad_market_signal.get("broad_close", 0),
+            "broad_change_pct": broad_market_signal.get("broad_change_pct", 0),
+        }
+
     out_file = OUTPUT_DIR / "vol_timing.json"
     with open(out_file, "w") as f:
-        json.dump(signal, f, ensure_ascii=False, indent=2)
-    logger.info(f"已保存波动率信号: {out_file}")
+        json.dump(vol_timing, f, ensure_ascii=False, indent=2)
+    logger.info(f"已保存波动率信号(双指数): {out_file}")
 
-    # 同时更新 adjustment.json（合并写入，保留情绪引擎字段）
+    # ── 同时更新 adjustment.json（合并写入，保留情绪引擎字段） ──
     adj_file = OUTPUT_DIR / "adjustment.json"
     existing = {}
     if adj_file.exists():
@@ -173,99 +268,132 @@ def save_signal(signal: dict):
         except (json.JSONDecodeError, FileNotFoundError):
             pass
     existing.update({
-        "vol_timing_factor": signal["position_scale"],
-        "vol_timing_label": signal["signal_label"],
-        "vol_timing_percentile": signal["historical_percentile"],
-        "vol_timing_date": signal.get("date_ymd", signal["date"]),
-        # 仍然设置 factor 供 simulated_trading 读取，但不覆盖已有的情绪 score
-        "factor": signal["position_scale"],
+        "vol_timing_factor": combined_scale,
+        "vol_timing_label": hs300_signal.get("signal_label", "默认"),
+        "vol_timing_percentile": hs300_signal.get("historical_percentile", 0.5),
+        "vol_timing_date": hs300_signal.get("date_ymd", hs300_signal.get("date", "")),
+        "vol_timing_broad_factor": broad_scale,
+        # 设置 factor 供向后兼容
+        "factor": combined_scale,
     })
     with open(adj_file, "w") as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
-    logger.info(f"合并写入 adjustment.json: vol_timing_factor={signal['position_scale']}")
+    logger.info(f"合并写入 adjustment.json: combined_factor={combined_scale}")
 
 
-def generate_report(signal: dict) -> str:
-    """生成可推送的文本报告"""
-    if "error" in signal:
-        return f"⚠️ 波动率择时信号异常: {signal['error']}"
+def generate_report(hs300_signal: dict, broad_market_signal: dict = None, combined_scale: float = None) -> str:
+    """生成可推送的文本报告（双指数对比）"""
+    if "error" in hs300_signal:
+        return f"⚠️ 波动率择时信号异常: {hs300_signal['error']}"
 
-    icon = signal["signal_icon"]
-    label = signal["signal_label"]
-    scale = signal["position_scale"]
-    pct = signal["historical_percentile"] * 100
-    vol_ann = signal["vol_annualized_pct"]
-    desc = signal["signal_description"]
-    hs300_close = signal["hs300_close"]
+    icon = hs300_signal["signal_icon"]
+    label = hs300_signal["signal_label"]
+    scale = hs300_signal["position_scale"]
+    pct = hs300_signal["historical_percentile"] * 100
+    vol_ann = hs300_signal["vol_annualized_pct"]
+    desc = hs300_signal["signal_description"]
+    hs300_close = hs300_signal["hs300_close"]
+
+    if combined_scale is None:
+        combined_scale = scale
 
     # 仓位建议
-    if scale >= 1.0:
+    if combined_scale >= 1.0:
         position_advice = "✅ 建议满仓操作"
-    elif scale >= 0.75:
+    elif combined_scale >= 0.75:
         position_advice = "✅ 建议正常仓位(75%)"
-    elif scale >= 0.50:
+    elif combined_scale >= 0.50:
         position_advice = "⚠️ 建议中等仓位(50%)"
-    elif scale >= 0.25:
+    elif combined_scale >= 0.25:
         position_advice = "⚠️ 建议轻仓操作(25%)"
     else:
         position_advice = "🔴 建议空仓观望"
 
-    report = (
-        f"🌊 **波动率择时信号**  {signal['date']}\n"
-        f"\n"
-        f"{icon} **市场状态：{label}**（历史百分位 {pct:.0f}%）\n"
-        f"{desc}\n"
-        f"\n"
-        f"**核心数据：**\n"
-        f"  · 沪深300收盘：{hs300_close:.2f} ({signal['hs300_change_pct']:+.2f}%)\n"
-        f"  · 20日波动率(年化)：**{vol_ann:.1f}%**\n"
-        f"  · 波动率历史百分位：**{pct:.0f}%**（{pct:.0f}% = 比历史{pct:.0f}%的时间都低/高）\n"
-        f"\n"
-        f"**🎯 仓位建议：{scale:.0%}**\n"
-        f"{position_advice}\n"
-    )
-    return report
+    lines = [
+        f"🌊 **波动率择时信号**  {hs300_signal['date']}\n",
+        f"{icon} **沪深300：{label}**（年化波动 {vol_ann:.1f}%，百分位 {pct:.0f}%）",
+        f"{desc}",
+        f"· 沪深300收盘：{hs300_close:.2f} ({hs300_signal['hs300_change_pct']:+.2f}%)",
+    ]
+
+    if broad_market_signal and "error" not in broad_market_signal:
+        bm_pct = broad_market_signal["historical_percentile"] * 100
+        bm_vol = broad_market_signal["vol_annualized_pct"]
+        bm_icon = broad_market_signal["signal_icon"]
+        bm_label = broad_market_signal["signal_label"]
+        bm_close = broad_market_signal.get("broad_close", 0)
+        bm_chg = broad_market_signal.get("broad_change_pct", 0)
+        lines.append(f"")
+        lines.append(f"{bm_icon} **中证全指：{bm_label}**（年化波动 {bm_vol:.1f}%，百分位 {bm_pct:.0f}%）")
+        lines.append(f"· 中证全指收盘：{bm_close:.2f} ({bm_chg:+.2f}%)")
+
+    lines.append(f"")
+    lines.append(f"**🎯 综合仓位建议：{combined_scale:.0%}**")
+    lines.append(f"{position_advice}")
+    lines.append(f"*取沪深300与中证全指中最保守值*")
+
+    return "\n".join(lines)
 
 
 def main():
     """主入口"""
     logger.info("=" * 50)
-    logger.info("波动率择时信号生成")
+    logger.info("波动率择时信号生成（双指数）")
     logger.info("=" * 50)
 
-    df = load_hs300()
-    if df is None:
-        logger.error("数据加载失败，写入默认信号")
-        save_signal({"date": datetime.now().strftime("%Y-%m-%d"),
-                      "position_scale": 1.0, "signal_label": "默认",
-                      "signal_icon": "⚪", "signal_description": "数据异常，默认满仓",
-                      "historical_percentile": 0.5, "vol_annualized_pct": 0,
-                      "hs300_close": 0, "hs300_change_pct": 0,
-                      "vol_percentile_curve": []})
-        return 1
+    # ── 1. 沪深300信号 ──
+    df_hs300 = load_hs300()
+    hs300_signal = None
+    broad_signal = None
 
-    signal = compute_volatility_signal(df)
-    if "error" in signal:
-        logger.error(f"信号计算失败: {signal['error']}，写入默认信号")
-        save_signal({"date": datetime.now().strftime("%Y-%m-%d"),
-                      "position_scale": 1.0, "signal_label": "默认",
-                      "signal_icon": "⚪", "signal_description": f"计算异常: {signal['error']}，默认满仓",
-                      "historical_percentile": 0.5, "vol_annualized_pct": 0,
-                      "hs300_close": 0, "hs300_change_pct": 0,
-                      "vol_percentile_curve": []})
-        return 1
+    if df_hs300 is not None:
+        hs300_signal = compute_volatility_signal(df_hs300)
+        if hs300_signal and "error" in hs300_signal:
+            logger.error(f"沪深300信号计算失败: {hs300_signal['error']}")
+            hs300_signal = None
 
-    save_signal(signal)
+    if hs300_signal is None:
+        logger.error("沪深300数据加载/计算失败")
+        hs300_signal = {
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "date_ymd": datetime.now().strftime("%Y%m%d"),
+            "position_scale": 1.0,
+            "signal_label": "默认",
+            "signal_icon": "⚪",
+            "signal_description": "沪深300数据异常，回退默认满仓",
+            "historical_percentile": 0.5,
+            "vol_annualized_pct": 0,
+            "hs300_close": 0,
+            "hs300_change_pct": 0,
+            "vol_percentile_curve": [],
+        }
 
-    # 生成报告
-    report = generate_report(signal)
+    # ── 2. 中证全指信号 ──
+    try:
+        broad_signal = compute_broad_market_signal()
+    except Exception as e:
+        logger.warning(f"中证全指信号计算异常: {e}，跳过")
+        broad_signal = None
+
+    # ── 3. 保存信号 ──
+    save_signal(hs300_signal, broad_market_signal=broad_signal)
+
+    # ── 4. 计算 combined 用于报告 ──
+    hs300_scale = hs300_signal.get("position_scale", 1.0)
+    broad_scale = broad_signal.get("position_scale", 1.0) if broad_signal else 1.0
+    combined_scale = min(hs300_scale, broad_scale)
+
+    # ── 5. 生成报告 ──
+    report = generate_report(hs300_signal, broad_market_signal=broad_signal, combined_scale=combined_scale)
     print("\n" + report + "\n")
 
     # 日志信息
-    logger.info(f"信号: {signal['signal_icon']} {signal['signal_label']} "
-                f"| 百分位: {signal['historical_percentile']:.1%} "
-                f"| 仓位: {signal['position_scale']:.0%} "
-                f"| 年化波动: {signal['vol_annualized_pct']:.1f}%")
+    logger.info(f"沪深300: {hs300_signal['signal_icon']} {hs300_signal['signal_label']} "
+                f"百分位={hs300_signal['historical_percentile']:.1%} 仓位={hs300_signal['position_scale']:.0%}")
+    if broad_signal:
+        logger.info(f"中证全指: {broad_signal['signal_icon']} {broad_signal['signal_label']} "
+                    f"百分位={broad_signal['historical_percentile']:.1%} 仓位={broad_signal['position_scale']:.0%}")
+    logger.info(f"综合仓位: {combined_scale:.0%} (取最保守)")
 
     return 0
 

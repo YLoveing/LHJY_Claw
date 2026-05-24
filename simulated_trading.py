@@ -100,27 +100,53 @@ SLIPPAGE_RATE = 0.001  # 0.1% 基础滑点
 SENTIMENT_ADJ_FILE = DATA_DIR / "sentiment_adjustment.json"
 
 def _load_sentiment_adjustment() -> float:
-    """从情绪引擎加载仓位调节系数，同时读取波动率择时信号，取保守值。"""
+    """从波动率择时引擎加载仓位调节系数。
+    优先级：
+    1. vol_timing.json → combined.position_scale
+    2. vol_timing.json → hs300.position_scale
+    3. adjustment.json → vol_timing_factor (向后兼容)
+    4. adjustment.json → factor (情绪引擎)
+    5. 默认 1.0
+    """
+    # 1. 优先读取 vol_timing.json 的 combined 信号
+    vt_file = Path("/opt/daily_stock_analysis/sentiment_engine/vol_timing.json")
+    if vt_file.exists():
+        try:
+            with open(vt_file) as f:
+                data = json.load(f)
+            # combined.position_scale
+            combined = data.get("combined", {})
+            if "position_scale" in combined:
+                factor = float(combined["position_scale"])
+                logger.info(f"[模拟交易] 应用波动率择时双信号: combined={factor}")
+                return factor
+            # 回退: hs300.position_scale
+            hs300 = data.get("hs300", {})
+            if "position_scale" in hs300:
+                factor = float(hs300["position_scale"])
+                logger.info(f"[模拟交易] 应用波动率择时HS300信号: {factor}")
+                return factor
+        except (json.JSONDecodeError, ValueError, TypeError) as e:
+            logger.warning(f"[模拟交易] vol_timing.json 读取失败: {e}")
+
+    # 2. 回退到 adjustment.json (向后兼容)
     si_file = Path("/opt/daily_stock_analysis/sentiment_engine/adjustment.json")
-    factor = 1.0
-    source_desc = "默认满仓"
     if si_file.exists():
         try:
             with open(si_file) as f:
                 data = json.load(f)
-            # 优先读取波动率择时信号（更准确的风控）
             vol_factor = data.get("vol_timing_factor")
             if vol_factor is not None:
                 factor = float(vol_factor)
-                source_desc = f"波动率择时 {factor}"
-            else:
-                # Fallback: 情绪引擎仓位
-                factor = float(data.get("factor", 1.0))
-                source_desc = f"情绪引擎 {factor}"
-            logger.info(f"[模拟交易] 应用仓位系数: {factor} ({source_desc})")
+                logger.info(f"[模拟交易] 应用仓位系数(回退adjustment.json): {factor}")
+                return factor
+            factor = float(data.get("factor", 1.0))
+            logger.info(f"[模拟交易] 应用仓位系数(回退情绪引擎): {factor}")
             return factor
         except (json.JSONDecodeError, ValueError, TypeError) as e:
             logger.warning(f"[模拟交易] 仓位系数读取失败: {e}")
+
+    logger.info("[模拟交易] 无仓位系数，默认满仓")
     return 1.0
 
 # ── 行业分类（申万一级行业，实时查询 + 前缀回退） ──
@@ -151,13 +177,25 @@ SECTOR_MAP_FALLBACK = {
 def check_market_condition() -> str:
     """
     检查大盘市场状态，用于择时过滤。
-    从东方财富获取沪深300实时涨跌幅。
+    先查沪深300指数MA趋势（中长线），再看实时涨跌幅（短线）。
+    两者取更保守的结果。
 
     Returns:
         "normal"  — 正常交易
-        "caution" — 沪深300跌超-1.5%，日内不开新仓
-        "danger"  — 跌超-3.0%，只卖不买，日内平仓
+        "caution" — 谨慎，不开新仓
+        "danger"  — 危险，只卖不买
     """
+    # ── MA趋势过滤（中长线） ──
+    try:
+        from risk.market_filter import get_market_state
+        mkt = get_market_state()
+        ma_scale = mkt.get("scale", 1.0)
+        ma_state = mkt.get("state_name", "unknown")
+    except Exception as e:
+        ma_scale = 1.0
+        ma_state = "error"
+    
+    # ── 实时涨跌幅（短线） ──
     import requests
     url = "https://push2.eastmoney.com/api/qt/stock/get"
     params = {
@@ -175,14 +213,27 @@ def check_market_condition() -> str:
         data = r.json()
         change_pct = data.get("data", {}).get("f3", 0)
         if change_pct is not None:
+            # 短线状态
             if change_pct <= -3.0:
-                print(f"[风控] 沪深300跌幅 {change_pct:.1f}% → DANGER（只卖不买）")
-                return "danger"
+                short_state = "danger"
             elif change_pct <= -1.5:
-                print(f"[风控] 沪深300跌幅 {change_pct:.1f}% → CAUTION（日内不开新仓）")
-                return "caution"
+                short_state = "caution"
             else:
-                return "normal"
+                short_state = "normal"
+        else:
+            short_state = "normal"
+
+        # ── 综合MA过滤 + 短线涨跌幅，取更保守 ──
+        print(f"[风控] MA趋势: {ma_state}(scale={ma_scale}) | 实时涨跌: {change_pct}%")
+
+        if ma_scale <= 0.25 or short_state == "danger":
+            print(f"[风控] → DANGER：只卖不买")
+            return "danger"
+        elif ma_scale <= 0.5 or short_state == "caution":
+            print(f"[风控] → CAUTION：不开新仓")
+            return "caution"
+        else:
+            return "normal"
     except Exception as e:
         print(f"[风控] 大盘择时查询失败（默认 caution）: {e}")
     return "caution"
@@ -297,25 +348,30 @@ def _compute_dynamic_thresholds(sentiment_score: int = 50) -> tuple:
             import json
             data = json.loads(garch_file.read_text())
             if data.get("status") == "ok" and "dynamic_thresholds" in data:
-                bt = data["dynamic_thresholds"]["buy"]
-                st = data["dynamic_thresholds"]["sell"]
-                vp = data.get("vol_percentile", 50)
-                logger.info(f"[阈值] GARCH驱动: vol_pct={vp:.0f}% 阈值=买入≥{bt} / 卖出≤{st}")
-                return (bt, st)
+                n_obs = data.get("n_obs", 0)
+                if n_obs < 50:
+                    logger.warning(f"[阈值] GARCH样本不足({n_obs}<50)，自动删除无效输出")
+                    garch_file.unlink(missing_ok=True)
+                else:
+                    bt = data["dynamic_thresholds"]["buy"]
+                    st = data["dynamic_thresholds"]["sell"]
+                    vp = data.get("vol_percentile", 50)
+                    logger.info(f"[阈值] GARCH驱动: vol_pct={vp:.0f}% 阈值=买入≥{bt} / 卖出≤{st}")
+                    return (bt, st)
     except Exception:
         pass
     
     # 回退：基于情绪指数
     if sentiment_score >= 80:
-        return (78, 40)
+        return (75, 40)
     elif sentiment_score >= 65:
-        return (73, 40)
+        return (68, 40)
     elif sentiment_score <= 20:
-        return (70, 48)  # 硬锁定阈值≥70（原为62，P1风控收紧）
+        return (65, 48)
     elif sentiment_score <= 35:
-        return (70, 43)  # 硬锁定阈值≥70（原为67，P1风控收紧）
+        return (65, 43)
     else:
-        return (70, 40)
+        return (65, 40)
 
 
 def _load_sentiment_index_score() -> int:
@@ -823,6 +879,18 @@ def execute_trades(stocks, report_date_str):
             amount = _compute_kelly_amount(
                 info["score"], state["cash"], sentiment_factor
             )
+            # ── 大盘均线过滤：按市场状态等比缩仓 ──
+            if not market_danger and not market_caution:
+                try:
+                    from risk.market_filter import get_market_state
+                    mkt = get_market_state()
+                    market_scale = mkt.get("scale", 1.0)
+                    if market_scale < 1.0:
+                        old_amount = amount
+                        amount = amount * market_scale
+                        print(f"[风控] 大盘均线过滤: scale={market_scale} → 买入金额 {old_amount:.0f}→{amount:.0f}")
+                except Exception:
+                    pass
             amount = min(amount, state["cash"])
             quantity = int(amount / price / 100) * 100
             if quantity < 100:
