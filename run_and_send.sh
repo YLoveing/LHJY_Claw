@@ -25,6 +25,14 @@ SCREENER_TOP5="screener/top5_${RUN_DATE}.txt"
 SCREENER_JSON="screener/candidates_${RUN_DATE}.json"
 HOUR=$(date +%H)
 
+# ── 元宝推送缓存文件（给 OpenClaw cron 读取用）──
+PUSH_OUTPUT_DIR="/opt/daily_stock_analysis/push_output"
+mkdir -p "$PUSH_OUTPUT_DIR"
+
+get_push_file() {
+    echo "${PUSH_OUTPUT_DIR}/push_${RUN_DATE}_${PERIOD_TAG}.txt"
+}
+
 log() { echo "[$(date '+%H:%M:%S')] $*" | tee -a "$RUN_LOG"; }
 run_step() {
     local step_name="$1"; shift
@@ -122,6 +130,11 @@ _push() {
     [ -z "$content" ] && return
     [ -n "$QQ_TARGET" ] && openclaw message send --channel qqbot --target "$QQ_TARGET" --message "$content" 2>/dev/null || true
     [ -n "$WX_TARGET" ] && openclaw message send --channel openclaw-weixin --target "$WX_TARGET" --account "$WX_ACCOUNT" --message "$content" 2>/dev/null || true
+    # 写入元宝推送缓存（OpenClaw cron 读取后转发到本群）
+    local push_file
+    push_file=$(get_push_file)
+    echo "$content" >> "$push_file"
+    echo "---" >> "$push_file"
 }
 
 _push "📊【${PERIOD}分析】${RUN_DATE} ⏰ 分析完成"

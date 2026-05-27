@@ -1,20 +1,24 @@
 {
-  "cash": 950339.1062,
+  "cash": 15932.849147999998,
   "positions": {
-    "510300": {
-      "quantity": 10300,
-      "avg_cost": 4.82,
-      "current_price": 4.89,
-      "invested": 49646.0
+    "688187": {
+      "quantity": 100,
+      "avg_cost": 61.942,
+      "current_price": 61.88,
+      "invested": 6194.2,
+      "entry_score": 68,
+      "entry_date": "20260527",
+      "tp_level": 0,
+      "mode": "daily"
     }
   },
-  "total_pnl": 0.0,
-  "total_fee": 14.893799999999999,
-  "total_market_value": 50367.0,
-  "total_equity": 1000706.11,
-  "total_return": 706.11,
-  "total_return_pct": 0.07,
-  "peak_equity": 1000912.1062,
-  "max_drawdown_pct": -0.030871841601869517,
-  "last_update": "20260508"
+  "total_pnl": 553.0610900000004,
+  "total_fee": 26.200852000000005,
+  "total_market_value": 6188.0,
+  "total_equity": 22120.85,
+  "total_return": -7879.15,
+  "total_return_pct": -26.26,
+  "peak_equity": 22187.05,
+  "max_drawdown_pct": -0.29837608875448407,
+  "last_update": "20260527"
 }

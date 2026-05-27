@@ -306,6 +306,18 @@ def get_dynamic_thresholds(
 
 def run_garch_and_save(stock_code: Optional[str] = None) -> Dict[str, Any]:
     result = estimate_garch(stock_code)
+    
+    # 样本太少时不保存输出（防止锁死买入阈值）
+    if result.n_obs < 50:
+        logger.warning(f"[GARCH] 样本不足({result.n_obs}<50)，跳过保存，退回情绪阈值")
+        if _OUTPUT_FILE.exists():
+            _OUTPUT_FILE.unlink()
+        return {
+            "status": "skipped",
+            "n_obs": result.n_obs,
+            "reason": f"样本不足({result.n_obs}<50)",
+        }
+    
     buy_th, sell_th = get_dynamic_thresholds(result)
 
     output = {

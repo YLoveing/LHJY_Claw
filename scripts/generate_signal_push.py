@@ -321,7 +321,102 @@ def main():
         return
 
     if hour == 11:
-        # 11:30 午盘 → 不推送（monitor 自行推异动）
+        # 11:30 午盘 → 推午盘快照简报
+        from datetime import datetime as dt_module
+        now_str = dt_module.now().strftime('%H:%M')
+
+        # 尝试读取当天 report 中的分析结果摘要
+        report_path = os.path.join(BASE_DIR, f'reports/report_{yyyymmdd(target_date)}.md')
+        buy_lines = []
+        sell_lines = []
+        neutral_lines = []
+        if os.path.isfile(report_path):
+            with open(report_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            # 从报告头部提取结果摘要
+            for line in content.split('\n'):
+                line = line.strip()
+                # 🟢 / 🟡 / 🔴 + 股票名 + 评分
+                m = re.search(r'([🟢🔴🟡])\s*\*\*(.+?)\(?(\d{6})\)?\*\*?:?\s*(.+?)评分\s*(\d+)', line)
+                if m:
+                    emoji = m.group(1)
+                    name = m.group(2).strip()
+                    code = m.group(3)
+                    action = m.group(4).strip()
+                    score = m.group(5)
+                    action_clean = action.rstrip(' |').strip()
+                    entry = f"· {code} {name} [{action_clean}] 评分{score}"
+                    if emoji == '🟢':
+                        buy_lines.append(entry)
+                    elif emoji == '🔴':
+                        sell_lines.append(entry)
+                    elif emoji == '🟡':
+                        neutral_lines.append(entry)
+
+            # 如果报告头部的正则没匹配到, 再试更宽松的
+            if not buy_lines and not sell_lines and not neutral_lines:
+                for line in content.split('\n'):
+                    m = re.search(r'([🟢🔴🟡])\s*(\S+?)\(?(\d{6})\)?\s*[:：]?\s*(\S+?)\s*[|│]\s*评分\s*(\d+)', line)
+                    if m:
+                        emoji = m.group(1)
+                        name = m.group(2).strip()
+                        code = m.group(3)
+                        action = m.group(4)
+                        score = m.group(5)
+                        entry = f"· {code} {name} [{action}] 评分{score}"
+                        if emoji == '🟢':
+                            buy_lines.append(entry)
+                        elif emoji == '🔴':
+                            sell_lines.append(entry)
+                        elif emoji == '🟡':
+                            neutral_lines.append(entry)
+
+        # 尝试读取大盘复盘获取一句话市场概况
+        market_line = None
+        market_review_path = os.path.join(BASE_DIR, f'reports/market_review_{yyyymmdd(target_date)}.md')
+        if os.path.isfile(market_review_path):
+            with open(market_review_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    m = re.search(r'\*{0,2}核心原因\*{0,2}[：:](.+)', line)
+                    if m:
+                        market_line = '📈 ' + m.group(1).strip()
+                        break
+            if not market_line:
+                with open(market_review_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                m = re.search(r'盘面温度[：:].+?(\d+)/100', content)
+                if m:
+                    temp = int(m.group(1))
+                    direction = '🟢' if temp >= 60 else '🟡' if temp >= 40 else '🔴'
+                    market_line = f'{direction} 盘面温度 {temp}/100'
+
+        parts = []
+
+        # 午盘快照标题
+        lines = [f"📊 **午盘快照** ({now_str})"]
+        if market_line:
+            lines.append(market_line)
+        parts.append('\n'.join(lines))
+
+        # 买入关注
+        if buy_lines:
+            parts.append("🟢 **买入/看多**\n" + '\n'.join(buy_lines[:5]))
+
+        # 持有关注
+        if neutral_lines:
+            parts.append("🟡 **持有/观望**\n" + '\n'.join(neutral_lines[:5]))
+
+        # 卖出提示
+        if sell_lines:
+            parts.append("🔴 **卖出/看空**\n" + '\n'.join(sell_lines[:3]))
+
+        # 持仓状态
+        pos = gen_position_summary(target_date, name_cache)
+        if pos:
+            parts.append(pos)
+
+        if len(parts) > 1:
+            print('\n\n'.join(parts))
         return
 
     if hour == 18:

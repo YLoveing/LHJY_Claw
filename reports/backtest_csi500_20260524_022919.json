@@ -1,0 +1,33 @@
+{
+  "run_date": "2026-05-24T02:29:19.807195",
+  "stock_count": 423,
+  "strategies": [
+    {
+      "strategy": "V1纯技术",
+      "total_return_pct": -99.99,
+      "final_value": 2.76,
+      "max_drawdown_pct": 99.99,
+      "sharpe_ratio": -4.15,
+      "trading_days": 490,
+      "total_trades": 484
+    },
+    {
+      "strategy": "V1+基本面",
+      "total_return_pct": -99.98,
+      "final_value": 7.43,
+      "max_drawdown_pct": 99.98,
+      "sharpe_ratio": -2.18,
+      "trading_days": 490,
+      "total_trades": 99
+    },
+    {
+      "strategy": "V1+MA风控",
+      "total_return_pct": -99.99,
+      "final_value": 4.4,
+      "max_drawdown_pct": 99.99,
+      "sharpe_ratio": -4.21,
+      "trading_days": 490,
+      "total_trades": 518
+    }
+  ]
+}

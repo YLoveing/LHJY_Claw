@@ -12,6 +12,7 @@ A股自选股智能分析系统 - 搜索服务模块
 """
 
 import logging
+import os
 import re
 import threading
 import time
@@ -1684,6 +1685,138 @@ class BraveSearchProvider(BaseSearchProvider):
         )
 
 
+class MxSearchProvider(BaseSearchProvider):
+    """
+    妙想金融搜索（基于东方财富妙想搜索API）
+
+    特点：
+    - 金融垂直领域搜索，覆盖新闻/研报/公告
+    - 由东方财富提供，A股数据权威
+    - 无免费额度限制（通过 MX_APIKEY 鉴权）
+
+    API: https://mkapi2.dfcfs.com/finskillshub/api/claw/news-search
+    """
+
+    BASE_URL = "https://mkapi2.dfcfs.com/finskillshub/api/claw/news-search"
+
+    def __init__(self, api_keys: List[str]):
+        super().__init__(api_keys, "妙想金融")
+
+    def _do_search(
+        self,
+        query: str,
+        api_key: str,
+        max_results: int,
+        days: int = 7,
+    ) -> SearchResponse:
+        """执行妙想金融搜索"""
+        import requests
+
+        try:
+            headers = {
+                "Content-Type": "application/json",
+                "apikey": api_key,
+            }
+            data = {"query": query}
+
+            response = requests.post(
+                self.BASE_URL,
+                headers=headers,
+                json=data,
+                timeout=30,
+            )
+            response.raise_for_status()
+            result = response.json()
+
+            # 解析妙想响应
+            status = result.get("status", -1)
+            if status != 0:
+                return SearchResponse(
+                    query=query,
+                    results=[],
+                    provider=self.name,
+                    success=False,
+                    error_message=result.get("message", f"妙想API返回错误状态: {status}"),
+                )
+
+            # 提取搜索结果
+            items = []
+            data_section = result.get("data", {})
+            if isinstance(data_section, dict):
+                inner_data = data_section.get("data", data_section)
+                search_response = inner_data.get("llmSearchResponse", {})
+                items = search_response.get("data", [])
+
+            results = []
+            for item in items[:max_results]:
+                title = item.get("title", "") or ""
+                content = item.get("content", "") or ""
+                date = item.get("date", "") or ""
+                ins_name = item.get("insName", "") or ""
+                info_type = item.get("informationType", "") or ""
+                entity_name = item.get("entityFullName", "") or ""
+
+                source_parts = []
+                if ins_name:
+                    source_parts.append(ins_name)
+                if entity_name:
+                    source_parts.append(entity_name)
+                source = "/".join(source_parts) if source_parts else "妙想金融"
+
+                snippet_parts = []
+                if info_type:
+                    type_map = {
+                        "REPORT": "📄研报",
+                        "NEWS": "📰新闻",
+                        "ANNOUNCEMENT": "📢公告",
+                    }
+                    snippet_parts.append(type_map.get(info_type, info_type))
+                if date:
+                    snippet_parts.append(date.split()[0] if date else "")
+                snippet_prefix = " | ".join(snippet_parts) if snippet_parts else ""
+                full_snippet = f"{snippet_prefix}\n{content[:500]}" if content else ""
+
+                results.append(SearchResult(
+                    title=title or "无标题",
+                    snippet=full_snippet,
+                    url="",
+                    source=source,
+                    published_date=date.split()[0] if date else None,
+                ))
+
+            return SearchResponse(
+                query=query,
+                results=results,
+                provider=self.name,
+                success=True,
+            )
+
+        except requests.exceptions.Timeout:
+            return SearchResponse(
+                query=query,
+                results=[],
+                provider=self.name,
+                success=False,
+                error_message="妙想API请求超时",
+            )
+        except requests.exceptions.RequestException as e:
+            return SearchResponse(
+                query=query,
+                results=[],
+                provider=self.name,
+                success=False,
+                error_message=f"妙想API请求失败: {e}",
+            )
+        except Exception as e:
+            return SearchResponse(
+                query=query,
+                results=[],
+                provider=self.name,
+                success=False,
+                error_message=f"妙想搜索解析失败: {e}",
+            )
+
+
 class SearXNGSearchProvider(BaseSearchProvider):
     """
     SearXNG search engine (self-hosted, no quota).
@@ -2121,6 +2254,7 @@ class SearchService:
         self,
         bocha_keys: Optional[List[str]] = None,
         tavily_keys: Optional[List[str]] = None,
+        mx_keys: Optional[List[str]] = None,
         anspire_keys: Optional[List[str]] = None,
         brave_keys: Optional[List[str]] = None,
         serpapi_keys: Optional[List[str]] = None,
@@ -2169,7 +2303,13 @@ class SearchService:
             self._providers.append(BochaSearchProvider(bocha_keys))
             logger.info(f"已配置 Bocha 搜索，共 {len(bocha_keys)} 个 API Key")
 
-        # 2. Tavily（免费额度更多，每月 1000 次）
+        # 2. 妙想金融搜索（东方财富，金融资讯垂直搜索，0 费用）
+        resolved_mx = self._resolve_mx_keys(mx_keys)
+        if resolved_mx:
+            self._providers.append(MxSearchProvider(resolved_mx))
+            logger.info(f"已配置 妙想金融搜索，共 {len(resolved_mx)} 个 API Key")
+
+        # 3. Tavily（免费额度更多，每月 1000 次）
         if tavily_keys:
             self._providers.append(TavilySearchProvider(tavily_keys))
             logger.info(f"已配置 Tavily 搜索，共 {len(tavily_keys)} 个 API Key")
@@ -2953,6 +3093,16 @@ class SearchService:
             error_message="事件搜索失败"
         )
     
+    @staticmethod
+    def _resolve_mx_keys(mx_keys: Optional[List[str]]) -> List[str]:
+        """Resolve MX keys from parameter or environment fallback."""
+        if mx_keys:
+            return mx_keys
+        env_key = os.getenv('MX_APIKEY', '')
+        if env_key:
+            return [env_key]
+        return []
+
     def search_comprehensive_intel(
         self,
         stock_code: str,
@@ -3104,36 +3254,55 @@ class SearchService:
             provider_max_results,
         )
         
-        # 轮流使用不同的搜索引擎
-        provider_index = 0
-        
         for dim in search_dimensions:
             if search_count >= max_searches:
                 break
             
-            # 选择搜索引擎（轮流使用）
+            # 获取可用搜索引擎（妙想优先，fallback 到其他）
             available_providers = [p for p in self._providers if p.is_available]
             if not available_providers:
                 break
             
-            provider = available_providers[provider_index % len(available_providers)]
-            provider_index += 1
-            
-            logger.info(f"[情报搜索] {dim['desc']}: 使用 {provider.name}")
+            # 妙想优先：先试 MX，失败再试其他
+            best_response = None
+            best_provider_name = None
+            for provider in available_providers:
+                logger.info(f"[情报搜索] {dim['desc']}: 尝试 {provider.name}")
 
-            if isinstance(provider, TavilySearchProvider) and dim.get('tavily_topic'):
-                response = provider.search(
-                    dim['query'],
-                    max_results=provider_max_results,
-                    days=search_days,
-                    topic=dim['tavily_topic'],
+                if isinstance(provider, TavilySearchProvider) and dim.get('tavily_topic'):
+                    response = provider.search(
+                        dim['query'],
+                        max_results=provider_max_results,
+                        days=search_days,
+                        topic=dim['tavily_topic'],
+                    )
+                else:
+                    response = provider.search(
+                        dim['query'],
+                        max_results=provider_max_results,
+                        days=search_days,
+                    )
+                
+                if response.success and response.results:
+                    best_response = response
+                    best_provider_name = provider.name
+                    logger.info(f"[情报搜索] {dim['desc']}: {provider.name} 成功，{len(response.results)} 条结果")
+                    break
+                else:
+                    logger.warning(f"[情报搜索] {dim['desc']}: {provider.name} 失败 - {response.error_message}")
+            
+            if best_response is None:
+                results[dim['name']] = SearchResponse(
+                    query=dim['query'],
+                    results=[],
+                    provider="None",
+                    success=False,
+                    error_message="所有搜索引擎均不可用",
                 )
-            else:
-                response = provider.search(
-                    dim['query'],
-                    max_results=provider_max_results,
-                    days=search_days,
-                )
+                search_count += 1
+                continue
+            
+            response = best_response
             if dim['strict_freshness']:
                 filtered_response = self._filter_news_response(
                     response,

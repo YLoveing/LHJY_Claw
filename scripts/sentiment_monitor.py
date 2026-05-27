@@ -377,9 +377,8 @@ def push_message(content: str, dry_run: bool = False):
         f.write(f"--- {now.strftime('%H:%M')} ---\n")
         f.write(content + "\n\n")
 
-    # 直接推送到 QQ + WX
+    # 直接推送到 QQ
     qq_target = os.environ.get("QQ_TARGET", "")
-    wx_target = os.environ.get("WX_TARGET", "")
     if qq_target:
         try:
             subprocess.run(
@@ -387,16 +386,6 @@ def push_message(content: str, dry_run: bool = False):
                  "--target", qq_target, "--message", content],
                 capture_output=True, timeout=30,
             )
-        except Exception:
-            pass
-    if wx_target:
-        wx_account = os.environ.get("WX_ACCOUNT", "")
-        try:
-            cmd = ["openclaw", "message", "send", "--channel", "openclaw-weixin",
-                   "--target", wx_target, "--message", content]
-            if wx_account:
-                cmd += ["--account", wx_account]
-            subprocess.run(cmd, capture_output=True, timeout=30)
         except Exception:
             pass
 

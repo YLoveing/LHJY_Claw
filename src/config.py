@@ -660,6 +660,7 @@ class Config:
     anspire_api_keys: List[str] = field(default_factory=list)  # Anspire Search API Keys
     bocha_api_keys: List[str] = field(default_factory=list)  # Bocha API Keys
     minimax_api_keys: List[str] = field(default_factory=list)  # MiniMax API Keys
+    mx_api_keys: List[str] = field(default_factory=list)  # 妙想金融搜索 API Keys
     tavily_api_keys: List[str] = field(default_factory=list)  # Tavily API Keys
     brave_api_keys: List[str] = field(default_factory=list)  # Brave Search API Keys
     serpapi_keys: List[str] = field(default_factory=list)  # SerpAPI Keys
@@ -1234,6 +1235,9 @@ class Config:
 
         minimax_keys_str = os.getenv('MINIMAX_API_KEYS', '')
         minimax_api_keys = [k.strip() for k in minimax_keys_str.split(',') if k.strip()]
+
+        mx_keys_str = os.getenv('MX_APIKEY', '')
+        mx_api_keys = [k.strip() for k in mx_keys_str.split(',') if k.strip()]
         
         tavily_keys_str = os.getenv('TAVILY_API_KEYS', '')
         tavily_api_keys = [k.strip() for k in tavily_keys_str.split(',') if k.strip()]
@@ -1362,6 +1366,7 @@ class Config:
             anspire_api_keys=anspire_api_keys,
             bocha_api_keys=bocha_api_keys,
             minimax_api_keys=minimax_api_keys,
+            mx_api_keys=mx_api_keys,
             tavily_api_keys=tavily_api_keys,
             brave_api_keys=brave_api_keys,
             serpapi_keys=serpapi_keys,
@@ -2136,6 +2141,7 @@ class Config:
             self.anspire_api_keys
             or self.bocha_api_keys
             or self.minimax_api_keys
+            or self.mx_api_keys
             or self.tavily_api_keys
             or self.brave_api_keys
             or self.serpapi_keys

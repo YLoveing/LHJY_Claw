@@ -18,6 +18,20 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+# 加载项目 .env（兼容 cron 不设 set -a; source .env 的情况）
+_env_path = Path(__file__).resolve().parent.parent / ".env"
+if _env_path.exists():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(_env_path)
+    except ImportError:
+        # 手动解析 .env 回退
+        for line in _env_path.read_text().split("\n"):
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger("monitor")
 
@@ -25,12 +39,13 @@ log = logging.getLogger("monitor")
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 import intraday_trading
 
-# ─── 推送配置 ───
-QQ_TARGET = "qqbot:c2c:7D15BBF664045E2DD5F33DA4BE0A00E9"
-WX_TARGET = "o9cq800-zOjMI1JH4SjoT0NocAZI@im.wechat"
+# ─── 推送配置（优先读环境变量，有 .env 自动注入） ───
+QQ_TARGET = os.getenv("QQ_TARGET") or "qqbot:c2c:7D15BBF664045E2DD5F33DA4BE0A00E9"
+
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from scripts.trading_calendar import is_trading_day, eastmoney_secid
 from data_provider.data_cache import DataCache
 
 # ─── 配置 ───
@@ -83,7 +98,7 @@ def save_state(state: Dict):
 def fetch_realtime_batch(codes: List[str]) -> Dict[str, Dict]:
     """批量获取候选股实时行情"""
     # 用东方财富批量接口（一次请求拿多只）
-    codes_str = ",".join(f"1.{c}" if c.startswith("6") else f"0.{c}" for c in codes)
+    codes_str = ",".join(eastmoney_secid(c) for c in codes)
     url = "https://push2.eastmoney.com/api/qt/ulist.np/get"
     params = {
         "fields": "f2,f3,f4,f5,f6,f12,f14,f15,f16,f17,f18,f20,f21",
@@ -153,10 +168,34 @@ def check_signals(code: str, live: Dict, kline: Optional[Dict], state: Dict, is_
     amount_yi = live.get("amount", 0)
     name = live.get("name", code)
     
-    # 计算当前量比（东方财富没有直接给量比时用近似值）
+    # 计算当前量比
+    # ⚠️ 注意：vol 是盘中实时累计量（截至当前时刻），vol_ma5 是5日日均完整日线量
+    # 必须将实时量按已开盘时长折算到全日预估值，再与日均量对比
     vol_ratio = None
     if kline and kline.get("vol_ma5", 0) > 0 and vol > 0:
-        vol_ratio = vol / kline["vol_ma5"]
+        now = datetime.now()
+        market_open = now.replace(hour=9, minute=30, second=0, microsecond=0)
+        elapsed = (now - market_open).total_seconds()
+        # A股交易时段：09:30-11:30(2h) + 13:00-15:00(2h) = 4小时 = 14400秒
+        # 中午休市(11:30-13:00)不计入，elapsed 会包含这段时间
+        # 所以需要修正：减去休市时间
+        noon_start = now.replace(hour=11, minute=30, second=0, microsecond=0)
+        noon_end = now.replace(hour=13, minute=0, second=0, microsecond=0)
+        trading_seconds = 14400.0  # 4小时 = 14400秒
+        if noon_start <= now <= noon_end:
+            # 午间休市，直接用已完成的上午时段估算
+            morning_seconds = 7200.0  # 09:30-11:30 = 2h
+            elapsed_effective = morning_seconds
+        elif now > noon_end:
+            elapsed_effective = elapsed - 3600.0  # 扣除中午休市1小时
+        else:
+            elapsed_effective = elapsed  # 上午时段
+        
+        if 0 < elapsed_effective < trading_seconds:
+            daily_vol_est = vol / (elapsed_effective / trading_seconds)
+            vol_ratio = daily_vol_est / kline["vol_ma5"]
+        else:
+            vol_ratio = vol / kline["vol_ma5"]
     
     # ── ① 建仓信号 ──
     if not is_holding:
@@ -170,6 +209,7 @@ def check_signals(code: str, live: Dict, kline: Optional[Dict], state: Dict, is_
                         "signal": "放量突破MA20",
                         "detail": f"涨幅{pct:+.1f}%, 量比{vol_ratio:.1f}, 价¥{price:.2f}, MA20=¥{ma20:.2f}",
                         "level": "important",
+                        "vol_ratio": vol_ratio,
                     })
         
         # 回踩MA20企稳反弹
@@ -183,6 +223,7 @@ def check_signals(code: str, live: Dict, kline: Optional[Dict], state: Dict, is_
                     "signal": "回踩MA20企稳",
                     "detail": f"价¥{price:.2f}, MA20=¥{ma20:.2f}, 涨幅{pct:+.1f}%, 量比{vol_ratio:.1f}",
                     "level": "info",
+                    "vol_ratio": vol_ratio,
                 })
         
         # 早盘强势
@@ -195,6 +236,7 @@ def check_signals(code: str, live: Dict, kline: Optional[Dict], state: Dict, is_
                     "signal": "早盘强势",
                     "detail": f"开盘30min内涨幅{pct:+.1f}%, 量比{vol_ratio:.1f}, 价¥{price:.2f}",
                     "level": "important",
+                    "vol_ratio": vol_ratio,
                 })
     
     # ── ② 持仓风控（is_holding 由调用者传入，这里也检测通用风险）─
@@ -243,10 +285,10 @@ def format_alert(a: Dict) -> str:
 
 
 def should_monitor() -> bool:
-    """判断当前是否在交易时段"""
+    """判断当前是否在交易时段（含交易日历）"""
     now = datetime.now()
-    if now.weekday() >= 5:
-        return False  # 周末
+    if not is_trading_day(now):
+        return False  # 非交易日
     t = now.strftime("%H:%M")
     return MARKET_OPEN <= t <= MARKET_CLOSE
 
@@ -267,7 +309,34 @@ def run_once() -> List[Dict]:
     live = fetch_realtime_batch(codes)
     if not live:
         return []
-    
+
+    # ── 早盘新闻预取（09:30-10:00） ──
+    now_hm = datetime.now().strftime("%H%M")
+    is_morning_window = "0930" <= now_hm <= "1000"
+    news_prefetched = False
+    if is_morning_window and candidates:
+        try:
+            from data_provider.mx_fetcher import search_news
+            mx_apikey = os.environ.get("MX_APIKEY", "")
+            if mx_apikey:
+                news_cache = {}
+                for c in candidates[:3]:  # 最多预取3只
+                    code = c.get("code", "")
+                    name = c.get("name", "")
+                    kw = name or code
+                    news = search_news(kw + " 最新消息", count=3)
+                    if news:
+                        news_cache[code] = {"name": name, "news": news}
+                if news_cache:
+                    news_file = Path(f"/tmp/monitor_news_{datetime.now():%Y%m%d}.json")
+                    news_file.write_text(json.dumps(news_cache, ensure_ascii=False, indent=2))
+                    news_prefetched = True
+                    log.info(f"  → 早盘新闻预取 {len(news_cache)} 只")
+        except ImportError:
+            pass  # MX未安装，跳过
+        except Exception as e:
+            log.warning(f"  新闻预取失败: {e}")
+
     state = load_state()
     state["_cycle"] = datetime.now().strftime("%Y%m%d_%H%M")
     if "signals" not in state:
@@ -290,30 +359,30 @@ def run_once() -> List[Dict]:
                     state["signals"][c].append(a["signal"])
                     all_alerts.append(a)
     
-    # ── 盘中自动交易：先检查已有持仓风控 ──
+    # ── 盘中风控：先检查已有持仓止损/止盈/跟踪止损 ──
     closed = intraday_trading.check_positions()
     if closed:
         log.info(f"  → [日内交易] 平仓 {len(closed)} 笔")
 
-    # ── 盘中自动交易：建仓信号 → 自动买入 ──
-    opened_trades = []
+    # ── 建仓信号 → 记录到待执行队列（次日开盘执行，遵守A股T+1） ──
+    recorded_signals = []
     for a in all_alerts:
         if a.get("type") == "建仓" and a.get("signal") in intraday_trading.AUTO_BUY_SIGNALS:
             code = a["code"]
             live_data = live.get(code, {})
-            trade = intraday_trading.maybe_open_position(
+            sig = intraday_trading.record_signal(
                 code=code,
                 name=a.get("name", ""),
                 signal=a["signal"],
                 detail=a.get("detail", ""),
                 price=live_data.get("price", 0),
                 volume=live_data.get("volume", 0),
-                vol_ratio=None,  # 已在 check_signals 中计算，但这里简化
+                vol_ratio=a.get("vol_ratio"),  # 从 check_signals 透传
             )
-            if trade:
-                opened_trades.append(trade)
+            if sig:
+                recorded_signals.append(sig)
 
-    if all_alerts or opened_trades or closed:
+    if all_alerts or recorded_signals or closed:
         save_state(state)
         log.info(f"  → {len(all_alerts)} 条新告警")
         for a in all_alerts:
@@ -327,17 +396,17 @@ def run_once() -> List[Dict]:
             except (json.JSONDecodeError, OSError) as e: log.debug(f"读取告警文件失败(可能为空): {e}")
         existing.extend(all_alerts)
         alert_file.write_text(json.dumps(existing, ensure_ascii=False, indent=2))
-        # 推送（含开仓/平仓信息）
-        _send_notifications(all_alerts, opened_trades, closed)
+        # 推送（含信号记录/平仓信息）
+        _send_notifications(all_alerts, recorded_signals, closed)
     else:
         log.info(f"  无新告警")
     
     return all_alerts
 
 
-def _send_notifications(alerts: List[Dict], opened_trades: List[Dict] = None, closed: List[Dict] = None):
-    """推送新告警 + 自动交易动态到 QQ"""
-    if not any([alerts, opened_trades, closed]):
+def _send_notifications(alerts: List[Dict], recorded_signals: List[Dict] = None, closed: List[Dict] = None):
+    """推送新告警 + 信号记录/平仓动态"""
+    if not any([alerts, recorded_signals, closed]):
         return
     now = datetime.now().strftime("%H:%M")
     lines = [f"⏰ 盘中监控 {now}"]
@@ -353,47 +422,50 @@ def _send_notifications(alerts: List[Dict], opened_trades: List[Dict] = None, cl
         if detail:
             lines.append(f"   {detail}")
     
-    # 自动交易 - 开仓
-    if opened_trades:
+    # 信号记录（遵守T+1，次日开盘执行）
+    if recorded_signals:
         lines.append("")
-        lines.append("🟢【自动交易】开仓：")
-        for t in opened_trades:
-            lines.append(f"  买入 {t.get('name','')}({t['code']}) × {t['quantity']}股 @ ¥{t['price']:.3f} 信号:{t.get('signal','')}")
+        lines.append("📝【建仓信号记录】（次日开盘执行）：")
+        for s in recorded_signals:
+            lines.append(f"  {s.get('name','')}({s['code']}) {s['signal']} @ ¥{s.get('record_price','?'):.3f}")
+        lines.append("  ⏰ 次日09:25以开盘价自动执行")
     
-    # 自动交易 - 平仓
+    # 平仓
     if closed:
         lines.append("")
-        lines.append("🔴【自动交易】平仓：")
+        lines.append("🔴【风控平仓】：")
         for t in closed:
             pnl_str = f"盈亏{t['pnl']:+,.2f}"
             lines.append(f"  卖出 {t.get('name','')}({t['code']}) × {t['quantity']}股 @ ¥{t['price']:.3f} {pnl_str} — {t.get('reason','')}")
     
-    # 日内交易状态摘要
+    # 日内信号交易状态摘要
     try:
         status_text = intraday_trading.get_status_text()
-        # 只取第一段（持仓状态）+ 资金
         lines.append("")
         for line in status_text.split("\n"):
-            if line.startswith("💰") or line.startswith("📋 当前持仓"):
+            if line.startswith("💰"):
                 lines.append(line)
-            elif "日内交易" in line:
+            elif "日内信号交易" in line:
                 lines.append(line)
     except Exception:
         pass
     
     msg = "\n".join(lines)
     
-    # 写入临时文件避免shell转义问题
-    tmp = Path("/tmp/monitor_push_msg.txt")
-    tmp.write_text(msg, encoding="utf-8")
+    # 用 subprocess 避免 shell 转义问题
+    import subprocess
     for target in [QQ_TARGET]:
-        cmd = f'openclaw message send --channel qqbot --target "{target}" --message "$(cat {tmp})" 2>/dev/null || true'
-        ret = os.system(cmd)
-        if ret == 0 or ret == 256:
+        try:
+            r = subprocess.run(
+                ["openclaw", "message", "send",
+                 "--channel", "qqbot",
+                 "--target", target,
+                 "--message", msg],
+                capture_output=True, timeout=15
+            )
             log.info(f"  ✅ 已推送 {target.split(':')[0]}")
-        else:
-            log.warning(f"  ⚠ 推送失败 rc={ret}")
-    tmp.unlink(missing_ok=True)
+        except Exception as e:
+            log.warning(f"  ⚠ 推送失败: {e}")
 
 
 def loop():

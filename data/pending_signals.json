@@ -1,0 +1,16 @@
+[
+  {
+    "code": "603259",
+    "name": "药明康德",
+    "signal": "回踩MA20企稳",
+    "detail": "价¥104.60, MA20=¥104.86, 涨幅+1.5%, 量比40.2",
+    "record_price": 104.6,
+    "record_time": "09:30",
+    "record_date": "20260515",
+    "weight": 0.3,
+    "vol_boost": 1.2,
+    "vol_ratio": 40.18113997074348,
+    "status": "expired",
+    "created_at": "2026-05-15T09:30:02.984900"
+  }
+]

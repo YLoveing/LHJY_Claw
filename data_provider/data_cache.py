@@ -106,11 +106,14 @@ class DataCache:
             return
 
         with self._lock(f"kline_{stock_code}"):
-            # 确保 date 列存在
+            # 确保 date 列存在且统一为字符串，避免 Timestamp vs str 混合排序报错
             df_to_save = df.copy()
             if "date" not in df_to_save.columns:
                 logger.warning(f"[DataCache] 保存K线时无date列: {stock_code}")
                 df_to_save["date"] = ""
+            else:
+                # 统一转为字符串，与 get_kline 返回的格式保持一致
+                df_to_save["date"] = df_to_save["date"].astype(str)
 
             fpath = self._kline_path(stock_code)
             existing = self.get_kline(stock_code)
@@ -119,6 +122,8 @@ class DataCache:
                 # 合并去重
                 combined = pd.concat([existing, df_to_save], ignore_index=True)
                 if "date" in combined.columns:
+                    # 确保合并后 date 也是字符串
+                    combined["date"] = combined["date"].astype(str)
                     combined = combined.drop_duplicates(subset=["date"], keep="last")
                     combined = combined.sort_values("date").reset_index(drop=True)
                 df_to_save = combined

@@ -1,0 +1,32 @@
+{
+  "run_date": "2026-05-23T22:23:34.292983",
+  "stock_count": 100,
+  "strategies": [
+    {
+      "strategy": "纯技术评分",
+      "stock_universe": 100,
+      "trading_days": 286,
+      "total_trades": 2741,
+      "total_return_pct": 35.72,
+      "final_value": 40715.38,
+      "win_rate_pct": 23.79,
+      "max_drawdown_pct": 18.03,
+      "sharpe_ratio": 1.29,
+      "wins": 652,
+      "losses": 716
+    },
+    {
+      "strategy": "基本面增强",
+      "stock_universe": 100,
+      "trading_days": 286,
+      "total_trades": 2741,
+      "total_return_pct": 22.5,
+      "final_value": 36749.96,
+      "win_rate_pct": 23.68,
+      "max_drawdown_pct": 11.7,
+      "sharpe_ratio": 0.9,
+      "wins": 649,
+      "losses": 719
+    }
+  ]
+}

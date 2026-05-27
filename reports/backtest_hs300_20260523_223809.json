@@ -1,0 +1,17 @@
+{
+  "run_date": "2026-05-23T22:38:09.475070",
+  "stock_count": 279,
+  "result": {
+    "strategy": "纯技术评分(V1)",
+    "stock_universe": 279,
+    "trading_days": 490,
+    "total_trades": 2383,
+    "total_return_pct": 115.62,
+    "final_value": 64687.33,
+    "win_rate_pct": 47.59,
+    "max_drawdown_pct": 31.1,
+    "sharpe_ratio": 1.19,
+    "wins": 1134,
+    "losses": 1249
+  }
+}

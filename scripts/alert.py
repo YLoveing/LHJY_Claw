@@ -80,30 +80,17 @@ def send_alert(stage: str, exit_code: int, detail: str = ""):
 🛠 请登录服务器排查: /opt/daily_stock_analysis
 """
 
-    # 👇 允许在 .env 中配置多个通知渠道
-    channels = env.get("ALERT_CHANNELS", "qqbot").split(",")
+    # 👇 通知渠道（仅 QQ）
     qq_target = env.get("QQ_TARGET", "")
-    wx_target = env.get("WX_TARGET", "")
-    wx_account = env.get("WX_ACCOUNT", "")
-
-    for ch in channels:
-        ch = ch.strip()
+    if qq_target:
         try:
-            if ch == "qqbot" and qq_target:
-                subprocess.run(
-                    ["openclaw", "message", "send", "--channel", "qqbot",
-                     "--target", qq_target, "--message", msg],
-                    capture_output=True, timeout=10,
-                )
-            elif ch == "weixin" and wx_target and wx_account:
-                subprocess.run(
-                    ["openclaw", "message", "send", "--channel", "openclaw-weixin",
-                     "--target", wx_target, "--account", wx_account,
-                     "--message", msg],
-                    capture_output=True, timeout=10,
-                )
+            subprocess.run(
+                ["openclaw", "message", "send", "--channel", "qqbot",
+                 "--target", qq_target, "--message", msg],
+                capture_output=True, timeout=10,
+            )
         except Exception as e:
-            print(f"[alert] 通知失败 ({ch}): {e}", file=sys.stderr)
+            print(f"[alert] QQ通知失败: {e}", file=sys.stderr)
 
 
 def main():

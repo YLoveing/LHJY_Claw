@@ -852,6 +852,7 @@ class DataFetcherManager:
         from .tushare_fetcher import TushareFetcher
         from .pytdx_fetcher import PytdxFetcher
         from .baostock_fetcher import BaostockFetcher
+        from .mootdx_fetcher import MootdxFetcher
         # 创建所有数据源实例（优先级在各 Fetcher 的 __init__ 中确定）
         efinance = EfinanceFetcher()
         jqdata = JQDataFetcher()    # P0 - 聚宽 JQData（需JQD_PHONE/JQD_PWD）
@@ -859,6 +860,7 @@ class DataFetcherManager:
         tushare = TushareFetcher()  # 会根据 Token 配置自动调整优先级
         pytdx = PytdxFetcher()      # 通达信数据源（可配 PYTDX_HOST/PYTDX_PORT）
         baostock = BaostockFetcher()
+        mootdx = MootdxFetcher()    # 备用通达信（最低优先级 P9 兜底）
 
         # 初始化数据源列表
         self._ensure_concurrency_guards()
@@ -870,6 +872,7 @@ class DataFetcherManager:
                 tushare,
                 pytdx,
                 baostock,
+                mootdx,
             ]
 
             # 按优先级排序（Tushare 如果配置了 Token 且初始化成功，优先级为 0）
@@ -2356,3 +2359,64 @@ class DataFetcherManager:
             return top, bottom
         logger.warning(f"[板块排行] 所有数据源均失败，最终错误: {last_error}")
         return [], []
+
+    # ── 同花顺热点数据 ──
+
+    def get_hot_concepts(self, top: int = 20) -> Optional[pd.DataFrame]:
+        """
+        获取同花顺热门概念板块排行
+        top: 返回前N条 (默认20)
+        依赖: pip install adata
+        """
+        try:
+            from .fallback_provider import get_fallback_provider
+            return get_fallback_provider().get_hot_concepts(top)
+        except Exception as e:
+            logger.warning(f"获取同花顺热门概念失败: {e}")
+        return None
+
+    def get_hot_stocks(self, top: int = 50) -> Optional[pd.DataFrame]:
+        """
+        获取同花顺热度100排行榜
+        top: 返回前N条 (默认50)
+        依赖: pip install adata
+        """
+        try:
+            from .fallback_provider import get_fallback_provider
+            return get_fallback_provider().get_hot_stocks(top)
+        except Exception as e:
+            logger.warning(f"获取同花顺热度排行失败: {e}")
+        return None
+
+    def get_all_hot_data(self) -> Dict[str, Any]:
+        """获取完整的同花顺热点数据（概念+个股）"""
+        try:
+            from .fallback_provider import get_fallback_provider
+            return get_fallback_provider().get_all_hot_data()
+        except Exception as e:
+            logger.warning(f"获取同花顺热点数据失败: {e}")
+        return {}
+
+    def get_fallback_quote(self, stock_code: str) -> Optional[Dict[str, Any]]:
+        """
+        通过 fallback 数据源（mootdx → 腾讯财经）获取实时行情
+        作为现有实时行情链路的最后兜底
+        """
+        try:
+            from .fallback_provider import get_fallback_provider
+            return get_fallback_provider().get_realtime_quote(stock_code)
+        except Exception as e:
+            logger.debug(f"Fallback 实时行情失败 ({stock_code}): {e}")
+        return None
+
+    def get_fallback_kline(self, stock_code: str, days: int = 60) -> Optional[pd.DataFrame]:
+        """
+        通过 fallback 数据源（mootdx → 腾讯财经）获取K线
+        作为现有K线数据链路的最后兜底
+        """
+        try:
+            from .fallback_provider import get_fallback_provider
+            return get_fallback_provider().get_kline_data(stock_code, days)
+        except Exception as e:
+            logger.debug(f"Fallback K线失败 ({stock_code}): {e}")
+        return None
