@@ -99,20 +99,22 @@ else
     run_step "全量分析" python3 main.py --force-run
 fi
 
+# ── Step 3b: 波动率择时信号（早盘+盘后运行，必须在模拟交易之前执行，确保模拟交易能读到当天最新信号）──
+if [ "$HOUR" != "11" ]; then
+    run_step "波动率择时" python3 -m sentiment_engine.vol_timing
+fi
+
 # ── Step 2: 模拟交易（仅早盘+收盘跑，午盘数据不完整跳过）──
 if [ "$HOUR" != "11" ]; then
     run_step "模拟交易" python3 simulated_trading.py
+    # Step 2b: 模拟交易数据入库 SQLite
+    run_step "数据入库" python3 /root/.openclaw/workspace/scripts/daily_import_sim.py
 fi
 
 # ── Step 3: 盘后量化引擎（18:00 仅） ──
 if [ "$HOUR" = "18" ]; then
     run_step "量化引擎" python3 -m quant_engine.run_quant
     run_step "情绪引擎" python3 -m sentiment_engine.sentiment_index
-fi
-
-# ── Step 3b: 波动率择时信号（早盘+盘后运行，模拟交易需要它的仓位建议）──
-if [ "$HOUR" != "11" ]; then
-    run_step "波动率择时" python3 -m sentiment_engine.vol_timing
 fi
 
 # ── Step 4: 推送 ──
