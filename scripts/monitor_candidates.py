@@ -404,31 +404,51 @@ def run_once() -> List[Dict]:
     return all_alerts
 
 
+def _load_holding_codes() -> set:
+    """读取 state.json 中实际持仓的股票代码集合"""
+    state_file = Path("/opt/daily_stock_analysis/simulated_trading/state.json")
+    if not state_file.exists():
+        return set()
+    try:
+        state = json.loads(state_file.read_text())
+        return set(state.get("positions", {}).keys())
+    except (json.JSONDecodeError, IOError):
+        return set()
+
+
 def _send_notifications(alerts: List[Dict], recorded_signals: List[Dict] = None, closed: List[Dict] = None):
-    """推送新告警 + 信号记录/平仓动态"""
+    """
+    推送新告警（仅推送持仓股相关告警，候选股不推送）+ 信号记录/平仓动态
+    
+    @用户要求：舆情只分析持仓的，别乱发浪费token
+    """
     if not any([alerts, recorded_signals, closed]):
         return
+    
+    # 筛选：仅推送持仓股相关的告警
+    holding_codes = _load_holding_codes()
+    relevant_alerts = [a for a in alerts if a.get("code", "") in holding_codes]
+    
     now = datetime.now().strftime("%H:%M")
-    lines = [f"⏰ 盘中监控 {now}"]
+    lines = []
     
-    # 告警
-    for a in alerts:
-        s = a.get("signal", "")
-        icon = {"建仓": "🟢", "风控": "🔴", "大幅波动": "💥", "量能异动": "⚡", "趋势反转": "🔄"}.get(s, "⚠")
-        code = a.get("code", "")
-        price = a.get("price", "")
-        detail = a.get("detail", "")
-        lines.append(f"{icon} [{s}] {code} {a.get('name','')} 价{price}")
-        if detail:
-            lines.append(f"   {detail}")
+    # 持仓告警
+    if relevant_alerts:
+        lines.append(f"🔔【持仓监控】{now}")
+        for a in relevant_alerts:
+            s = a.get("signal", "")
+            icon = {"建仓": "🟢", "风控": "🔴", "大幅波动": "💥", "量能异动": "⚡", "趋势反转": "🔄"}.get(s, "⚠")
+            code = a.get("code", "")
+            price = a.get("price", "")
+            detail = a.get("detail", "")
+            lines.append(f"{icon} [{s}] {code} {a.get('name','')} 价{price}")
+            if detail:
+                lines.append(f"   {detail}")
     
-    # 信号记录（遵守T+1，次日开盘执行）
-    if recorded_signals:
-        lines.append("")
-        lines.append("📝【建仓信号记录】（次日开盘执行）：")
-        for s in recorded_signals:
-            lines.append(f"  {s.get('name','')}({s['code']}) {s['signal']} @ ¥{s.get('record_price','?'):.3f}")
-        lines.append("  ⏰ 次日09:25以开盘价自动执行")
+    # 候选股告警不推送，只记日志
+    skipped = len(alerts) - len(relevant_alerts)
+    if skipped > 0:
+        log.info(f"  📋 候选股告警 {skipped} 条已跳过推送（非持仓）")
     
     # 平仓
     if closed:
@@ -441,16 +461,19 @@ def _send_notifications(alerts: List[Dict], recorded_signals: List[Dict] = None,
     # 日内信号交易状态摘要
     try:
         status_text = intraday_trading.get_status_text()
-        lines.append("")
-        for line in status_text.split("\n"):
-            if line.startswith("💰"):
-                lines.append(line)
-            elif "日内信号交易" in line:
-                lines.append(line)
+        if status_text.strip():
+            lines.append("")
+            for line in status_text.split("\n"):
+                if line.startswith("💰") or "日内信号交易" in line:
+                    lines.append(line)
     except Exception:
         pass
     
     msg = "\n".join(lines)
+    
+    if not msg.strip():
+        log.info("  无持仓相关告警，跳过推送")
+        return
     
     # 用 subprocess 避免 shell 转义问题
     import subprocess

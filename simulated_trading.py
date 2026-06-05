@@ -442,6 +442,8 @@ def _migrate_state(state):
             pos["entry_date"] = "20260513"  # 保留旧数据，新仓位会由 buy 逻辑写入正确日期
         if "tp_level" not in pos:
             pos["tp_level"] = 0
+        if "entry_score" not in pos:
+            pos["entry_score"] = 70  # 保守默认评分
 
     return state
 
@@ -682,7 +684,6 @@ def execute_trades(stocks, report_date_str):
             pnl = (price - pos["avg_cost"]) * close_qty - fee
 
             state["cash"] += proceeds
-            state["total_pnl"] += pnl
             state["total_fee"] += fee
 
             trade = {
@@ -718,6 +719,12 @@ def execute_trades(stocks, report_date_str):
     # ── 1.5️⃣ 低评分清理：entry_score < buy_threshold 的持仓强制卖出 ──
     for code, pos in list(state["positions"].items()):
         entry_score = pos.get("entry_score", 70)
+        # 脏数据保护：如果 entry_score <= 0 且该持仓没有历史买入记录，视为脏数据跳过
+        if entry_score <= 0:
+            buy_records = [t for t in trades if t.get("code") == code and t.get("side") == "buy"]
+            if not buy_records:
+                print(f"[风控] 跳过 {code} 低评分清理：entry_score={entry_score} 且无买入记录（脏数据）")
+                continue
         if entry_score < buy_threshold:
             price = extract_stock_price(code, report_date_str) or pos["current_price"]
             price = _apply_slippage(price, direction="sell", amount=pos["quantity"] * price)
@@ -726,7 +733,6 @@ def execute_trades(stocks, report_date_str):
             proceeds = proceeds_before - fee
             pnl = (price - pos["avg_cost"]) * pos["quantity"] - fee
             state["cash"] += proceeds
-            state["total_pnl"] += pnl
             state["total_fee"] += fee
             trade = {
                 "date": report_date_str, "code": code, "side": "low_score_sell",
@@ -768,7 +774,6 @@ def execute_trades(stocks, report_date_str):
             pnl = (price - pos["avg_cost"]) * pos["quantity"] - fee
 
             state["cash"] += proceeds
-            state["total_pnl"] += pnl
             state["total_fee"] += fee
 
             trade = {
@@ -965,21 +970,32 @@ def execute_trades(stocks, report_date_str):
     total_return = total_equity - INITIAL_CAPITAL
     total_return_pct = (total_return / INITIAL_CAPITAL) * 100
 
-    # 更新回撤跟踪
-    peak = state.get("peak_equity", INITIAL_CAPITAL)
-    if total_equity > peak:
-        peak = total_equity
-    current_dd_pct = (total_equity - peak) / peak * 100
+    # ── 更新回撤跟踪 ──
+    # 先尝试从 performance.json 的 daily 记录中追溯真实的历史最高权益
+    # 防止 state 中 peak_equity 已被错误覆盖
+    perf_data = load_performance()
+    daily_records = perf_data.get("daily", [])
+    hist_peak = INITIAL_CAPITAL
+    for rec in daily_records:
+        eq = rec.get("equity", 0)
+        if eq > hist_peak:
+            hist_peak = eq
+    # 取历史峰值、state 中记录值、当前总权益三者最大值
+    peak = max(state.get("peak_equity", INITIAL_CAPITAL), hist_peak, total_equity)
+    state["peak_equity"] = peak
+    current_dd_pct = (total_equity - peak) / peak * 100 if peak > 0 else 0.0
     max_dd = state.get("max_drawdown_pct", 0.0)
     if current_dd_pct < max_dd:
         max_dd = current_dd_pct
 
-    state["peak_equity"] = peak
     state["max_drawdown_pct"] = max_dd
     state["total_market_value"] = round(total_market_value, 2)
     state["total_equity"] = round(total_equity, 2)
     state["total_return"] = round(total_return, 2)
     state["total_return_pct"] = round(total_return_pct, 2)
+    # ── 总盈亏 = 当前总权益 - 初始本金 ──
+    # 不使用累加的已平仓 PnL，因为它不包含未实现亏损和费用累积
+    state["total_pnl"] = round(total_equity - INITIAL_CAPITAL, 2)
     state["last_update"] = report_date_str
 
     save_state(state)
@@ -1169,7 +1185,6 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
             pnl_partial = (price - pos["avg_cost"]) * qty - fee
 
             state["cash"] += proceeds_before - fee
-            state["total_pnl"] += pnl_partial
             state["total_fee"] += fee
             pos["quantity"] -= qty
 
@@ -1245,7 +1260,15 @@ def compute_daily_perf(state, trades, report_date_str):
         "win_rate": round(win_rate, 1),
         "profit_factor": round(profit_factor, 2) if profit_factor != float('inf') else None,
     }
-    perf["daily"].append(entry)
+    # 去重检查：当天已有记录则覆盖，否则追加
+    existing_dates = {d["date"] for d in perf["daily"]}
+    if report_date_str in existing_dates:
+        for i in range(len(perf["daily"]) - 1, -1, -1):
+            if perf["daily"][i]["date"] == report_date_str:
+                perf["daily"][i] = entry
+                break
+    else:
+        perf["daily"].append(entry)
 
     # 只保留最近60天
     perf["daily"] = perf["daily"][-60:]
@@ -1392,9 +1415,11 @@ def generate_performance_card():
     lines.append("")
     lines.append(f"📈 累计收益率：{summary.get('total_return_pct', 0):+.2f}%")
     lines.append(f"📉 最大回撤：{summary.get('max_drawdown_pct', 0):.2f}%")
-    lines.append(f"🎯 胜率：{summary.get('win_rate', 0)}%")
+    closed_count = summary.get('total_closed_trades', 0)
+    win_rate_str = f"{summary.get('win_rate', 0)}" if closed_count > 0 else "N/A"
+    lines.append(f"🎯 胜率：{win_rate_str}%" if closed_count > 0 else f"🎯 胜率：N/A")
     lines.append(f"⚖️ 盈亏比：{summary.get('profit_factor', 'N/A')}")
-    lines.append(f"📝 已完结交易：{summary.get('total_closed_trades', 0)} 笔")
+    lines.append(f"📝 已完结交易：{closed_count} 笔")
     lines.append(f"📋 当前持仓：{summary.get('active_positions', 0)} 只")
 
     # 最近5个交易日权益曲线
