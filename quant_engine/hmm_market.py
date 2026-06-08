@@ -2,7 +2,7 @@
 """
 隐马尔可夫模型 (HMM) 真正版 — 纯 NumPy 实现
 
-观测: [收益率, 振幅变化, 成交额变化] (3 维)
+观测: [收益率] (1 维; 振幅/成交额暂不可用)
 隐状态: 多头 / 空头 / 震荡 / 高波动 (4 状态)
 
 算法:
@@ -14,7 +14,6 @@
 
 import json
 import logging
-import re
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -32,7 +31,7 @@ _SIGNAL_TRACE_FILE = _BASE_DIR / "simulated_trading" / "signal_trace.json"
 _OUTPUT_FILE = _BASE_DIR / "quant_engine" / "hmm_output.json"
 
 N_STATES = 4
-N_DIMS = 3  # [收益率, 振幅变化, 成交额变化]
+N_DIMS = 1  # 仅日均收益率可用；振幅/成交额数据在当前报告格式中不可用
 STATE_NAMES = {0: "多头", 1: "空头", 2: "震荡", 3: "高波动"}
 
 
@@ -64,8 +63,8 @@ class GaussianHMM:
     def reset(self):
         self.startprob_: Optional[np.ndarray] = None
         self.transmat_: Optional[np.ndarray] = None
-        self.means_: Optional[np.ndarray] = None      # (n_states, n_dims)
-        self.vars_: Optional[np.ndarray] = None         # (n_states, n_dims)
+        self.means_: Optional[np.ndarray] = None  # (n_states, n_dims)
+        self.vars_: Optional[np.ndarray] = None  # (n_states, n_dims)
         self.log_likelihood_: float = -np.inf
 
     def _init_random(self, obs: np.ndarray, rng: np.random.Generator):
@@ -85,8 +84,7 @@ class GaussianHMM:
         pc_range = np.linspace(pcs.min(), pcs.max(), n + 2)[1:-1]
         self.means_ = np.zeros((n, D))
         for i in range(n):
-            self.means_[i] = obs.mean(axis=0) + pc_range[i] * \
-                             np.std(obs, axis=0) * 0.5
+            self.means_[i] = obs.mean(axis=0) + pc_range[i] * np.std(obs, axis=0) * 0.5
 
         self.vars_ = np.tile(np.var(obs, axis=0) * 2, (n, 1))
 
@@ -115,10 +113,11 @@ class GaussianHMM:
         la[0] = np.log(self.startprob_ + 1e-300) + self._log_emission_vec(obs[0])
         for t in range(1, T):
             for j in range(n):
-                la[t, j] = np.max(la[t-1]) + \
-                    np.log(np.sum(np.exp(la[t-1] - np.max(la[t-1])) *
-                                  self.transmat_[:, j]) + 1e-300) + \
-                    self._log_emission_vec(obs[t])[j]
+                la[t, j] = (
+                    np.max(la[t - 1])
+                    + np.log(np.sum(np.exp(la[t - 1] - np.max(la[t - 1])) * self.transmat_[:, j]) + 1e-300)
+                    + self._log_emission_vec(obs[t])[j]
+                )
 
         log_lik = np.max(la[-1]) + np.log(np.sum(np.exp(la[-1] - np.max(la[-1]))) + 1e-300)
         return la, log_lik
@@ -130,14 +129,12 @@ class GaussianHMM:
         T = len(obs)
         n = self.n_states
         lb = np.full((T, n), -np.inf)
-        lb[T-1] = 0.0
+        lb[T - 1] = 0.0
 
-        for t in range(T-2, -1, -1):
+        for t in range(T - 2, -1, -1):
             for i in range(n):
-                scores = np.log(self.transmat_[i, :] + 1e-300) + \
-                         self._log_emission_vec(obs[t+1]) + lb[t+1]
-                lb[t, i] = np.max(scores) + \
-                    np.log(np.sum(np.exp(scores - np.max(scores))) + 1e-300)
+                scores = np.log(self.transmat_[i, :] + 1e-300) + self._log_emission_vec(obs[t + 1]) + lb[t + 1]
+                lb[t, i] = np.max(scores) + np.log(np.sum(np.exp(scores - np.max(scores))) + 1e-300)
 
         return lb
 
@@ -161,12 +158,14 @@ class GaussianHMM:
             gamma /= gamma.sum(axis=1, keepdims=True) + 1e-300
 
             # xi[t, i, j] = P(X_t=i, X_{t+1}=j | obs)
-            xi = np.zeros((T-1, n, n))
-            for t in range(T-1):
-                scores = la[t, :, np.newaxis] + \
-                    np.log(self.transmat_ + 1e-300)[np.newaxis, :, :] + \
-                    self._log_emission_vec(obs[t+1])[np.newaxis, :] + \
-                    lb[t+1, np.newaxis, :]
+            xi = np.zeros((T - 1, n, n))
+            for t in range(T - 1):
+                scores = (
+                    la[t, :, np.newaxis]
+                    + np.log(self.transmat_ + 1e-300)[np.newaxis, :, :]
+                    + self._log_emission_vec(obs[t + 1])[np.newaxis, :]
+                    + lb[t + 1, np.newaxis, :]
+                )
                 max_s = scores.max()
                 log_sum = max_s + np.log(np.sum(np.exp(scores - max_s)) + 1e-300)
                 xi[t] = np.exp(scores - log_sum)
@@ -205,27 +204,31 @@ class GaussianHMM:
         delta[0] = np.log(self.startprob_ + 1e-300) + self._log_emission_vec(obs[0])
         for t in range(1, T):
             for j in range(n):
-                scores = delta[t-1] + np.log(self.transmat_[:, j] + 1e-300)
+                scores = delta[t - 1] + np.log(self.transmat_[:, j] + 1e-300)
                 psi[t, j] = int(np.argmax(scores))
                 delta[t, j] = scores[psi[t, j]] + self._log_emission_vec(obs[t])[j]
 
         states = np.zeros(T, dtype=int)
-        states[T-1] = int(np.argmax(delta[T-1]))
-        for t in range(T-2, -1, -1):
-            states[t] = psi[t+1, states[t+1]]
+        states[T - 1] = int(np.argmax(delta[T - 1]))
+        for t in range(T - 2, -1, -1):
+            states[t] = psi[t + 1, states[t + 1]]
         return states
 
 
 # ── 特征提取 ──
 
+
 def _extract_market_features() -> np.ndarray:
     """
-    提取市场特征矩阵 (T×3):
-    col0: 日均收益率 (%)  — 从当前价序列计算
-    col1: 振幅变化        — 前后日振幅差值 (暂无数据时为0)
-    col2: 成交额变化      — 前后日成交额对数变化 (暂无数据时为0)
+    提取市场特征矩阵 (T×1): 日均收益率 (%)
+
+    Note: 振幅和成交额数据在当前报告格式中暂不可用，
+    仅使用日均收益率作为 HMM 观测。当真实数据上线后，
+    可扩展至 T×3 并同步修改 N_DIMS。
     """
-    # 方法一：从价格数据构造收益率特征(兼容当前报告格式)
+    logger.warning("[HMM] 仅使用日均收益率作为 HMM 特征 (N_DIMS=1)；" "振幅/成交额数据在当前报告格式中暂不可用")
+
+    # 从价格数据构造收益率特征(兼容当前报告格式)
     prices = extract_all_prices()
     if not prices:
         return np.array([])
@@ -247,42 +250,22 @@ def _extract_market_features() -> np.ndarray:
         daily_rets: List[float] = []
         for code in codes:
             lookup = dict(prices[code])
-            p_prev = lookup.get(sorted_dates[i-1])
+            p_prev = lookup.get(sorted_dates[i - 1])
             p_curr = lookup.get(sorted_dates[i])
             if p_prev and p_curr:
                 daily_rets.append((p_curr - p_prev) / p_prev * 100)
         if daily_rets:
-            features.append(np.array([
-                np.mean(daily_rets),
-                0.0,  # 振幅(暂无)
-                0.0,  # 成交额(暂无)
-            ]))
+            features.append(np.array([np.mean(daily_rets)]))
 
-    # 方法二: 如果表格有真实数据, 补充振幅和成交额
-    # (当前报告格式为占位符, 等真实数据上线后自动生效)
-    for report_file in sorted(_REPORTS_DIR.glob("report_*.md")):
-        content = report_file.read_text(encoding="utf-8")
-        secs = re.split(r'\n## ', content)
-
-        for sec in secs:
-            lines = sec.split('\n')
-            for i, line in enumerate(lines):
-                if ('| 收盘 |' in line or line.strip().startswith('| 收盘 ')) and i + 1 < len(lines):
-                    cells = [c.strip() for c in lines[i+1].split('|') if c.strip()]
-                    # 检查是否有真实数据(不是占位符)
-                    if cells and '------' not in cells[0]:
-                        if len(cells) >= 8:
-                            m_amp = re.search(r'([\d.]+)%', cells[7])
-                            if m_amp:
-                                amp_val = float(m_amp.group(1))
-                        if len(cells) >= 10:
-                            vol_str = cells[9].replace('亿元', '').replace('万元', '').replace('亿', '').strip()
-                    break
+    # TODO: 当报告格式包含振幅/成交额真实数据时，
+    # 从 _REPORTS_DIR/report_*.md 中提取并填充为第2、3列特征
+    # 当前报告格式为占位符，振幅/成交额提取逻辑已存在但暂未集成
 
     return np.array(features) if len(features) >= 3 else np.array([])
 
 
 # ── 主检测函数 ──
+
 
 def detect_market_state(force_rerun: bool = True) -> HMMResult:
     """检测市场状态（多随机起点 HMM）。"""
@@ -290,8 +273,7 @@ def detect_market_state(force_rerun: bool = True) -> HMMResult:
         try:
             cached = json.loads(_OUTPUT_FILE.read_text())
             if cached.get("status") in ("ok", "insufficient_data"):
-                return HMMResult(**{k: v for k, v in cached.items()
-                                    if k in HMMResult.__dataclass_fields__})
+                return HMMResult(**{k: v for k, v in cached.items() if k in HMMResult.__dataclass_fields__})
         except Exception:
             pass
 
@@ -299,11 +281,15 @@ def detect_market_state(force_rerun: bool = True) -> HMMResult:
     if len(obs) < 4:
         logger.warning(f"[HMM] 数据不足 (n={len(obs)})")
         return HMMResult(
-            current_state=2, current_state_name="震荡",
+            current_state=2,
+            current_state_name="震荡",
             state_probabilities=[0.25, 0.25, 0.40, 0.10],
-            state_sequence=[2]*len(obs) if len(obs) > 0 else [2],
-            transition_matrix=[], means=[], vars_=[],
-            log_likelihood=np.nan, n_observations=len(obs),
+            state_sequence=[2] * len(obs) if len(obs) > 0 else [2],
+            transition_matrix=[],
+            means=[],
+            vars_=[],
+            log_likelihood=np.nan,
+            n_observations=len(obs),
             status=f"insufficient_data (n={len(obs)}, need≥4)",
         )
 
@@ -331,11 +317,15 @@ def detect_market_state(force_rerun: bool = True) -> HMMResult:
 
     if best_hmm is None:
         return HMMResult(
-            current_state=2, current_state_name="震荡",
+            current_state=2,
+            current_state_name="震荡",
             state_probabilities=[0.25, 0.25, 0.40, 0.10],
             state_sequence=[],
-            transition_matrix=[], means=[], vars_=[],
-            log_likelihood=np.nan, n_observations=len(obs),
+            transition_matrix=[],
+            means=[],
+            vars_=[],
+            log_likelihood=np.nan,
+            n_observations=len(obs),
             status="error: all restarts failed",
         )
 
@@ -390,8 +380,10 @@ def run_hmm_and_save() -> Dict[str, Any]:
         "timestamp": datetime.now().isoformat(),
     }
     _OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    import tempfile, os
-    tmp = tempfile.NamedTemporaryFile(mode='w', dir=_OUTPUT_FILE.parent, suffix='.tmp', delete=False)
+    import os
+    import tempfile
+
+    tmp = tempfile.NamedTemporaryFile(mode="w", dir=_OUTPUT_FILE.parent, suffix=".tmp", delete=False)
     json.dump(output, tmp, ensure_ascii=False, indent=2)
     tmp.flush()
     os.fsync(tmp.fileno())
@@ -413,8 +405,10 @@ def load_hmm_output() -> Optional[Dict[str, Any]]:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     out = run_hmm_and_save()
-    print(f"\nHMM ({out['n_observations']}obs): {out['current_state_name']} "
-          f"牛{out['state_probabilities'][0]:.1%} "
-          f"熊{out['state_probabilities'][1]:.1%} "
-          f"盘{out['state_probabilities'][2]:.1%} "
-          f"高波{out['state_probabilities'][3]:.1%}")
+    print(
+        f"\nHMM ({out['n_observations']}obs): {out['current_state_name']} "
+        f"牛{out['state_probabilities'][0]:.1%} "
+        f"熊{out['state_probabilities'][1]:.1%} "
+        f"盘{out['state_probabilities'][2]:.1%} "
+        f"高波{out['state_probabilities'][3]:.1%}"
+    )
