@@ -13,16 +13,14 @@ from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
-from .models import PositionInfo, AccountState, RiskConfig
+from .models import AccountState, PositionInfo, RiskConfig
 
 logger = logging.getLogger("simulated_trading")
 
 _DEFAULT_CONFIG = RiskConfig()
 
 # 默认量化引擎输出路径（与 simulated_trading.py 一致）
-MARKOWITZ_PATH = Path(
-    "/opt/daily_stock_analysis/quant_engine/markowitz_output.json"
-)
+MARKOWITZ_PATH = Path("/opt/daily_stock_analysis/quant_engine/markowitz_output.json")
 
 
 def try_rebalance(
@@ -70,9 +68,7 @@ def try_rebalance(
             if mw_data.get("status") == "ok" and mw_data.get("weights"):
                 target_weights = mw_data["weights"]
                 sr = mw_data.get("sharpe_ratio", 0)
-                logger.info(
-                    f"[再平衡] 马科维茨最优权重 (夏普{sr:.3f}): {target_weights}"
-                )
+                logger.info(f"[再平衡] 马科维茨最优权重 (夏普{sr:.3f}): {target_weights}")
     except Exception:
         pass
 
@@ -102,22 +98,16 @@ def _rebalance_markowitz(
 
         target_weights = _nw(target_weights, held_codes)
         logger.info(
-            f"[再平衡] 归一化权重至持仓: "
-            f"{dict(zip(held_codes, [target_weights.get(c, 0) for c in held_codes]))}"
+            f"[再平衡] 归一化权重至持仓: " f"{dict(zip(held_codes, [target_weights.get(c, 0) for c in held_codes]))}"
         )
     except Exception:
         # 等权 fallback
         target_weights = {c: 1.0 / len(held_codes) for c in held_codes}
 
     # 计算每个持仓的目标市值
-    total_equity = state["cash"] + sum(
-        p["quantity"] * p["current_price"]
-        for p in state["positions"].values()
-    )
+    total_equity = state["cash"] + sum(p["quantity"] * p["current_price"] for p in state["positions"].values())
 
-    adjustments = _compute_markowitz_adjustments(
-        state, total_equity, target_weights
-    )
+    adjustments = _compute_markowitz_adjustments(state, total_equity, target_weights)
     _apply_adjustments(state, trades, new_trades, adjustments, report_date_str)
 
 
@@ -131,13 +121,15 @@ def _compute_markowitz_adjustments(
     for code, pos in state["positions"].items():
         target_pct = target_weights.get(code)
         if target_pct is None or target_pct <= 0:
-            adjustments.append({
-                "code": code,
-                "current_qty": pos["quantity"],
-                "diff_qty": -pos["quantity"],
-                "action": "reduce",
-                "deviation_pct": -100,
-            })
+            adjustments.append(
+                {
+                    "code": code,
+                    "current_qty": pos["quantity"],
+                    "diff_qty": -pos["quantity"],
+                    "action": "reduce",
+                    "deviation_pct": -100,
+                }
+            )
             continue
 
         target_value = total_equity * target_pct
@@ -147,14 +139,16 @@ def _compute_markowitz_adjustments(
 
         if abs(diff_qty) >= 100:
             deviation = (current_value - target_value) / target_value * 100
-            adjustments.append({
-                "code": code,
-                "current_qty": pos["quantity"],
-                "target_qty": target_qty,
-                "diff_qty": diff_qty,
-                "deviation_pct": round(deviation, 1),
-                "action": "add" if diff_qty > 0 else "reduce",
-            })
+            adjustments.append(
+                {
+                    "code": code,
+                    "current_qty": pos["quantity"],
+                    "target_qty": target_qty,
+                    "diff_qty": diff_qty,
+                    "deviation_pct": round(deviation, 1),
+                    "action": "add" if diff_qty > 0 else "reduce",
+                }
+            )
     return adjustments
 
 
@@ -181,9 +175,7 @@ def _rebalance_risk_parity(
 
     target_risk_per_pos = total_risk / len(positions_with_vol)
 
-    adjustments = _compute_risk_parity_adjustments(
-        positions_with_vol, total_risk, target_risk_per_pos
-    )
+    adjustments = _compute_risk_parity_adjustments(positions_with_vol, total_risk, target_risk_per_pos)
     _apply_adjustments(state, trades, new_trades, adjustments, report_date_str)
 
 
@@ -201,18 +193,18 @@ def _compute_risk_parity_adjustments(
 
         if abs(deviation) > 0.20:
             target_value = target_risk_per_pos / vol_est
-            target_qty = max(
-                100, int(target_value / pos["current_price"] / 100) * 100
-            )
+            target_qty = max(100, int(target_value / pos["current_price"] / 100) * 100)
             diff_qty = target_qty - pos["quantity"]
-            adjustments.append({
-                "code": code,
-                "current_qty": pos["quantity"],
-                "target_qty": target_qty,
-                "diff_qty": diff_qty,
-                "deviation_pct": round(deviation * 100, 1),
-                "action": "add" if diff_qty > 0 else "reduce",
-            })
+            adjustments.append(
+                {
+                    "code": code,
+                    "current_qty": pos["quantity"],
+                    "target_qty": target_qty,
+                    "diff_qty": diff_qty,
+                    "deviation_pct": round(deviation * 100, 1),
+                    "action": "add" if diff_qty > 0 else "reduce",
+                }
+            )
     return adjustments
 
 
@@ -230,11 +222,7 @@ def _apply_adjustments(
 
     logger.info(f"[再平衡] 发现 {len(adjustments)} 只持仓需调整:")
     for adj in adjustments:
-        action_text = (
-            f"加仓{adj['diff_qty']}股"
-            if adj["diff_qty"] > 0
-            else f"减仓{abs(adj['diff_qty'])}股"
-        )
+        action_text = f"加仓{adj['diff_qty']}股" if adj["diff_qty"] > 0 else f"减仓{abs(adj['diff_qty'])}股"
         logger.info(f"  {adj['code']}: 偏离{adj['deviation_pct']:+.0f}% → {action_text}")
         pos = state["positions"].get(adj["code"])
         if not pos:
@@ -242,13 +230,9 @@ def _apply_adjustments(
         price = pos["current_price"]
 
         if adj["diff_qty"] > 0:
-            _apply_rebalance_buy(
-                state, trades, new_trades, adj, price, report_date_str
-            )
+            _apply_rebalance_buy(state, trades, new_trades, adj, pos, price, report_date_str)
         elif adj["diff_qty"] < 0:
-            _apply_rebalance_sell(
-                state, trades, new_trades, adj, pos, price, report_date_str
-            )
+            _apply_rebalance_sell(state, trades, new_trades, adj, pos, price, report_date_str)
 
 
 def _apply_rebalance_buy(
@@ -256,11 +240,20 @@ def _apply_rebalance_buy(
     trades: List[dict],
     new_trades: List[dict],
     adj: dict,
+    pos: dict,
     price: float,
     report_date_str: str,
 ) -> None:
     """执行再平衡加仓。"""
     from ..execution_layer.fees import calc_buy_fees
+
+    # P1: 禁止对浮亏超过-3%的持仓加仓（打工马风控规则）
+    # 用旧均价计算浮亏，避免 avg_cost 更新后再算导致保护失效
+    old_avg_cost = pos["avg_cost"]
+    pos_pnl = (price - old_avg_cost) / old_avg_cost * 100
+    if pos_pnl < -3:
+        logger.warning(f"[风控] 跳过加仓{adj['code']}：浮亏{pos_pnl:.1f}% < -3%")
+        return
 
     qty = int(adj["diff_qty"] / 100) * 100
     if qty < 100:
