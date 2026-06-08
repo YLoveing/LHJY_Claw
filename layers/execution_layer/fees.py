@@ -13,10 +13,12 @@ from typing import Optional
 logger = logging.getLogger("execution_layer")
 
 # ── 默认费率参数（与原 simulated_trading.py 一致）──
-DEFAULT_COMMISSION_RATE = 0.00025       # 佣金万2.5
-DEFAULT_STAMP_TAX_RATE = 0.0005         # 印花税万5
-DEFAULT_TRANSFER_FEE_RATE = 0.00001     # 过户费万0.1
-DEFAULT_MIN_COMMISSION = 5.0            # 佣金最低收费5元
+# TODO(#29): 费率应从 RiskConfig / 配置文件集中管理，
+# 而不是硬编码为模块级常量。当前各调用方直接依赖这些默认值。
+DEFAULT_COMMISSION_RATE = 0.00025  # 佣金万2.5
+DEFAULT_STAMP_TAX_RATE = 0.0005  # 印花税万5
+DEFAULT_TRANSFER_FEE_RATE = 0.00001  # 过户费万0.1
+DEFAULT_MIN_COMMISSION = 5.0  # 佣金最低收费5元
 
 
 def calc_buy_fees(
