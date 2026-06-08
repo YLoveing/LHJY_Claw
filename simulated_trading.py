@@ -20,8 +20,8 @@ import sys
 from collections import OrderedDict
 from datetime import date, datetime, timedelta
 from pathlib import Path
+
 from scripts.trading_calendar import eastmoney_secid
-import sys
 
 logger = logging.getLogger("simulated_trading")
 
@@ -36,10 +36,10 @@ INITIAL_CAPITAL = 30_000
 MAX_POSITIONS = 3
 
 # ── 交易费用参数（A股真实费率） ──
-COMMISSION_RATE = 0.00025       # 佣金万2.5（买卖均收，最低5元）
-STAMP_TAX_RATE = 0.0005         # 印花税万5（仅卖出时收）
-TRANSFER_FEE_RATE = 0.00001     # 过户费万0.1（买卖均收）
-MIN_COMMISSION = 5.0            # 佣金最低收费5元
+COMMISSION_RATE = 0.00025  # 佣金万2.5（买卖均收，最低5元）
+STAMP_TAX_RATE = 0.0005  # 印花税万5（仅卖出时收）
+TRANSFER_FEE_RATE = 0.00001  # 过户费万0.1（买卖均收）
+MIN_COMMISSION = 5.0  # 佣金最低收费5元
 
 
 def calc_buy_fees(cost: float) -> float:
@@ -73,21 +73,22 @@ def _apply_slippage(price: float, direction: str = "buy", amount: float = 0) -> 
     mult = 1 + slip if direction == "buy" else 1 - slip
     return round(price * mult, 3)
 
+
 # ── 风控参数 ──
-MEDIUM_STOP_PCT = -5.0     # 日频持仓浮亏-5% → 减半仓（P1风控补洞）
-HARD_STOP_PCT = -8.0        # 日频持仓浮亏-8% → 全平（替代旧-15%）
-STOP_LOSS_PCT = -8.0        # 硬止损阈值（原-15%收窄）
-TAKE_PROFIT_PCT = 25.0      # 单只浮盈25% → 减半仓锁利
+MEDIUM_STOP_PCT = -5.0  # 日频持仓浮亏-5% → 减半仓（P1风控补洞）
+HARD_STOP_PCT = -8.0  # 日频持仓浮亏-8% → 全平（替代旧-15%）
+STOP_LOSS_PCT = -8.0  # 硬止损阈值（原-15%收窄）
+TAKE_PROFIT_PCT = 25.0  # 单只浮盈25% → 减半仓锁利
 ACCOUNT_DRAWDOWN_LIMIT = -20.0  # 账户总回撤超过20% → 暂停所有买入
 
 # ── P2 时间止损参数 ──
-TIME_STOP_DAYS = 20          # 持有超过20个交易日
-TIME_STOP_LOSS_PCT = -8.0    # 且浮亏超过-8% → 强制平仓
+TIME_STOP_DAYS = 20  # 持有超过20个交易日
+TIME_STOP_LOSS_PCT = -8.0  # 且浮亏超过-8% → 强制平仓
 
 # ── P2 多级止盈参数 ──
 TP_LEVELS = [
-    (10.0, 0.5, "一级止盈(+10%)"),   # 浮盈+10% → 减半仓
-    (25.0, 1.0, "二级止盈(+25%)"),   # 浮盈+25% → 清仓
+    (10.0, 0.5, "一级止盈(+10%)"),  # 浮盈+10% → 减半仓
+    (25.0, 1.0, "二级止盈(+25%)"),  # 浮盈+25% → 清仓
 ]
 
 # ── P3 再平衡触发 ──
@@ -98,6 +99,7 @@ SLIPPAGE_RATE = 0.001  # 0.1% 基础滑点
 
 # ── 情绪引擎调节 ──
 SENTIMENT_ADJ_FILE = DATA_DIR / "sentiment_adjustment.json"
+
 
 def _load_sentiment_adjustment() -> float:
     """从波动率择时引擎加载仓位调节系数。
@@ -149,30 +151,53 @@ def _load_sentiment_adjustment() -> float:
     logger.info("[模拟交易] 无仓位系数，默认满仓")
     return 1.0
 
+
 # ── 行业分类（申万一级行业，实时查询 + 前缀回退） ──
 EM_SECTOR_NAMES = {
-    1: "农林牧渔", 2: "采掘", 3: "化工", 4: "钢铁",
-    5: "有色金属", 6: "电子", 7: "汽车", 8: "家用电器",
-    9: "食品饮料", 10: "纺织服装", 11: "轻工制造",
-    12: "医药生物", 13: "公用事业", 14: "交通运输",
-    15: "房地产", 16: "商业贸易", 17: "休闲服务",
-    18: "综合", 19: "建筑材料", 20: "建筑装饰",
-    21: "电气设备", 22: "国防军工", 23: "计算机",
-    24: "传媒", 25: "通信", 26: "银行", 27: "非银金融",
-    28: "机械设备", 29: "煤炭", 30: "石油化工",
+    1: "农林牧渔",
+    2: "采掘",
+    3: "化工",
+    4: "钢铁",
+    5: "有色金属",
+    6: "电子",
+    7: "汽车",
+    8: "家用电器",
+    9: "食品饮料",
+    10: "纺织服装",
+    11: "轻工制造",
+    12: "医药生物",
+    13: "公用事业",
+    14: "交通运输",
+    15: "房地产",
+    16: "商业贸易",
+    17: "休闲服务",
+    18: "综合",
+    19: "建筑材料",
+    20: "建筑装饰",
+    21: "电气设备",
+    22: "国防军工",
+    23: "计算机",
+    24: "传媒",
+    25: "通信",
+    26: "银行",
+    27: "非银金融",
+    28: "机械设备",
+    29: "煤炭",
+    30: "石油化工",
 }
 
 SECTOR_MAP_FALLBACK = {
-    "600": "其他",    # 沪市主板（行业不确定）
-    "601": "金融",     # 沪市（多为银行/保险/券商）
-    "000": "综合",     # 深市主板
-    "002": "其他",     # 中小板
-    "300": "其他",     # 创业板
-    "688": "其他",     # 科创板
+    "600": "其他",  # 沪市主板（行业不确定）
+    "601": "金融",  # 沪市（多为银行/保险/券商）
+    "000": "综合",  # 深市主板
+    "002": "其他",  # 中小板
+    "300": "其他",  # 创业板
+    "688": "其他",  # 科创板
     "510300": "ETF",
 }
 
 # ── 大盘择时 ──
+
 
 def check_market_condition() -> str:
     """
@@ -188,15 +213,17 @@ def check_market_condition() -> str:
     # ── MA趋势过滤（中长线） ──
     try:
         from risk.market_filter import get_market_state
+
         mkt = get_market_state()
         ma_scale = mkt.get("scale", 1.0)
         ma_state = mkt.get("state_name", "unknown")
     except Exception as e:
         ma_scale = 1.0
         ma_state = "error"
-    
+
     # ── 实时涨跌幅（短线） ──
     import requests
+
     url = "https://push2.eastmoney.com/api/qt/stock/get"
     params = {
         "secid": "1.000300",
@@ -242,6 +269,7 @@ def check_market_condition() -> str:
 # ── 行业查询（内存缓存避免重复请求） ──
 _SECTOR_CACHE = {}
 
+
 def _get_sector(code: str) -> str:
     """
     获取股票所属行业（优先东方财富实时查询，回退code前缀映射）。
@@ -249,6 +277,7 @@ def _get_sector(code: str) -> str:
     if code in _SECTOR_CACHE:
         return _SECTOR_CACHE[code]
     import requests
+
     prefix = code[:3] if len(code) >= 3 else code
     try:
         # 尝试从东方财富获取实时行业
@@ -299,6 +328,7 @@ def get_position_sectors(state: dict) -> dict:
 # 赔率 b = 第一档止盈/止损 = 10/15 ≈ 0.67
 KELLY_B = abs(TP_LEVELS[0][0] / STOP_LOSS_PCT)  # 使用第一档止盈(+10%)算赔率
 
+
 def _kelly_fraction(score: int) -> float:
     """
     基于评分计算凯利仓位比例 f* = (b*p - q) / b
@@ -307,11 +337,16 @@ def _kelly_fraction(score: int) -> float:
     返回半凯利（保守策略）
     """
     b = KELLY_B
-    if score >= 100: p = 0.90
-    elif score >= 90: p = 0.85
-    elif score >= 80: p = 0.78
-    elif score >= 70: p = 0.70
-    else: p = 0.50
+    if score >= 100:
+        p = 0.90
+    elif score >= 90:
+        p = 0.85
+    elif score >= 80:
+        p = 0.78
+    elif score >= 70:
+        p = 0.70
+    else:
+        p = 0.50
     q = 1 - p
     f_kelly = max(0.0, (b * p - q) / b)
     return f_kelly * 0.5  # 半凯利
@@ -338,7 +373,7 @@ def _compute_dynamic_thresholds(sentiment_score: int = 50) -> tuple:
     优先级：
     1. GARCH 条件波动率百分位 (从 quant_engine 读取)
     2. 情绪指数 (回退方案)
-    
+
     Returns: (buy_threshold, sell_threshold)
     """
     # 尝试从 GARCH 引擎读取
@@ -346,6 +381,7 @@ def _compute_dynamic_thresholds(sentiment_score: int = 50) -> tuple:
         garch_file = Path("/opt/daily_stock_analysis/quant_engine/garch_output.json")
         if garch_file.exists():
             import json
+
             data = json.loads(garch_file.read_text())
             if data.get("status") == "ok" and "dynamic_thresholds" in data:
                 n_obs = data.get("n_obs", 0)
@@ -360,7 +396,7 @@ def _compute_dynamic_thresholds(sentiment_score: int = 50) -> tuple:
                     return (bt, st)
     except Exception:
         pass
-    
+
     # 回退：基于情绪指数
     if sentiment_score >= 80:
         return (75, 40)
@@ -386,35 +422,48 @@ def _load_sentiment_index_score() -> int:
             pass
     return 50
 
+
 # ── 多策略规则 ──
-STRATEGIES = OrderedDict([
-    ("main", {
-        "name": "主策略（情绪周期）",
-        "buy_threshold": 70,
-        "sell_threshold": 45,
-        "per_trade": 50_000,
-        "max_pos": 8,
-        "enable": True,
-    }),
-    ("trend", {
-        "name": "趋势跟踪",
-        "buy_threshold": 65,
-        "sell_threshold": 35,
-        "per_trade": 40_000,
-        "max_pos": 8,
-        "enable": False,  # 默认关闭，用户可开启
-    }),
-    ("reversion", {
-        "name": "均值回归",
-        "buy_threshold": 75,
-        "sell_threshold": 25,
-        "per_trade": 60_000,
-        "max_pos": 6,
-        "enable": False,
-    }),
-])
+STRATEGIES = OrderedDict(
+    [
+        (
+            "main",
+            {
+                "name": "主策略（情绪周期）",
+                "buy_threshold": 70,
+                "sell_threshold": 45,
+                "per_trade": 50_000,
+                "max_pos": 8,
+                "enable": True,
+            },
+        ),
+        (
+            "trend",
+            {
+                "name": "趋势跟踪",
+                "buy_threshold": 65,
+                "sell_threshold": 35,
+                "per_trade": 40_000,
+                "max_pos": 8,
+                "enable": False,  # 默认关闭，用户可开启
+            },
+        ),
+        (
+            "reversion",
+            {
+                "name": "均值回归",
+                "buy_threshold": 75,
+                "sell_threshold": 25,
+                "per_trade": 60_000,
+                "max_pos": 6,
+                "enable": False,
+            },
+        ),
+    ]
+)
 
 # ── 数据持久化 ──
+
 
 def _migrate_state(state):
     """Ensure state dict has all required keys (v2 migration)."""
@@ -454,10 +503,12 @@ def load_state():
             return _migrate_state(json.load(f))
     return _migrate_state({})
 
+
 def save_state(state):
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
+
 
 def load_trades():
     if TRADES_FILE.exists():
@@ -465,10 +516,12 @@ def load_trades():
             return json.load(f)
     return []
 
+
 def save_trades(trades):
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     with open(TRADES_FILE, "w") as f:
         json.dump(trades, f, ensure_ascii=False, indent=2)
+
 
 def load_performance():
     if PERF_FILE.exists():
@@ -476,10 +529,12 @@ def load_performance():
             return json.load(f)
     return {"daily": [], "weekly": [], "summary": {}}
 
+
 def save_performance(perf):
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     with open(PERF_FILE, "w") as f:
         json.dump(perf, f, ensure_ascii=False, indent=2)
+
 
 def load_signal_trace():
     if TRACE_FILE.exists():
@@ -487,12 +542,15 @@ def load_signal_trace():
             return json.load(f)
     return {"records": []}
 
+
 def save_signal_trace(trace):
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     with open(TRACE_FILE, "w") as f:
         json.dump(trace, f, ensure_ascii=False, indent=2, default=str)
 
+
 # ── 报告解析 ──
+
 
 def parse_stock_scores(report_date):
     """从分析报告提取每只股票的完整信息：评分、操作建议、看多看空、核心理由。"""
@@ -506,7 +564,7 @@ def parse_stock_scores(report_date):
 
     stocks = {}
     # 摘要行格式: **股票名(code)**: 操作 | 评分 N | 看多/空
-    pattern = r'\*\*[^()]+\(([^)]+)\)\**:\s*(\S+)\s*\|\s*评分\s*(\d+)\s*\|\s*(\S+)'
+    pattern = r"\*\*[^()]+\(([^)]+)\)\**:\s*(\S+)\s*\|\s*评分\s*(\d+)\s*\|\s*(\S+)"
     for match in re.finditer(pattern, content):
         code = match.group(1).strip()
         stocks[code] = {
@@ -521,15 +579,15 @@ def parse_stock_scores(report_date):
 
 def extract_rationale(content, code):
     """从报告详情章节提取评分核心理由（一句话决策部分）。"""
-    sections = re.split(r'\n## ', content)
+    sections = re.split(r"\n## ", content)
     for sec in sections:
-        if f'({code})' in sec:
+        if f"({code})" in sec:
             # 找"一句话决策"行
-            one_sentence = re.search(r'>\s*\*\*一句话决策\*\*\s*:\s*(.*?)(?:\n|$)', sec)
+            one_sentence = re.search(r">\s*\*\*一句话决策\*\*\s*:\s*(.*?)(?:\n|$)", sec)
             if one_sentence:
                 return one_sentence.group(1).strip()
             # 回退：找核心结论部分
-            conclusion = re.search(r'核心结论.*?\n(.*?)(?:\n\n|\n###)', sec, re.DOTALL)
+            conclusion = re.search(r"核心结论.*?\n(.*?)(?:\n\n|\n###)", sec, re.DOTALL)
             if conclusion:
                 return conclusion.group(1).strip()[:100]
     return ""
@@ -544,24 +602,24 @@ def extract_stock_price(code, report_date):
     with open(report_file, encoding="utf-8") as f:
         content = f.read()
 
-    sections = re.split(r'\n## ', content)
+    sections = re.split(r"\n## ", content)
     target_section = None
     for sec in sections:
-        first_line = sec.split('\n')[0] if '\n' in sec else sec
-        if f'({code})' in first_line:
+        first_line = sec.split("\n")[0] if "\n" in sec else sec
+        if f"({code})" in first_line:
             target_section = sec
             break
 
     if not target_section:
         return None
 
-    lines = target_section.split('\n')
+    lines = target_section.split("\n")
 
     # 方式一：找 "当前价" 行（紧跟在当日行情表下面的行）
     for i, line in enumerate(lines):
-        if '当前价' in line and i + 2 < len(lines):
+        if "当前价" in line and i + 2 < len(lines):
             price_line = lines[i + 2]
-            for p in re.findall(r'[\d.]+', price_line):
+            for p in re.findall(r"[\d.]+", price_line):
                 try:
                     v = float(p)
                     if 0.5 < v < 10000:
@@ -572,11 +630,11 @@ def extract_stock_price(code, report_date):
     # 方式二：当日行情表第一列（收盘价行）
     close_idx = None
     for i, line in enumerate(lines):
-        if line.strip().startswith('| 收盘 '):
+        if line.strip().startswith("| 收盘 "):
             close_idx = i
             break
     if close_idx is not None and close_idx + 1 < len(lines):
-        parts = [p.strip() for p in lines[close_idx + 1].split('|') if p.strip()]
+        parts = [p.strip() for p in lines[close_idx + 1].split("|") if p.strip()]
         if parts:
             try:
                 v = float(parts[0])
@@ -590,9 +648,10 @@ def extract_stock_price(code, report_date):
 
 # ── 核心风控 ──
 
+
 def check_stop_loss(pos, current_price, code, report_date_str):
     """检查是否触发止损、时间止损或多级止盈。
-    
+
     Returns (action, reason, close_ratio):
       - action: "stop_loss" | "time_stop" | "take_profit" | "hold"
       - reason: 触发原因
@@ -613,12 +672,15 @@ def check_stop_loss(pos, current_price, code, report_date_str):
     if pos.get("mode") == "daily" and pos.get("entry_date"):
         try:
             from datetime import datetime
+
             entry_dt = datetime.strptime(pos["entry_date"], "%Y%m%d")
             holding_days = (datetime.now() - entry_dt).days
             if holding_days >= TIME_STOP_DAYS and pnl_pct <= TIME_STOP_LOSS_PCT:
-                return ("time_stop",
-                        f"时间止损：持有{holding_days}天 浮亏{pnl_pct:.1f}%（>{TIME_STOP_DAYS}天且亏>{abs(TIME_STOP_LOSS_PCT)}%）",
-                        1.0)
+                return (
+                    "time_stop",
+                    f"时间止损：持有{holding_days}天 浮亏{pnl_pct:.1f}%（>{TIME_STOP_DAYS}天且亏>{abs(TIME_STOP_LOSS_PCT)}%）",
+                    1.0,
+                )
         except Exception:
             pass
 
@@ -637,8 +699,7 @@ def check_stop_loss(pos, current_price, code, report_date_str):
 
 def check_account_drawdown(state):
     """检查账户总回撤是否超过限制。"""
-    current_equity = state["cash"] + sum(p["quantity"] * p["current_price"]
-                                          for p in state["positions"].values())
+    current_equity = state["cash"] + sum(p["quantity"] * p["current_price"] for p in state["positions"].values())
     peak = state.get("peak_equity", INITIAL_CAPITAL)
     if current_equity > peak:
         state["peak_equity"] = current_equity
@@ -650,6 +711,7 @@ def check_account_drawdown(state):
 
 
 # ── 交易执行 ──
+
 
 def execute_trades(stocks, report_date_str):
     """根据评分执行模拟买卖，多策略对比，风控止损。"""
@@ -700,7 +762,7 @@ def execute_trades(stocks, report_date_str):
             force_sells.append(trade)
             trades.append(trade)
             new_trades.append(trade)
-            
+
             if close_ratio >= 1.0 or close_qty >= pos["quantity"]:
                 # 全平
                 del state["positions"][code]
@@ -710,8 +772,9 @@ def execute_trades(stocks, report_date_str):
                 pos["quantity"] -= close_qty
                 pos["invested"] = pos["quantity"] * pos["avg_cost"]
                 pos["tp_level"] = pos.get("tp_level", 0) + 1
-                print(f"[风控] {action} {code} 减仓{close_qty}股 (剩余{pos['quantity']}股) @ {price:.3f} 盈亏{pnl:+.2f} - {reason}")
-
+                print(
+                    f"[风控] {action} {code} 减仓{close_qty}股 (剩余{pos['quantity']}股) @ {price:.3f} 盈亏{pnl:+.2f} - {reason}"
+                )
 
     sentiment_score = _load_sentiment_index_score()
     buy_threshold, sell_threshold = _compute_dynamic_thresholds(sentiment_score)
@@ -735,11 +798,15 @@ def execute_trades(stocks, report_date_str):
             state["cash"] += proceeds
             state["total_fee"] += fee
             trade = {
-                "date": report_date_str, "code": code, "side": "low_score_sell",
-                "quantity": pos["quantity"], "price": round(price, 3),
-                "proceeds": round(proceeds, 2), "fee": round(fee, 2),
+                "date": report_date_str,
+                "code": code,
+                "side": "low_score_sell",
+                "quantity": pos["quantity"],
+                "price": round(price, 3),
+                "proceeds": round(proceeds, 2),
+                "fee": round(fee, 2),
                 "pnl": round(pnl, 2),
-                "reason": f"低评分清理：进场{entry_score}<阈值{buy_threshold}"
+                "reason": f"低评分清理：进场{entry_score}<阈值{buy_threshold}",
             }
             force_sells.append(trade)
             trades.append(trade)
@@ -762,7 +829,9 @@ def execute_trades(stocks, report_date_str):
             # P3 再平衡触发：评分变化不足±5分不调仓
             entry_score = pos.get("entry_score")
             if entry_score and abs(info["score"] - entry_score) < REBALANCE_SCORE_THRESHOLD:
-                print(f"[再平衡] {code} 评分变化 {entry_score}→{info['score']} (变化{info['score']-entry_score:+d}) < {REBALANCE_SCORE_THRESHOLD}，跳过卖出")
+                print(
+                    f"[再平衡] {code} 评分变化 {entry_score}→{info['score']} (变化{info['score']-entry_score:+d}) < {REBALANCE_SCORE_THRESHOLD}，跳过卖出"
+                )
                 continue
 
             price = extract_stock_price(code, report_date_str) or pos["current_price"]
@@ -812,8 +881,9 @@ def execute_trades(stocks, report_date_str):
         print(f"[风控] 大盘DANGER状态，禁止所有买入操作")
 
     if can_buy:
-        buy_candidates = [(c, i) for c, i in stocks.items()
-                          if i["score"] >= buy_threshold and c not in state["positions"]]
+        buy_candidates = [
+            (c, i) for c, i in stocks.items() if i["score"] >= buy_threshold and c not in state["positions"]
+        ]
         buy_candidates.sort(key=lambda x: x[1]["score"], reverse=True)
 
         # 预计算行业集中度
@@ -848,12 +918,14 @@ def execute_trades(stocks, report_date_str):
             # ── 开盘价偏差校验（P1） ──
             try:
                 import requests as _req
+
                 secid = eastmoney_secid(code)
                 ref_url = "https://push2.eastmoney.com/api/qt/stock/get"
                 ref_params = {
                     "secid": secid,
                     "fields": "f18",  # f18 = 昨收
-                    "fltt": 2, "invt": 2,
+                    "fltt": 2,
+                    "invt": 2,
                 }
                 ref_headers = {
                     "User-Agent": "Mozilla/5.0",
@@ -881,13 +953,12 @@ def execute_trades(stocks, report_date_str):
                 effective_score = info["score"]
 
             # 凯利动态仓位（使用原始评分计算金额，但已根据 gap 决定是否跳过）
-            amount = _compute_kelly_amount(
-                info["score"], state["cash"], sentiment_factor
-            )
+            amount = _compute_kelly_amount(info["score"], state["cash"], sentiment_factor)
             # ── 大盘均线过滤：按市场状态等比缩仓 ──
             if not market_danger and not market_caution:
                 try:
                     from risk.market_filter import get_market_state
+
                     mkt = get_market_state()
                     market_scale = mkt.get("scale", 1.0)
                     if market_scale < 1.0:
@@ -922,8 +993,8 @@ def execute_trades(stocks, report_date_str):
                 "current_price": price,
                 "invested": round(cost, 2),
                 "entry_score": info["score"],
-                "entry_date": report_date_str,      # P2 时间止损
-                "tp_level": 0,                       # P2 多级止盈
+                "entry_date": report_date_str,  # P2 时间止损
+                "tp_level": 0,  # P2 多级止盈
                 "mode": "daily",
             }
 
@@ -953,7 +1024,9 @@ def execute_trades(stocks, report_date_str):
             }
             new_trades.append(trade)
             trades.append(trade)
-            print(f"[模拟交易] 买入 {code} × {quantity} @ {price:.3f} = {total_cost:.0f}（凯利{kelly_pct:.1f}%，行业:{sector}）")
+            print(
+                f"[模拟交易] 买入 {code} × {quantity} @ {price:.3f} = {total_cost:.0f}（凯利{kelly_pct:.1f}%，行业:{sector}）"
+            )
 
     # ── 5️⃣ 风险平价再平衡（周五执行） ──
     _try_rebalance(state, trades, new_trades, report_date_str)
@@ -1005,6 +1078,7 @@ def execute_trades(stocks, report_date_str):
 
 # ── 风险平价再平衡 ──
 
+
 def _try_rebalance(state, trades, new_trades, report_date_str):
     """
     周五收盘后执行马科维茨/风险平价再平衡。
@@ -1046,32 +1120,38 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
         held_codes = list(state["positions"].keys())
         import json as _json
         from pathlib import Path as _Path
+
         mw_file = _Path("/opt/daily_stock_analysis/quant_engine/markowitz_output.json")
         if mw_file.exists():
             try:
                 mw_data = _json.loads(mw_file.read_text())
                 from quant_engine.markowitz import normalize_weights_for_positions as _nw
+
                 target_weights = _nw(mw_data.get("weights", target_weights), held_codes)
-                print(f"[再平衡] 归一化权重至持仓: {dict(zip(held_codes, [target_weights.get(c,0) for c in held_codes]))}")
+                print(
+                    f"[再平衡] 归一化权重至持仓: {dict(zip(held_codes, [target_weights.get(c,0) for c in held_codes]))}"
+                )
             except Exception:
                 # 等权 fallback
-                target_weights = {c: 1.0/len(held_codes) for c in held_codes}
-        
+                target_weights = {c: 1.0 / len(held_codes) for c in held_codes}
+
         # 计算每个持仓的目标市值
-        total_equity = state["cash"] + sum(
-            p["quantity"] * p["current_price"] for p in state["positions"].values()
-        )
+        total_equity = state["cash"] + sum(p["quantity"] * p["current_price"] for p in state["positions"].values())
 
         adjustments = []
         for code, pos in state["positions"].items():
             target_pct = target_weights.get(code)
             if target_pct is None or target_pct <= 0:
                 # 该股票权重为负或零 → 清仓
-                adjustments.append({
-                    "code": code, "current_qty": pos["quantity"],
-                    "diff_qty": -pos["quantity"],
-                    "action": "reduce", "deviation_pct": -100,
-                })
+                adjustments.append(
+                    {
+                        "code": code,
+                        "current_qty": pos["quantity"],
+                        "diff_qty": -pos["quantity"],
+                        "action": "reduce",
+                        "deviation_pct": -100,
+                    }
+                )
                 continue
 
             target_value = total_equity * target_pct
@@ -1081,12 +1161,16 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
 
             if abs(diff_qty) >= 100:
                 deviation = (current_value - target_value) / target_value * 100
-                adjustments.append({
-                    "code": code, "current_qty": pos["quantity"],
-                    "target_qty": target_qty, "diff_qty": diff_qty,
-                    "deviation_pct": round(deviation, 1),
-                    "action": "add" if diff_qty > 0 else "reduce",
-                })
+                adjustments.append(
+                    {
+                        "code": code,
+                        "current_qty": pos["quantity"],
+                        "target_qty": target_qty,
+                        "diff_qty": diff_qty,
+                        "deviation_pct": round(deviation, 1),
+                        "action": "add" if diff_qty > 0 else "reduce",
+                    }
+                )
     else:
         # ── 风险平价等风险贡献 (回退) ──
         positions_with_vol = []
@@ -1115,12 +1199,16 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
                 target_value = target_risk_per_pos / vol_est
                 target_qty = max(100, int(target_value / pos["current_price"] / 100) * 100)
                 diff_qty = target_qty - pos["quantity"]
-                adjustments.append({
-                    "code": code, "current_qty": pos["quantity"],
-                    "target_qty": target_qty, "diff_qty": diff_qty,
-                    "deviation_pct": round(deviation * 100, 1),
-                    "action": "add" if diff_qty > 0 else "reduce",
-                })
+                adjustments.append(
+                    {
+                        "code": code,
+                        "current_qty": pos["quantity"],
+                        "target_qty": target_qty,
+                        "diff_qty": diff_qty,
+                        "deviation_pct": round(deviation * 100, 1),
+                        "action": "add" if diff_qty > 0 else "reduce",
+                    }
+                )
 
     if not adjustments:
         print(f"[再平衡] 仓位分布合理，无需调整")
@@ -1150,25 +1238,31 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
                 fee = calc_buy_fees(cost)
                 total_cost = cost + fee
 
-            state["cash"] -= total_cost
-            state["total_fee"] += fee
-            total_qty = pos["quantity"] + qty
-            total_invested = pos["avg_cost"] * pos["quantity"] + cost
-            pos["avg_cost"] = total_invested / total_qty
-            pos["quantity"] = total_qty
-            pos["invested"] = round(total_invested, 2)
-
             # P1: 禁止对浮亏超过-3%的持仓加仓（打工马风控规则）
-            pos_pnl = (price - pos["avg_cost"]) / pos["avg_cost"] * 100
+            # 用旧均价计算浮亏，避免 avg_cost 更新后再算导致保护失效
+            old_avg_cost = pos["avg_cost"]
+            pos_pnl = (price - old_avg_cost) / old_avg_cost * 100
             if pos_pnl < -3:
                 logger.warning(f"[风控] 跳过加仓{adj['code']}：浮亏{pos_pnl:.1f}% < -3%")
                 print(f"[风控] 跳过加仓{adj['code']}：浮亏{pos_pnl:.1f}% < -3%")
                 continue
 
+            state["cash"] -= total_cost
+            state["total_fee"] += fee
+            total_qty = pos["quantity"] + qty
+            total_invested = old_avg_cost * pos["quantity"] + cost
+            pos["avg_cost"] = total_invested / total_qty
+            pos["quantity"] = total_qty
+            pos["invested"] = round(total_invested, 2)
+
             trade = {
-                "date": report_date_str, "code": adj["code"],
-                "side": "rebalance_buy", "quantity": qty, "price": round(price, 3),
-                "cost": round(total_cost, 2), "fee": round(fee, 2),
+                "date": report_date_str,
+                "code": adj["code"],
+                "side": "rebalance_buy",
+                "quantity": qty,
+                "price": round(price, 3),
+                "cost": round(total_cost, 2),
+                "fee": round(fee, 2),
                 "reason": f"组合再平衡（偏离{adj['deviation_pct']:+.0f}%）",
             }
             new_trades.append(trade)
@@ -1189,9 +1283,13 @@ def _try_rebalance(state, trades, new_trades, report_date_str):
             pos["quantity"] -= qty
 
             trade = {
-                "date": report_date_str, "code": adj["code"],
-                "side": "rebalance_sell", "quantity": qty, "price": round(price, 3),
-                "proceeds": round(proceeds_before - fee, 2), "fee": round(fee, 2),
+                "date": report_date_str,
+                "code": adj["code"],
+                "side": "rebalance_sell",
+                "quantity": qty,
+                "price": round(price, 3),
+                "proceeds": round(proceeds_before - fee, 2),
+                "fee": round(fee, 2),
                 "pnl": round(pnl_partial, 2),
                 "reason": f"组合再平衡（偏离{adj['deviation_pct']:+.0f}%）",
             }
@@ -1224,6 +1322,7 @@ def save_signal_trace_record(stocks, trades, report_date):
 
 # ── 绩效统计 ──
 
+
 def compute_daily_perf(state, trades, report_date_str):
     """计算并保存每日绩效快照。"""
     perf = load_performance()
@@ -1244,7 +1343,7 @@ def compute_daily_perf(state, trades, report_date_str):
     # 盈亏比
     avg_win = sum(t["pnl"] for t in wins) / len(wins) if wins else 0
     avg_loss = abs(sum(t["pnl"] for t in losses) / len(losses)) if losses else 0
-    profit_factor = avg_win / avg_loss if avg_loss > 0 else float('inf')
+    profit_factor = avg_win / avg_loss if avg_loss > 0 else float("inf")
 
     entry = {
         "date": report_date_str,
@@ -1258,7 +1357,7 @@ def compute_daily_perf(state, trades, report_date_str):
         "sell_today": sell_count,
         "total_closed_trades": len(closed_trades),
         "win_rate": round(win_rate, 1),
-        "profit_factor": round(profit_factor, 2) if profit_factor != float('inf') else None,
+        "profit_factor": round(profit_factor, 2) if profit_factor != float("inf") else None,
     }
     # 去重检查：当天已有记录则覆盖，否则追加
     existing_dates = {d["date"] for d in perf["daily"]}
@@ -1278,7 +1377,7 @@ def compute_daily_perf(state, trades, report_date_str):
         "total_return_pct": state["total_return_pct"],
         "max_drawdown_pct": state["max_drawdown_pct"],
         "win_rate": round(win_rate, 1),
-        "profit_factor": round(profit_factor, 2) if profit_factor != float('inf') else None,
+        "profit_factor": round(profit_factor, 2) if profit_factor != float("inf") else None,
         "total_closed_trades": len(closed_trades),
         "active_positions": len(state["positions"]),
         "last_update": report_date_str,
@@ -1292,17 +1391,19 @@ def compute_daily_perf(state, trades, report_date_str):
             # 新周的第一天：start_equity 应为上周收盘权益或初始资本
             # 不能用 total_equity - 今日买入（未计持仓市值，会导致周收益虚高）
             prev_end = perf["weekly"][-1]["end_equity"] if perf["weekly"] else INITIAL_CAPITAL
-            perf["weekly"].append({
-                "week": week_key,
-                "start_date": report_date_str,
-                "end_date": report_date_str,
-                "start_equity": round(prev_end, 2),
-                "end_equity": state["total_equity"],
-                "buy_count": buy_count,
-                "sell_count": sell_count,
-                "closed_wins": len(wins),
-                "closed_losses": len(losses),
-            })
+            perf["weekly"].append(
+                {
+                    "week": week_key,
+                    "start_date": report_date_str,
+                    "end_date": report_date_str,
+                    "start_equity": round(prev_end, 2),
+                    "end_equity": state["total_equity"],
+                    "buy_count": buy_count,
+                    "sell_count": sell_count,
+                    "closed_wins": len(wins),
+                    "closed_losses": len(losses),
+                }
+            )
         else:
             w = perf["weekly"][-1]
             w["end_date"] = report_date_str
@@ -1320,6 +1421,7 @@ def compute_daily_perf(state, trades, report_date_str):
 
 # ── 输出快照 ──
 
+
 def generate_summary(state, new_trades, report_date_str):
     """生成推送用的模拟账户快照文本（增强版）。"""
     lines = []
@@ -1328,7 +1430,7 @@ def generate_summary(state, new_trades, report_date_str):
     lines.append(f"💵 当前现金：{state['cash']:,.2f}")
     lines.append(f"📈 持仓市值：{state['total_market_value']:,.2f}")
     lines.append(f"🏦 总权益：{state['total_equity']:,.2f}")
-    emoji = '📈' if state['total_return'] >= 0 else '📉'
+    emoji = "📈" if state["total_return"] >= 0 else "📉"
     lines.append(f"{emoji} 累计盈亏：{state['total_return']:+,.2f} ({state['total_return_pct']:+.2f}%)")
     lines.append(f"📉 最大回撤：{state['max_drawdown_pct']:.2f}%")
     lines.append(f"")
@@ -1340,7 +1442,9 @@ def generate_summary(state, new_trades, report_date_str):
             if t["side"] == "buy":
                 lines.append(f"  🟢 买入 {t['code']} {t['quantity']}股 @ {t['price']}")
             elif t["side"] in ("stop_loss", "take_profit"):
-                lines.append(f"  {'⛔' if t['side']=='stop_loss' else '💰'} {t['side']=='stop_loss' and '止损' or '止盈'} {t['code']} × {t['quantity']} @ {t['price']} 盈亏{t['pnl']:+.2f}")
+                lines.append(
+                    f"  {'⛔' if t['side']=='stop_loss' else '💰'} {t['side']=='stop_loss' and '止损' or '止盈'} {t['code']} × {t['quantity']} @ {t['price']} 盈亏{t['pnl']:+.2f}"
+                )
             else:
                 lines.append(f"  🔴 卖出 {t['code']} {t['quantity']}股 @ {t['price']} 盈亏{t['pnl']:+.2f}")
         lines.append("")
@@ -1348,13 +1452,17 @@ def generate_summary(state, new_trades, report_date_str):
     # 持仓明细
     if state["positions"]:
         lines.append("📋 当前持仓：")
-        lines.append(f"  {'代码':<12} {'数量':<8} {'成本':<8} {'现价':<8} {'市值':<10} {'盈亏':<10} {'盈亏%':<8} {'模式':<10}")
+        lines.append(
+            f"  {'代码':<12} {'数量':<8} {'成本':<8} {'现价':<8} {'市值':<10} {'盈亏':<10} {'盈亏%':<8} {'模式':<10}"
+        )
         for code, pos in sorted(state["positions"].items()):
             mkt_val = pos["quantity"] * pos["current_price"]
             pos_pnl = (pos["current_price"] - pos["avg_cost"]) * pos["quantity"]
             pos_pnl_pct = (pos["current_price"] - pos["avg_cost"]) / pos["avg_cost"] * 100
             mode = pos.get("mode", "daily")
-            lines.append(f"  {code:<12} {pos['quantity']:<8} {pos['avg_cost']:<8.3f} {pos['current_price']:<8.3f} {mkt_val:<10.0f} {pos_pnl:<+10.2f} {pos_pnl_pct:<+7.1f}% {mode:<10}")
+            lines.append(
+                f"  {code:<12} {pos['quantity']:<8} {pos['avg_cost']:<8.3f} {pos['current_price']:<8.3f} {mkt_val:<10.0f} {pos_pnl:<+10.2f} {pos_pnl_pct:<+7.1f}% {mode:<10}"
+            )
     else:
         lines.append("📋 当前持仓：空仓")
 
@@ -1384,25 +1492,28 @@ def generate_summary(state, new_trades, report_date_str):
         if garch_file.exists():
             gd = json.loads(garch_file.read_text())
             if gd.get("status") == "ok":
-                lines.append(f"  🌊 GARCH条件波动率: {gd['current_volatility']:.1%}（{gd['vol_percentile']:.0f}%百分位）")
+                lines.append(
+                    f"  🌊 GARCH条件波动率: {gd['current_volatility']:.1%}（{gd['vol_percentile']:.0f}%百分位）"
+                )
     except Exception:
         pass
-    
+
     try:
         hmm_file = Path("/opt/daily_stock_analysis/quant_engine/hmm_output.json")
         if hmm_file.exists():
             hd = json.loads(hmm_file.read_text())
-            state_names = {0:"多头", 1:"空头", 2:"震荡", 3:"高波动"}
+            state_names = {0: "多头", 1: "空头", 2: "震荡", 3: "高波动"}
             probs = hd.get("state_probabilities", [])
             if probs:
                 s = state_names.get(hd.get("current_state", 2), "?")
                 lines.append(f"  🔮 HMM市场状态: {s}（牛{probs[0]:.0%} 熊{probs[1]:.0%} 盘{probs[2]:.0%}）")
     except Exception:
         pass
-    
+
     lines.append("")
-    lines.append(f"⚙️ 规则：评分≥{buy_th}买入（凯利仓位） | ≤{sell_th}卖出 | "
-                 f"止损-15% | 止盈+25%(减半) | 回撤<-20%暂停")
+    lines.append(
+        f"⚙️ 规则：评分≥{buy_th}买入（凯利仓位） | ≤{sell_th}卖出 | " f"止损-15% | 止盈+25%(减半) | 回撤<-20%暂停"
+    )
     return "\n".join(lines)
 
 
@@ -1415,7 +1526,7 @@ def generate_performance_card():
     lines.append("")
     lines.append(f"📈 累计收益率：{summary.get('total_return_pct', 0):+.2f}%")
     lines.append(f"📉 最大回撤：{summary.get('max_drawdown_pct', 0):.2f}%")
-    closed_count = summary.get('total_closed_trades', 0)
+    closed_count = summary.get("total_closed_trades", 0)
     win_rate_str = f"{summary.get('win_rate', 0)}" if closed_count > 0 else "N/A"
     lines.append(f"🎯 胜率：{win_rate_str}%" if closed_count > 0 else f"🎯 胜率：N/A")
     lines.append(f"⚖️ 盈亏比：{summary.get('profit_factor', 'N/A')}")
@@ -1441,7 +1552,9 @@ def generate_performance_card():
         lines.append("📆 每周汇总：")
         for w in weekly[-4:]:
             week_ret = (w["end_equity"] - w["start_equity"]) / w["start_equity"] * 100
-            lines.append(f"  {w['week']}  {w['end_equity']:,.0f} 周收益{week_ret:+.2f}%  买卖{w['buy_count']}/{w['sell_count']}")
+            lines.append(
+                f"  {w['week']}  {w['end_equity']:,.0f} 周收益{week_ret:+.2f}%  买卖{w['buy_count']}/{w['sell_count']}"
+            )
 
     # 量化引擎统计
     lines.append("")
@@ -1450,7 +1563,7 @@ def generate_performance_card():
     lines.append("  · 阈值调节：GARCH(1,1) 条件波动率")
     lines.append("  · 组合管理：马科维茨均值-方差优化")
     lines.append("  · 市场状态：HMM 隐马尔可夫模型")
-    
+
     try:
         garch_file = Path("/opt/daily_stock_analysis/quant_engine/garch_output.json")
         if garch_file.exists():
@@ -1459,17 +1572,17 @@ def generate_performance_card():
                 lines.append(f"  · GARCH vol: {gd['current_volatility']:.1%} ({gd['vol_percentile']:.0f}%ile)")
     except Exception:
         pass
-    
+
     try:
         hmm_file = Path("/opt/daily_stock_analysis/quant_engine/hmm_output.json")
         if hmm_file.exists():
             hd = json.loads(hmm_file.read_text())
-            state_n = {0:"多头",1:"空头",2:"震荡",3:"高波动"}
-            s = state_n.get(hd.get("current_state",2),"?")
+            state_n = {0: "多头", 1: "空头", 2: "震荡", 3: "高波动"}
+            s = state_n.get(hd.get("current_state", 2), "?")
             lines.append(f"  · HMM状态: {s}")
     except Exception:
         pass
-    
+
     try:
         mw_file = Path("/opt/daily_stock_analysis/quant_engine/markowitz_output.json")
         if mw_file.exists():
@@ -1484,15 +1597,16 @@ def generate_performance_card():
 
 # ── 信号准确率验证 ──
 
+
 def _verify_ai_score(code: str, ai_score: float) -> bool:
     """
     AI评分确定性校验：评分≥70的候选股必须通过量化指标的硬性过滤。
-    
+
     校验项：
     1. 成交量 > 5日均量 × 1.2
     2. 收盘价在 MA20 上方
     3. RSI ≤ 70（不超买）
-    
+
     任一项不满足 → 跳过该买入信号。
     """
     if ai_score < 70:
@@ -1500,6 +1614,7 @@ def _verify_ai_score(code: str, ai_score: float) -> bool:
 
     try:
         from data_provider.data_cache import DataCache
+
         cache = DataCache()
         df = cache.get_kline(code)
         if df is None or len(df) < 25:
@@ -1515,7 +1630,9 @@ def _verify_ai_score(code: str, ai_score: float) -> bool:
         vol_ma5 = volumes[-6:-1].mean()  # 排除当天
         if len(volumes) >= 6:
             if volumes[-1] < vol_ma5 * 1.2:
-                print(f"  [确定性校验✗] {code} 成交量不足：当日{volumes[-1]:.0f} < 5日均量{vol_ma5:.0f}×1.2={vol_ma5*1.2:.0f}")
+                print(
+                    f"  [确定性校验✗] {code} 成交量不足：当日{volumes[-1]:.0f} < 5日均量{vol_ma5:.0f}×1.2={vol_ma5*1.2:.0f}"
+                )
                 return False
 
         # ② 收盘价在 MA20 上方
@@ -1529,8 +1646,8 @@ def _verify_ai_score(code: str, ai_score: float) -> bool:
         if len(closes) >= 15:
             gains = []
             losses = []
-            for i in range(len(closes)-14, len(closes)):
-                diff = closes[i] - closes[i-1]
+            for i in range(len(closes) - 14, len(closes)):
+                diff = closes[i] - closes[i - 1]
                 if diff >= 0:
                     gains.append(diff)
                     losses.append(0)
@@ -1578,6 +1695,7 @@ def verify_signal_accuracy():
 
 
 # ── 入口 ──
+
 
 def main():
     report_date = date.today().strftime("%Y%m%d")
