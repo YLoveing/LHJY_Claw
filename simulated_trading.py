@@ -747,6 +747,7 @@ def execute_trades(stocks, report_date_str):
 
             state["cash"] += proceeds
             state["total_fee"] += fee
+            state["total_pnl"] += pnl
 
             trade = {
                 "date": report_date_str,
@@ -797,6 +798,7 @@ def execute_trades(stocks, report_date_str):
             pnl = (price - pos["avg_cost"]) * pos["quantity"] - fee
             state["cash"] += proceeds
             state["total_fee"] += fee
+            state["total_pnl"] += pnl
             trade = {
                 "date": report_date_str,
                 "code": code,
@@ -844,6 +846,7 @@ def execute_trades(stocks, report_date_str):
 
             state["cash"] += proceeds
             state["total_fee"] += fee
+            state["total_pnl"] += pnl
 
             trade = {
                 "date": report_date_str,
