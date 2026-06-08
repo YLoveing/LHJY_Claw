@@ -41,6 +41,10 @@ sentiment_engine/sentiment_*.txt
 
 # data/
 
+# 归档
+archive/
+!archive/README.md
+
 # 系统
 .DS_Store
 Thumbs.db
