@@ -20,6 +20,7 @@ class PositionInfo:
         invested: 总投资金额
         entry_score: 买入时评分
     """
+
     code: str
     quantity: int
     avg_cost: float
@@ -57,6 +58,7 @@ class AccountState:
         total_pnl: 累计已实现盈亏
         total_fee: 累计费用
     """
+
     cash: float
     positions: Dict[str, PositionInfo]
     total_equity: float
@@ -84,14 +86,17 @@ class AccountState:
     def to_dict(self) -> dict:
         return {
             "cash": self.cash,
-            "positions": {k: {
-                "code": v.code,
-                "quantity": v.quantity,
-                "avg_cost": v.avg_cost,
-                "current_price": v.current_price,
-                "invested": v.invested,
-                "entry_score": v.entry_score,
-            } for k, v in self.positions.items()},
+            "positions": {
+                k: {
+                    "code": v.code,
+                    "quantity": v.quantity,
+                    "avg_cost": v.avg_cost,
+                    "current_price": v.current_price,
+                    "invested": v.invested,
+                    "entry_score": v.entry_score,
+                }
+                for k, v in self.positions.items()
+            },
             "total_equity": self.total_equity,
             "peak_equity": self.peak_equity,
             "total_pnl": self.total_pnl,
@@ -102,6 +107,7 @@ class AccountState:
 @dataclass
 class DrawdownState:
     """回撤状态跟踪。"""
+
     peak_equity: float
     current_drawdown_pct: float
     max_drawdown_pct: float
@@ -122,7 +128,9 @@ class RiskConfig:
         max_single_position_pct: 单只仓位占比上限
         sentiment_adjustment_path: 情绪调节文件路径（可选）
     """
-    stop_loss_pct: float = -15.0
+
+    # 止损/止盈参数对齐 simulated_trading.py 的 HARD_STOP_PCT / TAKE_PROFIT_PCT
+    stop_loss_pct: float = -8.0
     take_profit_pct: float = 25.0
     max_drawdown_pct: float = -20.0
     max_positions: int = 8
@@ -131,9 +139,9 @@ class RiskConfig:
     sentiment_adjustment_path: str = ""
 
     def kelly_b(self) -> float:
-        """凯利赔率 b = 止盈 / abs(止损)。"""
+        """凯利赔率 b = 止盈 / abs(止损) = 25.0 / 8.0 = 3.125。"""
         if self.stop_loss_pct == 0:
-            return 1.67
+            return 3.125
         return abs(self.take_profit_pct / self.stop_loss_pct)
 
 
@@ -147,6 +155,7 @@ class RiskEvent:
         reason: 触发原因描述
         severity: info / warning / critical
     """
+
     event_type: str
     code: str
     reason: str
@@ -163,6 +172,7 @@ class RiskDecision:
         events: 本次决策触发的风控事件列表
         adjusted_max_positions: 情绪调节后的持仓上限
     """
+
     allowed: bool
     max_buy_amount: float
     events: List[RiskEvent] = field(default_factory=list)

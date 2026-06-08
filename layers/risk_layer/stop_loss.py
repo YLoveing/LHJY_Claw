@@ -11,6 +11,8 @@ from typing import Optional
 
 from .models import PositionInfo, RiskConfig, RiskEvent
 
+# 默认配置统一从 models.RiskConfig 读取（参数对齐 simulated_trading.py）
+# stop_loss_pct=-8.0, take_profit_pct=25.0
 _DEFAULT_CONFIG = RiskConfig()
 
 
@@ -32,7 +34,7 @@ def check_stop_loss(
         code: 股票代码（用于日志/事件）
         report_date_str: 报告日期（保留兼容性，未使用）
         config: 风控配置，None 则使用默认值
-            (stop_loss_pct=-15.0, take_profit_pct=25.0)
+            (stop_loss_pct=-8.0, take_profit_pct=25.0 对齐 simulated_trading.py)
 
     Returns:
         (action, reason)
