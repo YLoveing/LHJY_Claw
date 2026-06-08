@@ -45,6 +45,10 @@ sentiment_engine/sentiment_*.txt
 archive/
 !archive/README.md
 
+# 推送输出 + 自动复盘报告
+push_output/
+reports/autopsy/
+
 # 系统
 .DS_Store
 Thumbs.db
