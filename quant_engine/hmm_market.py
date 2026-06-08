@@ -179,6 +179,11 @@ class GaussianHMM:
                 for j in range(n):
                     self.transmat_[i, j] = (xi[:, i, j].sum() + 1e-10) / denom
 
+            # 归一化转移矩阵行和，防止数值累积漂移
+            row_sums = self.transmat_.sum(axis=1, keepdims=True)
+            if row_sums.min() > 0:
+                self.transmat_ /= row_sums
+
             for i in range(n):
                 gsum = gamma[:, i].sum() + 1e-10
                 self.means_[i] = (gamma[:, i, np.newaxis] * obs).sum(axis=0) / gsum
