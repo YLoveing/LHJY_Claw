@@ -40,7 +40,7 @@ class GARCHResult:
     omega: float
     alpha: float
     beta: float
-    se_omega: float         # 标准误
+    se_omega: float  # 标准误
     se_alpha: float
     se_beta: float
     unconditional_vol: float
@@ -54,6 +54,7 @@ class GARCHResult:
 
 # ── 对数似然 ──
 
+
 def _garch_llh(params: np.ndarray, ret: np.ndarray) -> float:
     """
     GARCH(1,1) 对数似然（返回负值供最小化）。
@@ -65,15 +66,15 @@ def _garch_llh(params: np.ndarray, ret: np.ndarray) -> float:
     alpha = 1.0 / (1.0 + np.exp(-params[1]))  # sigmoid → (0,1)
     beta = 1.0 / (1.0 + np.exp(-params[2]))
 
-    if alpha + beta >= 0.995 or omega <= 0:
+    if alpha + beta >= 0.999 or omega <= 0:
         return 1e12
 
     T = len(ret)
     sigma2 = np.var(ret) + 1e-10
     ll = 0.0
     for t in range(T):
-        ll += -0.5 * (np.log(2 * np.pi) + np.log(sigma2) + ret[t]**2 / sigma2)
-        sigma2 = omega + alpha * ret[t]**2 + beta * sigma2
+        ll += -0.5 * (np.log(2 * np.pi) + np.log(sigma2) + ret[t] ** 2 / sigma2)
+        sigma2 = omega + alpha * ret[t] ** 2 + beta * sigma2
         if sigma2 <= 0 or np.isnan(sigma2):
             return 1e12
     return -float(ll)  # 负对数似然
@@ -81,14 +82,14 @@ def _garch_llh(params: np.ndarray, ret: np.ndarray) -> float:
 
 def _garch_llh_raw(omega: float, alpha: float, beta: float, ret: np.ndarray) -> float:
     """直接在原始参数空间计算负对数似然。"""
-    if alpha + beta >= 0.995 or omega <= 0:
+    if alpha + beta >= 0.999 or omega <= 0:
         return 1e12
     T = len(ret)
     sigma2 = np.var(ret) + 1e-10
     ll = 0.0
     for t in range(T):
-        ll += -0.5 * (np.log(2 * np.pi) + np.log(sigma2) + ret[t]**2 / sigma2)
-        sigma2 = omega + alpha * ret[t]**2 + beta * sigma2
+        ll += -0.5 * (np.log(2 * np.pi) + np.log(sigma2) + ret[t] ** 2 / sigma2)
+        sigma2 = omega + alpha * ret[t] ** 2 + beta * sigma2
         if sigma2 <= 0 or np.isnan(sigma2):
             return 1e12
     return -float(ll)
@@ -101,8 +102,10 @@ def _finite_diff_hessian(params: np.ndarray, ret: np.ndarray, eps: float = 1e-5)
     f0 = _garch_llh(params, ret)
     for i in range(n):
         for j in range(i, n):
-            ei = np.zeros(n); ei[i] = eps
-            ej = np.zeros(n); ej[j] = eps
+            ei = np.zeros(n)
+            ei[i] = eps
+            ej = np.zeros(n)
+            ej[j] = eps
             fpp = _garch_llh(params + ei + ej, ret)
             fpm = _garch_llh(params + ei - ej, ret)
             fmp = _garch_llh(params - ei + ej, ret)
@@ -113,6 +116,7 @@ def _finite_diff_hessian(params: np.ndarray, ret: np.ndarray, eps: float = 1e-5)
 
 
 # ── BFGS (纯 NumPy 实现，两级步长搜索) ──
+
 
 def _bfgs_optimize(ret: np.ndarray, x0: np.ndarray, max_iter: int = 200) -> Tuple[np.ndarray, float]:
     """拟牛顿 BFGS 优化（无 sciPy 依赖）。"""
@@ -125,7 +129,8 @@ def _bfgs_optimize(ret: np.ndarray, x0: np.ndarray, max_iter: int = 200) -> Tupl
     # 有限差分梯度
     eps_g = 1e-6
     for i in range(n):
-        ei = np.zeros(n); ei[i] = eps_g
+        ei = np.zeros(n)
+        ei[i] = eps_g
         g0[i] = (_garch_llh(x + ei, ret) - _garch_llh(x - ei, ret)) / (2 * eps_g)
 
     for it in range(max_iter):
@@ -142,7 +147,8 @@ def _bfgs_optimize(ret: np.ndarray, x0: np.ndarray, max_iter: int = 200) -> Tupl
                 # 强 Wolfe 曲率条件
                 gn = np.zeros(n)
                 for i in range(n):
-                    ei = np.zeros(n); ei[i] = eps_g
+                    ei = np.zeros(n)
+                    ei[i] = eps_g
                     gn[i] = (_garch_llh(xnew + ei, ret) - _garch_llh(xnew - ei, ret)) / (2 * eps_g)
                 if abs(np.dot(gn, p)) <= c2 * abs(np.dot(g0, p)):
                     break
@@ -155,7 +161,8 @@ def _bfgs_optimize(ret: np.ndarray, x0: np.ndarray, max_iter: int = 200) -> Tupl
         # 梯度更新
         gn = np.zeros(n)
         for i in range(n):
-            ei = np.zeros(n); ei[i] = eps_g
+            ei = np.zeros(n)
+            ei[i] = eps_g
             gn[i] = (_garch_llh(xnew + ei, ret) - _garch_llh(xnew - ei, ret)) / (2 * eps_g)
         y = gn - g0
 
@@ -174,6 +181,7 @@ def _bfgs_optimize(ret: np.ndarray, x0: np.ndarray, max_iter: int = 200) -> Tupl
 
 # ── 主估计函数 ──
 
+
 def estimate_garch(stock_code: Optional[str] = None) -> GARCHResult:
     """
     估计 GARCH(1,1) 模型（网格搜索 + BFGS 精炼）。
@@ -182,14 +190,21 @@ def estimate_garch(stock_code: Optional[str] = None) -> GARCHResult:
         stock_code: 指定单只股票，None 则用全市场聚合
     """
     try:
-        ret = (stock_returns(stock_code) if stock_code else aggregated_returns())
+        ret = stock_returns(stock_code) if stock_code else aggregated_returns()
         if len(ret) < 2:
             return GARCHResult(
-                omega=np.nan, alpha=np.nan, beta=np.nan,
-                se_omega=np.nan, se_alpha=np.nan, se_beta=np.nan,
-                unconditional_vol=0.20, cond_vol_series=[0.20],
-                current_volatility=0.20, vol_percentile=50.0,
-                log_likelihood=np.nan, n_obs=len(ret),
+                omega=np.nan,
+                alpha=np.nan,
+                beta=np.nan,
+                se_omega=np.nan,
+                se_alpha=np.nan,
+                se_beta=np.nan,
+                unconditional_vol=0.20,
+                cond_vol_series=[0.20],
+                current_volatility=0.20,
+                vol_percentile=50.0,
+                log_likelihood=np.nan,
+                n_obs=len(ret),
                 status="insufficient_data",
             )
 
@@ -223,7 +238,7 @@ def estimate_garch(stock_code: Optional[str] = None) -> GARCHResult:
         # 钳位
         alpha = max(0.001, min(0.499, alpha))
         beta = max(0.001, min(0.99, beta))
-        if alpha + beta >= 0.995:
+        if alpha + beta >= 0.999:
             scale = 0.99 / (alpha + beta)
             alpha *= scale
             beta *= scale
@@ -232,7 +247,7 @@ def estimate_garch(stock_code: Optional[str] = None) -> GARCHResult:
         # ── 标准误 ──
         try:
             H = _finite_diff_hessian(x_opt, ret)
-            se = np.sqrt(np.abs(np.diag(np.linalg.inv(H))))
+            se = np.sqrt(np.abs(np.diag(np.linalg.pinv(H, rcond=1e-6))))
             se_omega = float(np.exp(x_opt[0]) * se[0])  # Delta 法
             se_alpha = float(alpha * (1 - alpha) * se[1])
             se_beta = float(beta * (1 - beta) * se[2])
@@ -244,13 +259,14 @@ def estimate_garch(stock_code: Optional[str] = None) -> GARCHResult:
         cond_var: List[float] = []
         for t in range(len(ret)):
             cond_var.append(float(np.sqrt(sigma2) * np.sqrt(_N_DAY_YEAR)))
-            sigma2 = omega + alpha * ret[t]**2 + beta * sigma2
+            sigma2 = omega + alpha * ret[t] ** 2 + beta * sigma2
             if sigma2 <= 0:
                 sigma2 = 1e-10
 
         current_sigma = float(np.sqrt(sigma2) * np.sqrt(_N_DAY_YEAR))
-        uncond_vol = float(np.sqrt(omega / (1 - alpha - beta)) * np.sqrt(_N_DAY_YEAR)) \
-            if alpha + beta < 1 else current_sigma
+        uncond_vol = (
+            float(np.sqrt(omega / (1 - alpha - beta)) * np.sqrt(_N_DAY_YEAR)) if alpha + beta < 1 else current_sigma
+        )
 
         # 百分位
         arr = np.array(cond_var)
@@ -263,8 +279,12 @@ def estimate_garch(stock_code: Optional[str] = None) -> GARCHResult:
         )
 
         return GARCHResult(
-            omega=omega, alpha=alpha, beta=beta,
-            se_omega=se_omega, se_alpha=se_alpha, se_beta=se_beta,
+            omega=omega,
+            alpha=alpha,
+            beta=beta,
+            se_omega=se_omega,
+            se_alpha=se_alpha,
+            se_beta=se_beta,
             unconditional_vol=round(uncond_vol, 4),
             cond_vol_series=cond_var,
             current_volatility=round(current_sigma, 4),
@@ -277,11 +297,18 @@ def estimate_garch(stock_code: Optional[str] = None) -> GARCHResult:
     except Exception as e:
         logger.error(f"[GARCH] {e}")
         return GARCHResult(
-            omega=np.nan, alpha=np.nan, beta=np.nan,
-            se_omega=np.nan, se_alpha=np.nan, se_beta=np.nan,
-            unconditional_vol=0.20, cond_vol_series=[0.20],
-            current_volatility=0.20, vol_percentile=50.0,
-            log_likelihood=np.nan, n_obs=0,
+            omega=np.nan,
+            alpha=np.nan,
+            beta=np.nan,
+            se_omega=np.nan,
+            se_alpha=np.nan,
+            se_beta=np.nan,
+            unconditional_vol=0.20,
+            cond_vol_series=[0.20],
+            current_volatility=0.20,
+            vol_percentile=50.0,
+            log_likelihood=np.nan,
+            n_obs=0,
             status=f"error: {e}",
         )
 
@@ -296,17 +323,22 @@ def get_dynamic_thresholds(
         result = estimate_garch()
     vp = result.vol_percentile
 
-    if vp >= 90:   return (base_buy + 10, base_sell)
-    if vp >= 75:   return (base_buy + 5, base_sell)
-    if vp >= 60:   return (base_buy + 2, base_sell)
-    if vp <= 10:   return (base_buy - 8, base_sell + 8)
-    if vp <= 25:   return (base_buy - 3, base_sell + 3)
+    if vp >= 90:
+        return (base_buy + 10, base_sell)
+    if vp >= 75:
+        return (base_buy + 5, base_sell)
+    if vp >= 60:
+        return (base_buy + 2, base_sell)
+    if vp <= 10:
+        return (base_buy - 8, base_sell + 8)
+    if vp <= 25:
+        return (base_buy - 3, base_sell + 3)
     return (base_buy, base_sell)
 
 
 def run_garch_and_save(stock_code: Optional[str] = None) -> Dict[str, Any]:
     result = estimate_garch(stock_code)
-    
+
     # 样本太少时不保存输出（防止锁死买入阈值）
     if result.n_obs < 50:
         logger.warning(f"[GARCH] 样本不足({result.n_obs}<50)，跳过保存，退回情绪阈值")
@@ -317,7 +349,7 @@ def run_garch_and_save(stock_code: Optional[str] = None) -> Dict[str, Any]:
             "n_obs": result.n_obs,
             "reason": f"样本不足({result.n_obs}<50)",
         }
-    
+
     buy_th, sell_th = get_dynamic_thresholds(result)
 
     output = {
@@ -337,8 +369,10 @@ def run_garch_and_save(stock_code: Optional[str] = None) -> Dict[str, Any]:
         "timestamp": datetime.now().isoformat(),
     }
     _OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    import tempfile, os
-    tmp = tempfile.NamedTemporaryFile(mode='w', dir=_OUTPUT_FILE.parent, suffix='.tmp', delete=False)
+    import os
+    import tempfile
+
+    tmp = tempfile.NamedTemporaryFile(mode="w", dir=_OUTPUT_FILE.parent, suffix=".tmp", delete=False)
     json.dump(output, tmp, ensure_ascii=False, indent=2)
     tmp.flush()
     os.fsync(tmp.fileno())
@@ -360,9 +394,12 @@ def load_garch_output() -> Optional[Dict[str, Any]]:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     import sys
+
     out = run_garch_and_save()
-    print(f"\nGARCH{out['n_obs']}obs | σ={out['current_volatility']:.2%} "
-          f"pctl={out['vol_percentile']:.0f}% | "
-          f"ω={out['omega']:.6f}±{out['se_omega']:.6f} "
-          f"α={out['alpha']:.4f}±{out['se_alpha']:.4f} "
-          f"β={out['beta']:.4f}±{out['se_beta']:.4f}")
+    print(
+        f"\nGARCH{out['n_obs']}obs | σ={out['current_volatility']:.2%} "
+        f"pctl={out['vol_percentile']:.0f}% | "
+        f"ω={out['omega']:.6f}±{out['se_omega']:.6f} "
+        f"α={out['alpha']:.4f}±{out['se_alpha']:.4f} "
+        f"β={out['beta']:.4f}±{out['se_beta']:.4f}"
+    )
