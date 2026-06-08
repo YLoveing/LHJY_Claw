@@ -2,8 +2,8 @@
 """BacktestEngine 单元测试 — 核心回测引擎"""
 
 import sys
-from pathlib import Path
 from datetime import date
+from pathlib import Path
 from typing import List
 
 import pytest
@@ -11,15 +11,15 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.core.backtest_engine import (
+    OVERALL_SENTINEL_CODE,
     BacktestEngine,
     EvaluationConfig,
-    OVERALL_SENTINEL_CODE,
 )
-
 
 # ═══════════════════════════════════════════
 # 操作建议推断测试
 # ═══════════════════════════════════════════
+
 
 class TestInferDirection:
     def test_bullish_advice_returns_up(self):
@@ -75,6 +75,7 @@ class TestInferPosition:
 # ═══════════════════════════════════════════
 # evaluate_single 测试
 # ═══════════════════════════════════════════
+
 
 class TestEvaluateSingle:
     @pytest.fixture
@@ -261,6 +262,7 @@ class TestEvaluateSingle:
 # compute_summary 测试
 # ═══════════════════════════════════════════
 
+
 class TestComputeSummary:
     class Result:
         def __init__(self, **kwargs):
@@ -309,22 +311,43 @@ class TestComputeSummary:
     def test_mixed_results(self):
         results = [
             self.Result(
-                eval_status="completed", position_recommendation="long",
-                outcome="win", direction_correct=True, stock_return_pct=5.0,
-                simulated_return_pct=5.0, hit_stop_loss=False, hit_take_profit=False,
-                first_hit="neither", first_hit_trading_days=None, operation_advice="买入",
+                eval_status="completed",
+                position_recommendation="long",
+                outcome="win",
+                direction_correct=True,
+                stock_return_pct=5.0,
+                simulated_return_pct=5.0,
+                hit_stop_loss=False,
+                hit_take_profit=False,
+                first_hit="neither",
+                first_hit_trading_days=None,
+                operation_advice="买入",
             ),
             self.Result(
-                eval_status="completed", position_recommendation="long",
-                outcome="loss", direction_correct=False, stock_return_pct=-5.0,
-                simulated_return_pct=-5.0, hit_stop_loss=True, hit_take_profit=False,
-                first_hit="stop_loss", first_hit_trading_days=3, operation_advice="买入",
+                eval_status="completed",
+                position_recommendation="long",
+                outcome="loss",
+                direction_correct=False,
+                stock_return_pct=-5.0,
+                simulated_return_pct=-5.0,
+                hit_stop_loss=True,
+                hit_take_profit=False,
+                first_hit="stop_loss",
+                first_hit_trading_days=3,
+                operation_advice="买入",
             ),
             self.Result(
-                eval_status="insufficient_data", position_recommendation=None,
-                outcome=None, direction_correct=None, stock_return_pct=None,
-                simulated_return_pct=None, hit_stop_loss=None, hit_take_profit=None,
-                first_hit=None, first_hit_trading_days=None, operation_advice="买入",
+                eval_status="insufficient_data",
+                position_recommendation=None,
+                outcome=None,
+                direction_correct=None,
+                stock_return_pct=None,
+                simulated_return_pct=None,
+                hit_stop_loss=None,
+                hit_take_profit=None,
+                first_hit=None,
+                first_hit_trading_days=None,
+                operation_advice="买入",
             ),
         ]
         summary = BacktestEngine.compute_summary(
@@ -345,16 +368,30 @@ class TestComputeSummary:
     def test_stop_loss_trigger_rate(self):
         results = [
             self.Result(
-                eval_status="completed", position_recommendation="long",
-                outcome="loss", direction_correct=False, stock_return_pct=-10.0,
-                simulated_return_pct=-10.0, hit_stop_loss=True, hit_take_profit=False,
-                first_hit="stop_loss", first_hit_trading_days=3, operation_advice="买入",
+                eval_status="completed",
+                position_recommendation="long",
+                outcome="loss",
+                direction_correct=False,
+                stock_return_pct=-10.0,
+                simulated_return_pct=-10.0,
+                hit_stop_loss=True,
+                hit_take_profit=False,
+                first_hit="stop_loss",
+                first_hit_trading_days=3,
+                operation_advice="买入",
             ),
             self.Result(
-                eval_status="completed", position_recommendation="long",
-                outcome="win", direction_correct=True, stock_return_pct=5.0,
-                simulated_return_pct=5.0, hit_stop_loss=False, hit_take_profit=False,
-                first_hit="neither", first_hit_trading_days=None, operation_advice="买入",
+                eval_status="completed",
+                position_recommendation="long",
+                outcome="win",
+                direction_correct=True,
+                stock_return_pct=5.0,
+                simulated_return_pct=5.0,
+                hit_stop_loss=False,
+                hit_take_profit=False,
+                first_hit="neither",
+                first_hit_trading_days=None,
+                operation_advice="买入",
             ),
         ]
         summary = BacktestEngine.compute_summary(
@@ -369,10 +406,17 @@ class TestComputeSummary:
     def test_advice_breakdown_included(self):
         results = [
             self.Result(
-                eval_status="completed", position_recommendation="long",
-                outcome="win", direction_correct=True, stock_return_pct=5.0,
-                simulated_return_pct=5.0, hit_stop_loss=False, hit_take_profit=False,
-                first_hit="neither", first_hit_trading_days=None, operation_advice="买入",
+                eval_status="completed",
+                position_recommendation="long",
+                outcome="win",
+                direction_correct=True,
+                stock_return_pct=5.0,
+                simulated_return_pct=5.0,
+                hit_stop_loss=False,
+                hit_take_profit=False,
+                first_hit="neither",
+                first_hit_trading_days=None,
+                operation_advice="买入",
             ),
         ]
         summary = BacktestEngine.compute_summary(
@@ -389,6 +433,7 @@ class TestComputeSummary:
 # ═══════════════════════════════════════════
 # 辅助方法测试
 # ═══════════════════════════════════════════
+
 
 class TestNormalizeText:
     def test_none_returns_empty(self):
@@ -418,56 +463,72 @@ class TestMatchesIntent:
 class TestClassifyOutcome:
     def test_up_direction_large_gain_is_win(self):
         outcome, correct = BacktestEngine._classify_outcome(
-            stock_return_pct=5.0, direction_expected="up", neutral_band_pct=2.0,
+            stock_return_pct=5.0,
+            direction_expected="up",
+            neutral_band_pct=2.0,
         )
         assert outcome == "win"
         assert correct is True
 
     def test_up_direction_large_loss_is_loss(self):
         outcome, correct = BacktestEngine._classify_outcome(
-            stock_return_pct=-5.0, direction_expected="up", neutral_band_pct=2.0,
+            stock_return_pct=-5.0,
+            direction_expected="up",
+            neutral_band_pct=2.0,
         )
         assert outcome == "loss"
         assert correct is False
 
     def test_up_direction_neutral(self):
         outcome, correct = BacktestEngine._classify_outcome(
-            stock_return_pct=1.0, direction_expected="up", neutral_band_pct=2.0,
+            stock_return_pct=1.0,
+            direction_expected="up",
+            neutral_band_pct=2.0,
         )
         assert outcome == "neutral"
         assert correct is None
 
     def test_down_direction_large_loss_is_win(self):
         outcome, correct = BacktestEngine._classify_outcome(
-            stock_return_pct=-5.0, direction_expected="down", neutral_band_pct=2.0,
+            stock_return_pct=-5.0,
+            direction_expected="down",
+            neutral_band_pct=2.0,
         )
         assert outcome == "win"
         assert correct is True
 
     def test_not_down_zero_return_is_win(self):
         outcome, correct = BacktestEngine._classify_outcome(
-            stock_return_pct=0.0, direction_expected="not_down", neutral_band_pct=2.0,
+            stock_return_pct=0.0,
+            direction_expected="not_down",
+            neutral_band_pct=2.0,
         )
         assert outcome == "win"
         assert correct is True
 
     def test_flat_within_band_is_win(self):
         outcome, correct = BacktestEngine._classify_outcome(
-            stock_return_pct=1.0, direction_expected="flat", neutral_band_pct=2.0,
+            stock_return_pct=1.0,
+            direction_expected="flat",
+            neutral_band_pct=2.0,
         )
         assert outcome == "win"
         assert correct is True
 
     def test_flat_outside_band_is_loss(self):
         outcome, correct = BacktestEngine._classify_outcome(
-            stock_return_pct=5.0, direction_expected="flat", neutral_band_pct=2.0,
+            stock_return_pct=5.0,
+            direction_expected="flat",
+            neutral_band_pct=2.0,
         )
         assert outcome == "loss"
         assert correct is False
 
     def test_none_return_returns_none(self):
         outcome, correct = BacktestEngine._classify_outcome(
-            stock_return_pct=None, direction_expected="up", neutral_band_pct=2.0,
+            stock_return_pct=None,
+            direction_expected="up",
+            neutral_band_pct=2.0,
         )
         assert outcome is None
         assert correct is None

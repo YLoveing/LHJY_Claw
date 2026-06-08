@@ -3,35 +3,35 @@
 
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import MagicMock, PropertyMock, patch
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from data_provider.base import (
-    normalize_stock_code,
-    canonical_stock_code,
-    is_bse_code,
-    is_st_stock,
-    is_kc_cy_stock,
-    _is_hk_market,
-    _is_etf_code,
-    _market_tag,
-    DataFetchError,
-    DataSourceUnavailableError,
     BaseFetcher,
     DataFetcherManager,
-    unwrap_exception,
+    DataFetchError,
+    DataSourceUnavailableError,
+    _is_etf_code,
+    _is_hk_market,
+    _market_tag,
+    canonical_stock_code,
+    is_bse_code,
+    is_kc_cy_stock,
+    is_st_stock,
+    normalize_stock_code,
     summarize_exception,
+    unwrap_exception,
 )
-
 
 # ═══════════════════════════════════════════
 # normalize_stock_code 测试
 # ═══════════════════════════════════════════
+
 
 class TestNormalizeStockCode:
     def test_already_clean_passes_through(self):
@@ -69,6 +69,7 @@ class TestNormalizeStockCode:
 # canonical_stock_code 测试
 # ═══════════════════════════════════════════
 
+
 class TestCanonicalStockCode:
     def test_uppercases_lowercase(self):
         assert canonical_stock_code("aapl") == "AAPL"
@@ -86,6 +87,7 @@ class TestCanonicalStockCode:
 # ═══════════════════════════════════════════
 # 代码分类函数测试
 # ═══════════════════════════════════════════
+
 
 class TestIsBseCode:
     def test_bse_92_code_returns_true(self):
@@ -146,6 +148,7 @@ class TestIsEtfCode:
 # unwrap_exception / summarize_exception 测试
 # ═══════════════════════════════════════════
 
+
 class TestExceptionUtils:
     def test_unwrap_no_chain(self):
         e = ValueError("test")
@@ -166,6 +169,7 @@ class TestExceptionUtils:
 # ═══════════════════════════════════════════
 # DataFetcherManager 测试
 # ═══════════════════════════════════════════
+
 
 class TestDataFetcherManager:
     def test_init_with_no_fetchers_creates_defaults(self):
@@ -266,6 +270,7 @@ class TestDataFetcherManager:
 
         # With empty fetchers, should return ""
         from data_provider.base import STOCK_NAME_MAP
+
         # Monkey-patch to prevent side effects
         with patch.object(DataFetcherManager, "get_realtime_quote", return_value=None):
             name = mgr.get_stock_name("999999")
@@ -275,6 +280,7 @@ class TestDataFetcherManager:
 # ═══════════════════════════════════════════
 # BaseFetcher 测试
 # ═══════════════════════════════════════════
+
 
 class TestBaseFetcher:
     def test_get_main_indices_default_none(self):

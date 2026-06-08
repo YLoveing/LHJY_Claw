@@ -3,32 +3,33 @@
 
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-import pytest
 import numpy as np
 import pandas as pd
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from quant_engine._prices import (
+    _find_current_price,
+    _load_cache_prices,
+    aggregated_returns,
     extract_all_prices,
     extract_price_matrix,
     stock_returns,
-    aggregated_returns,
-    _load_cache_prices,
-    _find_current_price,
 )
-
 
 # ═══════════════════════════════════════════
 # _load_cache_prices 测试
 # ═══════════════════════════════════════════
 
+
 class TestLoadCachePrices:
     def test_returns_none_for_missing_file(self, tmp_path, monkeypatch):
         monkeypatch.setattr(
-            "quant_engine._prices._CACHE_DIR", tmp_path,
+            "quant_engine._prices._CACHE_DIR",
+            tmp_path,
         )
         result = _load_cache_prices("999999")
         assert result is None
@@ -74,6 +75,7 @@ class TestLoadCachePrices:
 # extract_all_prices 测试
 # ═══════════════════════════════════════════
 
+
 class TestExtractAllPrices:
     def test_returns_empty_when_no_data(self, tmp_path, monkeypatch):
         monkeypatch.setattr("quant_engine._prices._CACHE_DIR", tmp_path / "nonexistent")
@@ -103,6 +105,7 @@ class TestExtractAllPrices:
 # extract_price_matrix 测试
 # ═══════════════════════════════════════════
 
+
 class TestExtractPriceMatrix:
     def test_empty_when_no_data(self, tmp_path, monkeypatch):
         monkeypatch.setattr("quant_engine._prices._CACHE_DIR", tmp_path / "nonexistent")
@@ -128,10 +131,19 @@ class TestExtractPriceMatrix:
             b = base
             for d in dates_:
                 ret = rng.normal(0.001, 0.015)
-                b *= (1 + ret)
-                records.append({"date": d, "open": b, "high": b + 1, "low": b - 1,
-                                 "close": round(b, 2), "volume": 100000, "amount": 1000000,
-                                 "pct_chg": ret * 100})
+                b *= 1 + ret
+                records.append(
+                    {
+                        "date": d,
+                        "open": b,
+                        "high": b + 1,
+                        "low": b - 1,
+                        "close": round(b, 2),
+                        "volume": 100000,
+                        "amount": 1000000,
+                        "pct_chg": ret * 100,
+                    }
+                )
             df = pd.DataFrame(records)
             df.to_pickle(str(cache_dir / f"{code}.pkl"))
 
@@ -148,6 +160,7 @@ class TestExtractPriceMatrix:
 # ═══════════════════════════════════════════
 # stock_returns 测试
 # ═══════════════════════════════════════════
+
 
 class TestStockReturns:
     def test_empty_for_unknown_code(self, tmp_path, monkeypatch):
@@ -168,8 +181,18 @@ class TestStockReturns:
         b = base
         for d in dates_:
             b += 0.1  # 简单递增
-            records.append({"date": d, "close": b, "open": b, "high": b, "low": b,
-                            "volume": 100000, "amount": 1000000, "pct_chg": 1.0})
+            records.append(
+                {
+                    "date": d,
+                    "close": b,
+                    "open": b,
+                    "high": b,
+                    "low": b,
+                    "volume": 100000,
+                    "amount": 1000000,
+                    "pct_chg": 1.0,
+                }
+            )
         df = pd.DataFrame(records)
         df.to_pickle(str(cache_dir / "000001.pkl"))
 
@@ -186,6 +209,7 @@ class TestStockReturns:
 # ═══════════════════════════════════════════
 # aggregated_returns 测试
 # ═══════════════════════════════════════════
+
 
 class TestAggregatedReturns:
     def test_empty_when_no_data(self, tmp_path, monkeypatch):
@@ -209,9 +233,19 @@ class TestAggregatedReturns:
             b = base + rng.uniform(0, 20)
             for d in dates_:
                 ret_val = rng.normal(0.001, 0.015)
-                b *= (1 + ret_val)
-                records.append({"date": d, "close": round(b, 2), "open": b, "high": b, "low": b,
-                                "volume": 100000, "amount": 1000000, "pct_chg": ret_val * 100})
+                b *= 1 + ret_val
+                records.append(
+                    {
+                        "date": d,
+                        "close": round(b, 2),
+                        "open": b,
+                        "high": b,
+                        "low": b,
+                        "volume": 100000,
+                        "amount": 1000000,
+                        "pct_chg": ret_val * 100,
+                    }
+                )
             df = pd.DataFrame(records)
             df.to_pickle(str(cache_dir / f"{code}.pkl"))
 
@@ -227,6 +261,7 @@ class TestAggregatedReturns:
 # ═══════════════════════════════════════════
 # _find_current_price 测试
 # ═══════════════════════════════════════════
+
 
 class TestFindCurrentPrice:
     def test_finds_price_from_table(self):

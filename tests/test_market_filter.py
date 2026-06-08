@@ -2,22 +2,22 @@
 """market_filter 模块单元测试 — 大盘均线过滤与仓位管理"""
 
 import sys
-from pathlib import Path
 from datetime import datetime, timedelta
-from unittest.mock import patch, MagicMock
+from pathlib import Path
+from unittest.mock import MagicMock, patch
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from risk import market_filter
 
-
 # ═══════════════════════════════════════════
 # compute_ma 测试
 # ═══════════════════════════════════════════
+
 
 class TestComputeMA:
     def test_adds_all_four_mas(self, mock_hs300_df):
@@ -52,6 +52,7 @@ class TestComputeMA:
 # ═══════════════════════════════════════════
 # load_hs300_index 测试
 # ═══════════════════════════════════════════
+
 
 class TestLoadHS300Index:
     def test_returns_dataframe_from_valid_cache(self, mock_hs300_df, tmp_path, monkeypatch):
@@ -101,6 +102,7 @@ class TestLoadHS300Index:
 # get_market_scale 测试
 # ═══════════════════════════════════════════
 
+
 class TestGetMarketScale:
     def test_returns_1_when_above_ma60(self, mock_hs300_df, monkeypatch):
         """价格在 MA60 上方 → 满仓 1.0"""
@@ -148,6 +150,7 @@ class TestGetMarketScale:
 # get_market_state 测试
 # ═══════════════════════════════════════════
 
+
 class TestGetMarketState:
     def test_returns_dict_with_expected_keys(self, mock_hs300_df, monkeypatch):
         monkeypatch.setattr(market_filter, "load_hs300_index", lambda: mock_hs300_df)
@@ -177,6 +180,7 @@ class TestGetMarketState:
 # ═══════════════════════════════════════════
 # refresh_index_cache 测试
 # ═══════════════════════════════════════════
+
 
 class TestRefreshIndexCache:
     def test_mootdx_success(self, mock_hs300_df):

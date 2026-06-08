@@ -2,9 +2,9 @@
 """MarketAnalyzer 单元测试 — 大盘复盘分析器"""
 
 import sys
-from pathlib import Path
 from datetime import date
-from unittest.mock import patch, MagicMock
+from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -12,14 +12,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.market_analyzer import (
     MarketAnalyzer,
-    MarketOverview,
     MarketIndex,
+    MarketOverview,
 )
-
 
 # ═══════════════════════════════════════════
 # MarketIndex 测试
 # ═══════════════════════════════════════════
+
 
 class TestMarketIndex:
     def test_to_dict_contains_all_fields(self):
@@ -48,6 +48,7 @@ class TestMarketIndex:
 # MarketOverview 测试
 # ═══════════════════════════════════════════
 
+
 class TestMarketOverview:
     def test_default_values(self):
         overview = MarketOverview(date="2025-06-09")
@@ -66,6 +67,7 @@ class TestMarketOverview:
 # ═══════════════════════════════════════════
 # MarketAnalyzer 测试
 # ═══════════════════════════════════════════
+
 
 class TestMarketAnalyzer:
     @pytest.fixture
@@ -199,16 +201,27 @@ class TestMarketAnalyzer:
     def test_get_market_overview_mocked(self, analyzer):
         analyzer.data_manager.get_main_indices.return_value = [
             {
-                "code": "sh000001", "name": "上证指数",
-                "current": 3350.0, "change": 15.0, "change_pct": 0.45,
-                "open": 3340.0, "high": 3360.0, "low": 3335.0,
-                "prev_close": 3335.0, "volume": 1e10, "amount": 2.8e11,
+                "code": "sh000001",
+                "name": "上证指数",
+                "current": 3350.0,
+                "change": 15.0,
+                "change_pct": 0.45,
+                "open": 3340.0,
+                "high": 3360.0,
+                "low": 3335.0,
+                "prev_close": 3335.0,
+                "volume": 1e10,
+                "amount": 2.8e11,
                 "amplitude": 0.75,
             },
         ]
         analyzer.data_manager.get_market_stats.return_value = {
-            "up_count": 2500, "down_count": 1800, "flat_count": 300,
-            "limit_up_count": 45, "limit_down_count": 12, "total_amount": 8900.0,
+            "up_count": 2500,
+            "down_count": 1800,
+            "flat_count": 300,
+            "limit_up_count": 45,
+            "limit_down_count": 12,
+            "total_amount": 8900.0,
         }
         analyzer.data_manager.get_sector_rankings.return_value = (
             [{"name": "半导体", "change_pct": 3.5}],
@@ -248,7 +261,8 @@ class TestMarketAnalyzer:
             indices=[
                 MarketIndex(code="sh000001", name="上证指数", change_pct=0.5),
             ],
-            up_count=2500, down_count=1800,
+            up_count=2500,
+            down_count=1800,
         )
         # 无 AI analyzer 应回退到模板
         review = analyzer.generate_market_review(overview, [])

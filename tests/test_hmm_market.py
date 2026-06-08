@@ -3,27 +3,27 @@
 
 import sys
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-import pytest
 import numpy as np
+import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from quant_engine.hmm_market import (
+    N_DIMS,
+    N_STATES,
+    STATE_NAMES,
     GaussianHMM,
     HMMResult,
-    N_STATES,
-    N_DIMS,
-    STATE_NAMES,
-    detect_market_state,
     _extract_market_features,
+    detect_market_state,
 )
-
 
 # ═══════════════════════════════════════════
 # GaussianHMM 测试
 # ═══════════════════════════════════════════
+
 
 class TestGaussianHMM:
     @pytest.fixture
@@ -114,6 +114,7 @@ class TestGaussianHMM:
 # HMMResult 测试
 # ═══════════════════════════════════════════
 
+
 class TestHMMResult:
     def test_create_with_defaults(self):
         result = HMMResult(
@@ -150,6 +151,7 @@ class TestHMMResult:
 # ═══════════════════════════════════════════
 # detect_market_state 测试
 # ═══════════════════════════════════════════
+
 
 class TestDetectMarketState:
     def test_insufficient_data_returns_fallback(self):

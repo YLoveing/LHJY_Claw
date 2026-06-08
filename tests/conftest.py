@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 """共享 pytest fixtures — mock 数据提供器、通知服务等"""
 
-import sys
 import os
-from pathlib import Path
-from datetime import date, datetime
+import sys
 from dataclasses import dataclass
+from datetime import date, datetime
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 from unittest.mock import MagicMock, PropertyMock, patch
 
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 # 确保项目根目录在 sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 # ═══════════════════════════════════════════
 # Mock 数据工厂
 # ═══════════════════════════════════════════
+
 
 class MockDailyBar:
     """模拟 OHLC 日线 Bar，实现 DailyBarLike Protocol"""
@@ -71,6 +72,7 @@ class MockBacktestResult:
 # 通用 Fixtures
 # ═══════════════════════════════════════════
 
+
 @pytest.fixture
 def sample_date() -> date:
     """基准日期 fixture"""
@@ -85,12 +87,14 @@ def forward_bars_uptrend() -> List[MockDailyBar]:
     for i in range(20):
         d = date(2025, 6, 10 + i)
         close = base + i * 0.1
-        bars.append(MockDailyBar(
-            dt=d,
-            high=close + 0.05,
-            low=close - 0.05,
-            close=close,
-        ))
+        bars.append(
+            MockDailyBar(
+                dt=d,
+                high=close + 0.05,
+                low=close - 0.05,
+                close=close,
+            )
+        )
     return bars
 
 
@@ -102,12 +106,14 @@ def forward_bars_downtrend() -> List[MockDailyBar]:
     for i in range(20):
         d = date(2025, 6, 10 + i)
         close = base - i * 0.1
-        bars.append(MockDailyBar(
-            dt=d,
-            high=close + 0.05,
-            low=close - 0.05,
-            close=close,
-        ))
+        bars.append(
+            MockDailyBar(
+                dt=d,
+                high=close + 0.05,
+                low=close - 0.05,
+                close=close,
+            )
+        )
     return bars
 
 
@@ -118,12 +124,14 @@ def forward_bars_flat() -> List[MockDailyBar]:
     for i in range(20):
         d = date(2025, 6, 10 + i)
         close = 10.0 + np.sin(i * 0.3) * 0.1
-        bars.append(MockDailyBar(
-            dt=d,
-            high=close + 0.03,
-            low=close - 0.03,
-            close=close,
-        ))
+        bars.append(
+            MockDailyBar(
+                dt=d,
+                high=close + 0.03,
+                low=close - 0.03,
+                close=close,
+            )
+        )
     return bars
 
 
@@ -140,12 +148,14 @@ def forward_bars_with_stop_loss() -> List[MockDailyBar]:
             close = 7.5  # 触止损
         else:
             close = 8.5 + i * 0.05
-        bars.append(MockDailyBar(
-            dt=d,
-            high=close + 0.1,
-            low=close - 0.15,
-            close=close,
-        ))
+        bars.append(
+            MockDailyBar(
+                dt=d,
+                high=close + 0.1,
+                low=close - 0.15,
+                close=close,
+            )
+        )
     return bars
 
 
@@ -162,12 +172,14 @@ def forward_bars_with_take_profit() -> List[MockDailyBar]:
             close = 12.5  # 触止盈
         else:
             close = 12.0 - i * 0.05
-        bars.append(MockDailyBar(
-            dt=d,
-            high=close + 0.15,
-            low=close - 0.1,
-            close=close,
-        ))
+        bars.append(
+            MockDailyBar(
+                dt=d,
+                high=close + 0.15,
+                low=close - 0.1,
+                close=close,
+            )
+        )
     return bars
 
 
@@ -186,6 +198,7 @@ def short_forward_bars() -> List[MockDailyBar]:
 # market_filter fixtures
 # ═══════════════════════════════════════════
 
+
 @pytest.fixture
 def mock_hs300_df() -> pd.DataFrame:
     """模拟沪深300指数 200 天数据（多头排列）"""
@@ -195,10 +208,12 @@ def mock_hs300_df() -> pd.DataFrame:
     closes = 3800 + np.cumsum(rng.normal(0.05, 1.5, n))
     closes = np.maximum(closes, 2000)
 
-    df = pd.DataFrame({
-        "date": dates[:len(closes)],
-        "close": closes[:len(closes)],
-    })
+    df = pd.DataFrame(
+        {
+            "date": dates[: len(closes)],
+            "close": closes[: len(closes)],
+        }
+    )
     return df
 
 
@@ -211,16 +226,19 @@ def mock_hs300_bearish_df() -> pd.DataFrame:
     closes = 3800 - np.cumsum(np.abs(rng.normal(0.5, 2.0, n)))
     closes = np.maximum(closes, 1500)
 
-    df = pd.DataFrame({
-        "date": dates[:len(closes)],
-        "close": closes[:len(closes)],
-    })
+    df = pd.DataFrame(
+        {
+            "date": dates[: len(closes)],
+            "close": closes[: len(closes)],
+        }
+    )
     return df
 
 
 # ═══════════════════════════════════════════
 # Data source fixtures
 # ═══════════════════════════════════════════
+
 
 @pytest.fixture
 def mock_daily_kline_df() -> pd.DataFrame:
@@ -230,16 +248,18 @@ def mock_daily_kline_df() -> pd.DataFrame:
     rng = np.random.default_rng(42)
     close = 10 + np.cumsum(rng.normal(0, 0.2, n))
 
-    df = pd.DataFrame({
-        "date": dates,
-        "open": close - rng.uniform(-0.1, 0.1, n),
-        "high": close + rng.uniform(0, 0.15, n),
-        "low": close - rng.uniform(0, 0.15, n),
-        "close": close,
-        "volume": rng.integers(100000, 1000000, n),
-        "amount": close * rng.integers(100000, 1000000, n) * 100,
-        "pct_chg": rng.normal(0, 1.5, n),
-    })
+    df = pd.DataFrame(
+        {
+            "date": dates,
+            "open": close - rng.uniform(-0.1, 0.1, n),
+            "high": close + rng.uniform(0, 0.15, n),
+            "low": close - rng.uniform(0, 0.15, n),
+            "close": close,
+            "volume": rng.integers(100000, 1000000, n),
+            "amount": close * rng.integers(100000, 1000000, n) * 100,
+            "pct_chg": rng.normal(0, 1.5, n),
+        }
+    )
     return df
 
 
@@ -266,6 +286,7 @@ def mock_quote_data() -> Dict[str, Any]:
 # Notification / Search mock fixtures
 # ═══════════════════════════════════════════
 
+
 @pytest.fixture
 def mock_notifier():
     """模拟通知服务"""
@@ -285,6 +306,7 @@ def mock_search_service():
 # ═══════════════════════════════════════════
 # Market overview fixtures
 # ═══════════════════════════════════════════
+
 
 @pytest.fixture
 def mock_market_index_dict() -> Dict[str, Any]:
@@ -322,6 +344,7 @@ def mock_market_stats_dict() -> Dict[str, Any]:
 # HMM / price extraction fixtures
 # ═══════════════════════════════════════════
 
+
 @pytest.fixture
 def mock_price_series() -> Dict[str, List[Tuple[str, float]]]:
     """模拟多只股票的价格序列（50天）"""
@@ -333,7 +356,7 @@ def mock_price_series() -> Dict[str, List[Tuple[str, float]]]:
         series = []
         for i, d in enumerate(dates):
             ret = rng.normal(0.001, 0.015)
-            base *= (1 + ret)
+            base *= 1 + ret
             series.append((d, round(float(base), 2)))
         prices[code] = series
     return prices
