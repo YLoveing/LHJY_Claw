@@ -50,6 +50,7 @@ class MarkowitzResult:
 #  求解: min  w^T Σ w  s.t.  w^T 1 = 1, w ≥ 0
 # ═══════════════════════════════════════════
 
+
 def _cl_solve(sigma: np.ndarray, n: int) -> np.ndarray:
     """
     最小方差组合（仅做多）— CLA 梯度投影法。
@@ -106,7 +107,7 @@ def _cl_solve(sigma: np.ndarray, n: int) -> np.ndarray:
                 if w[i] > 1e-8:
                     active[i] = True
                 elif grad[i] < λ - 1e-6 and not active[i]:
-                    active[i] = True   # 梯度小于 λ 的应进入
+                    active[i] = True  # 梯度小于 λ 的应进入
             continue
 
         # 步长截断至单纯形边界
@@ -157,12 +158,13 @@ def _solve_max_sharpe(mu: np.ndarray, sigma: np.ndarray) -> np.ndarray:
 
         # 对给定 λ 求最优 w
         # max w^T μ - λ · w^T Σ w
-        # 等效于 min w^T Σ w - (1/λ) w^T μ   (但 λ=0 时不行)
-        # 用投影法: 从等权开始迭代
+        # 梯度: ∇L = μ - 2λ Σ w
+        # 梯度上升: w ← w + step · ∇L
         w = np.ones(n) / n
+        step = 0.001 / max(λ_mid, 0.1)
         for _ in range(200):
-            grad = 2.0 * sigma @ w - mu  # -∇(μ - λΣw) 的负方向
-            w = w + 0.01 * (mu - 2.0 * sigma @ w)  # 梯度上升
+            grad = mu - 2.0 * λ_mid * sigma @ w
+            w = w + step * grad
             w = np.clip(w, 0, None)
             w /= w.sum() + 1e-15
 
@@ -187,6 +189,7 @@ def _solve_max_sharpe(mu: np.ndarray, sigma: np.ndarray) -> np.ndarray:
 # ═══════════════════════════════════════════
 #  参数估计
 # ═══════════════════════════════════════════
+
 
 def _estimate_parameters(prices: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     """从价格矩阵估计预期收益率和协方差矩阵 (收缩估计)."""
@@ -223,8 +226,8 @@ def _estimate_parameters(prices: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
 #  有效前沿 — λ 扫描 (正确的实现)
 # ═══════════════════════════════════════════
 
-def _compute_efficient_frontier(mu: np.ndarray, sigma: np.ndarray,
-                                n_points: int = 30) -> List[Dict[str, float]]:
+
+def _compute_efficient_frontier(mu: np.ndarray, sigma: np.ndarray, n_points: int = 30) -> List[Dict[str, float]]:
     """计算有效前沿: 对风险厌恶系数 λ 从大到小扫描."""
 
     N = len(mu)
@@ -286,6 +289,7 @@ def _compute_efficient_frontier(mu: np.ndarray, sigma: np.ndarray,
 #  主函数
 # ═══════════════════════════════════════════
 
+
 def optimize_portfolio(
     stock_codes: Optional[List[str]] = None,
     allow_short: bool = False,
@@ -295,8 +299,11 @@ def optimize_portfolio(
         prices, codes, dates = extract_price_matrix()
         if len(prices) < 2 or len(codes) < 2:
             return MarkowitzResult(
-                weights={}, expected_return=0.0, expected_volatility=0.0,
-                sharpe_ratio=0.0, status="insufficient_data",
+                weights={},
+                expected_return=0.0,
+                expected_volatility=0.0,
+                sharpe_ratio=0.0,
+                status="insufficient_data",
                 message=f"prices={prices.shape if prices.size > 0 else 0}, codes={codes}",
             )
 
@@ -304,14 +311,20 @@ def optimize_portfolio(
             idx = [i for i, c in enumerate(codes) if c in stock_codes]
             if len(idx) < 1:
                 return MarkowitzResult(
-                    weights={}, expected_return=0.0, expected_volatility=0.0,
-                    sharpe_ratio=0.0, status="no_matching_stocks",
+                    weights={},
+                    expected_return=0.0,
+                    expected_volatility=0.0,
+                    sharpe_ratio=0.0,
+                    status="no_matching_stocks",
                 )
             # 至少需要2只进行优化
             if len(idx) < 2:
                 return MarkowitzResult(
-                    weights={}, expected_return=0.0, expected_volatility=0.0,
-                    sharpe_ratio=0.0, status="insufficient_data",
+                    weights={},
+                    expected_return=0.0,
+                    expected_volatility=0.0,
+                    sharpe_ratio=0.0,
+                    status="insufficient_data",
                     message=f"至少需要2只股票做优化, 当前 {len(idx)} 只",
                 )
             codes = [codes[i] for i in idx]
@@ -354,10 +367,7 @@ def optimize_portfolio(
         minvar_w = {codes[i]: round(float(w_minvar[i]), 4) for i in range(N)}
         sharpe_w = {codes[i]: round(float(w_sharpe[i]), 4) for i in range(N)}
 
-        logger.info(
-            f"[马科维茨] {len(codes)}只 | ER={exp_ret:.2%} σ={vol:.2%} "
-            f"SR={sharpe:.3f} | w={weights}"
-        )
+        logger.info(f"[马科维茨] {len(codes)}只 | ER={exp_ret:.2%} σ={vol:.2%} " f"SR={sharpe:.3f} | w={weights}")
 
         result = MarkowitzResult(
             weights=weights,
@@ -375,8 +385,11 @@ def optimize_portfolio(
     except Exception as e:
         logger.error(f"[马科维茨] {e}")
         return MarkowitzResult(
-            weights={}, expected_return=0.0, expected_volatility=0.0,
-            sharpe_ratio=0.0, status=f"error: {e}",
+            weights={},
+            expected_return=0.0,
+            expected_volatility=0.0,
+            sharpe_ratio=0.0,
+            status=f"error: {e}",
         )
 
 
@@ -395,8 +408,10 @@ def run_markowitz_and_save(stock_codes: Optional[List[str]] = None) -> Dict[str,
         "timestamp": datetime.now().isoformat(),
     }
     _OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
-    import tempfile, os
-    tmp = tempfile.NamedTemporaryFile(mode='w', dir=_OUTPUT_FILE.parent, suffix='.tmp', delete=False)
+    import os
+    import tempfile
+
+    tmp = tempfile.NamedTemporaryFile(mode="w", dir=_OUTPUT_FILE.parent, suffix=".tmp", delete=False)
     json.dump(output, tmp, ensure_ascii=False, indent=2)
     tmp.flush()
     os.fsync(tmp.fileno())
