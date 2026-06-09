@@ -55,3 +55,26 @@ Thumbs.db
 *.swp
 *.swo
 sentiment_engine/vol_timing.json
+
+# 推送缓存（每日生成）
+push_output/
+
+# 日报草稿
+reports/autopsy/
+
+# 回测输出（保存在 reports/ 中，但不要跟踪这些生成的 JSON）
+reports/backtest_*.json
+reports/bt_*.json
+reports/fundamentals_*.json
+reports/market_review_*.md
+
+# 历史摘要（推送完后无保留价值）
+simulated_trading/summary_*.txt
+simulated_trading/weekly_*.txt
+
+# 备份
+*.bak
+simulated_trading_backup_*.tar.gz
+
+# coverage
+.coverage
