@@ -72,19 +72,29 @@ def run_quick(days: int = 30, save: bool = False) -> Optional[dict]:
         return None
 
 
-def run_full(save: bool = False) -> Optional[dict]:
-    """全A股回测 — 2300+只股票。"""
+def run_real(days: int = 60, save: bool = False) -> Optional[dict]:
+    """🔥 生产代码回测 — DataCache全量 + 真实费率 + 真实风控。"""
     try:
-        log.info("📊 全A股回测启动（2300+股票，预计 15-30 分钟）...")
-        from scripts.backtest_full import main as full_main
+        import subprocess
 
+        cmd = [sys.executable, "scripts/backtest_real.py", f"--days={days}"]
+        if save:
+            cmd.append("--save")
+        log.info(f"📊 生产代码回测 ({days}天, DataCache 1570+只)...")
         t0 = time.time()
-        result = full_main()
-        log.info(f"✅ 全A股回测完成 ({time.time() - t0:.0f}s)")
-        return result
+        subprocess.check_output(cmd, text=True, stderr=subprocess.STDOUT)
+        elapsed = time.time() - t0
+        log.info(f"✅ 生产代码回测完成 ({elapsed:.0f}s)")
+        return {"status": "ok", "elapsed": elapsed}
     except Exception as e:
-        log.warning(f"⚠️ 全A股回测跳过: {e}")
+        log.warning(f"⚠️ 生产代码回测跳过: {e}")
         return None
+
+
+def run_full(save: bool = False) -> Optional[dict]:
+    """全A股回测（旧版，schema不匹配，建议用real）。"""
+    log.warning("⚠️ 旧版全A股回测不可用，请使用 --scenario=real")
+    return None
 
 
 def run_hs300(save: bool = False) -> Optional[dict]:
@@ -142,7 +152,10 @@ def save_summary(results: dict):
 def main():
     parser = argparse.ArgumentParser(description="统一回测运行器")
     parser.add_argument(
-        "--scenario", choices=["quick", "full", "hs300", "compare"], default="quick", help="回测场景 (default: quick)"
+        "--scenario",
+        choices=["quick", "full", "hs300", "compare", "real"],
+        default="quick",
+        help="回测场景 (default: quick, real=生产代码+全量数据)",
     )
     parser.add_argument("--days", type=int, default=30, help="回测天数 (quick/compare)")
     parser.add_argument("--all", action="store_true", help="运行所有场景")
@@ -155,11 +168,13 @@ def main():
         log.info("🚀 全场景回测启动")
         log.info("=" * 50)
         results = {}
-        for scenario in ["quick", "compare", "hs300"]:
+        for scenario in ["quick", "real", "compare", "hs300"]:
             log.info(f"\n── [{scenario}] ──")
             t0 = time.time()
             if scenario == "quick":
                 results[scenario] = run_quick(args.days, args.save)
+            elif scenario == "real":
+                results[scenario] = run_real(args.days, args.save)
             elif scenario == "compare":
                 results[scenario] = run_compare(args.days, args.save)
             elif scenario == "hs300":
@@ -185,11 +200,12 @@ def main():
     scenario_map = {
         "quick": run_quick,
         "full": run_full,
+        "real": run_real,
         "hs300": run_hs300,
         "compare": run_compare,
     }
     runner = scenario_map.get(args.scenario, run_quick)
-    result = runner(args.days, args.save) if args.scenario in ("quick", "compare") else runner(args.save)
+    result = runner(args.days, args.save) if args.scenario in ("quick", "compare", "real") else runner(args.save)
 
     elapsed = time.time() - t0
     if result:

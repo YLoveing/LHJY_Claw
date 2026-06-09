@@ -201,7 +201,7 @@ fi
 
 # ── 收盘回测（仅周五 + 非空仓日） ──
 if [ "$HOUR" = "18" ] && [ "$(date +%u)" = "5" ]; then
-    BACKTEST_RESULT=$(python3 scripts/run_backtest.py --scenario=quick --days=30 --save 2>&1 | tail -5)
+    BACKTEST_RESULT=$(python3 scripts/run_backtest.py --scenario=real --days=30 --save 2>&1 | tail -5)
     if [ -n "$BACKTEST_RESULT" ]; then
         _push "$BACKTEST_RESULT"
         log "📊 收盘回测完成"
