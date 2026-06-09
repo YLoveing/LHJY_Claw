@@ -122,7 +122,7 @@ class RiskConfig:
     Args:
         stop_loss_pct: 单只止损阈值（%），-15 表示跌15%触发止损
         take_profit_pct: 单只止盈阈值（%），25 表示涨25%触发减半仓
-        max_drawdown_pct: 账户最大回撤限制（%），-20 表示回撤超20%暂停交易
+        max_drawdown_pct: 账户最大回撤限制（%），-30 表示回撤超30%暂停交易
         max_positions: 最大持仓数
         kelly_diversification: 凯利分散系数
         max_single_position_pct: 单只仓位占比上限
@@ -136,7 +136,7 @@ class RiskConfig:
     commission_rate: float = 0.00025  # 佣金万2.5（买卖均收，最低5元）
     stamp_tax_rate: float = 0.0005  # 印花税万5（仅卖出时收）
     min_commission: float = 5.0  # 佣金最低收费5元
-    max_drawdown_pct: float = -20.0
+    max_drawdown_pct: float = -30.0  # 对齐 simulated_trading.py 的 ACCOUNT_DRAWDOWN_LIMIT
     max_positions: int = 8
     kelly_diversification: float = 0.25
     max_single_position_pct: float = 0.25
