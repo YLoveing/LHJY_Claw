@@ -35,26 +35,12 @@ TRACE_FILE = DATA_DIR / "signal_trace.json"
 INITIAL_CAPITAL = 30_000
 MAX_POSITIONS = 3
 
-# ── 交易费用参数（A股真实费率） ──
-COMMISSION_RATE = 0.00025  # 佣金万2.5（买卖均收，最低5元）
-STAMP_TAX_RATE = 0.0005  # 印花税万5（仅卖出时收）
-TRANSFER_FEE_RATE = 0.00001  # 过户费万0.1（买卖均收）
-MIN_COMMISSION = 5.0  # 佣金最低收费5元
-
-
-def calc_buy_fees(cost: float) -> float:
-    """买入费用 = 佣金（最低5元）+ 过户费"""
-    commission = max(cost * COMMISSION_RATE, MIN_COMMISSION)
-    transfer_fee = cost * TRANSFER_FEE_RATE
-    return commission + transfer_fee
-
-
-def calc_sell_fees(proceeds_before_fees: float) -> float:
-    """卖出费用 = 佣金（最低5元）+ 过户费 + 印花税"""
-    commission = max(proceeds_before_fees * COMMISSION_RATE, MIN_COMMISSION)
-    transfer_fee = proceeds_before_fees * TRANSFER_FEE_RATE
-    stamp_tax = proceeds_before_fees * STAMP_TAX_RATE
-    return commission + transfer_fee + stamp_tax
+# ── 费率常量统一来自 fees.py（单一事实来源） ──
+from layers.execution_layer.fees import DEFAULT_COMMISSION_RATE as COMMISSION_RATE
+from layers.execution_layer.fees import (
+    calc_buy_fees,
+    calc_sell_fees,
+)
 
 
 # ── P3 滑点模型 ──

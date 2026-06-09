@@ -132,6 +132,10 @@ class RiskConfig:
     # 止损/止盈参数对齐 simulated_trading.py 的 HARD_STOP_PCT / TAKE_PROFIT_PCT
     stop_loss_pct: float = -8.0
     take_profit_pct: float = 25.0
+    # 费率参数（A股真实费率，与 fees.py DEFAULT_* 常量对齐）
+    commission_rate: float = 0.00025  # 佣金万2.5（买卖均收，最低5元）
+    stamp_tax_rate: float = 0.0005  # 印花税万5（仅卖出时收）
+    min_commission: float = 5.0  # 佣金最低收费5元
     max_drawdown_pct: float = -20.0
     max_positions: int = 8
     kelly_diversification: float = 0.25

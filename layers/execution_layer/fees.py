@@ -10,6 +10,8 @@ A股真实费率（与原值对齐）：
 import logging
 from typing import Optional
 
+from layers.risk_layer.models import RiskConfig
+
 logger = logging.getLogger("execution_layer")
 
 # ── 默认费率参数（与原 simulated_trading.py 一致）──
@@ -26,23 +28,32 @@ def calc_buy_fees(
     commission_rate: Optional[float] = None,
     transfer_fee_rate: Optional[float] = None,
     min_commission: Optional[float] = None,
+    config: Optional[RiskConfig] = None,
 ) -> float:
     """计算买入费用 = 佣金（最低5元）+ 过户费。
 
     从 simulated_trading.py 原样迁移，签名扩展了参数化支持。
+    优先级：显式参数 > config 字段 > 模块级 DEFAULT_* 常量。
 
     Args:
         cost: 买入金额（股数 × 价格）
-        commission_rate: 佣金费率，None 则使用默认值万2.5
-        transfer_fee_rate: 过户费率，None 则使用默认值万0.1
-        min_commission: 最低佣金，None 则使用默认值5.0
+        commission_rate: 佣金费率，None 则使用 config 或默认值万2.5
+        transfer_fee_rate: 过户费率，None 则使用 config 或默认值万0.1
+        min_commission: 最低佣金，None 则使用 config 或默认值5.0
+        config: 风控配置（RiskConfig），提供费率参数
 
     Returns:
         买入总费用
     """
-    rate = commission_rate if commission_rate is not None else DEFAULT_COMMISSION_RATE
-    tf_rate = transfer_fee_rate if transfer_fee_rate is not None else DEFAULT_TRANSFER_FEE_RATE
-    min_c = min_commission if min_commission is not None else DEFAULT_MIN_COMMISSION
+    rate = (
+        commission_rate
+        if commission_rate is not None
+        else (config.commission_rate if config else DEFAULT_COMMISSION_RATE)
+    )
+    tf_rate = transfer_fee_rate if transfer_fee_rate is not None else (DEFAULT_TRANSFER_FEE_RATE)
+    min_c = (
+        min_commission if min_commission is not None else (config.min_commission if config else DEFAULT_MIN_COMMISSION)
+    )
 
     commission = max(cost * rate, min_c)
     transfer_fee = cost * tf_rate
@@ -55,25 +66,36 @@ def calc_sell_fees(
     stamp_tax_rate: Optional[float] = None,
     transfer_fee_rate: Optional[float] = None,
     min_commission: Optional[float] = None,
+    config: Optional[RiskConfig] = None,
 ) -> float:
     """计算卖出费用 = 佣金（最低5元）+ 过户费 + 印花税。
 
     从 simulated_trading.py 原样迁移，签名扩展了参数化支持。
+    优先级：显式参数 > config 字段 > 模块级 DEFAULT_* 常量。
 
     Args:
         proceeds_before_fees: 卖出前收入（股数 × 价格）
-        commission_rate: 佣金费率，None 则使用默认值万2.5
-        stamp_tax_rate: 印花税费率，None 则使用默认值万5
+        commission_rate: 佣金费率，None 则使用 config 或默认值万2.5
+        stamp_tax_rate: 印花税费率，None 则使用 config 或默认值万5
         transfer_fee_rate: 过户费率，None 则使用默认值万0.1
-        min_commission: 最低佣金，None 则使用默认值5.0
+        min_commission: 最低佣金，None 则使用 config 或默认值5.0
+        config: 风控配置（RiskConfig），提供费率参数
 
     Returns:
         卖出总费用
     """
-    rate = commission_rate if commission_rate is not None else DEFAULT_COMMISSION_RATE
-    st_rate = stamp_tax_rate if stamp_tax_rate is not None else DEFAULT_STAMP_TAX_RATE
+    rate = (
+        commission_rate
+        if commission_rate is not None
+        else (config.commission_rate if config else DEFAULT_COMMISSION_RATE)
+    )
+    st_rate = (
+        stamp_tax_rate if stamp_tax_rate is not None else (config.stamp_tax_rate if config else DEFAULT_STAMP_TAX_RATE)
+    )
     tf_rate = transfer_fee_rate if transfer_fee_rate is not None else DEFAULT_TRANSFER_FEE_RATE
-    min_c = min_commission if min_commission is not None else DEFAULT_MIN_COMMISSION
+    min_c = (
+        min_commission if min_commission is not None else (config.min_commission if config else DEFAULT_MIN_COMMISSION)
+    )
 
     commission = max(proceeds_before_fees * rate, min_c)
     transfer_fee = proceeds_before_fees * tf_rate
