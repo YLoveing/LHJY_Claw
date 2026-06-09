@@ -65,7 +65,7 @@ MEDIUM_STOP_PCT = -5.0  # 日频持仓浮亏-5% → 减半仓（P1风控补洞�
 HARD_STOP_PCT = -8.0  # 日频持仓浮亏-8% → 全平（替代旧-15%）
 STOP_LOSS_PCT = -8.0  # 硬止损阈值（原-15%收窄）
 TAKE_PROFIT_PCT = 25.0  # 单只浮盈25% → 减半仓锁利
-ACCOUNT_DRAWDOWN_LIMIT = -20.0  # 账户总回撤超过20% → 暂停所有买入
+ACCOUNT_DRAWDOWN_LIMIT = -30.0  # 账户总回撤超过30% → 暂停所有买入
 
 # ── P2 时间止损参数 ──
 TIME_STOP_DAYS = 20  # 持有超过20个交易日
