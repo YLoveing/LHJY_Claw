@@ -12,10 +12,10 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-
 # ============================================
 # 类型转换工具函数（源自 realtime_types.py）
 # ============================================
+
 
 def safe_float(val: Any, default: Optional[float] = None) -> Optional[float]:
     """安全转换为浮点数，处理 None / 空 / NaN / 字符串。
@@ -51,9 +51,11 @@ def safe_int(val: Any, default: Optional[int] = None) -> Optional[int]:
 # 基础数据模型
 # ============================================
 
+
 @dataclass
 class StockData:
     """股票基础信息 — 精简版，仅用于引用传递。"""
+
     code: str
     name: str = ""
     market: str = "cn"  # cn / hk / us
@@ -62,6 +64,7 @@ class StockData:
 @dataclass
 class KLineData:
     """单根 K 线数据点。"""
+
     date: str
     open: float
     high: float
@@ -84,6 +87,7 @@ class KLineRequest:
         force_refresh: 是否跳过缓存
         frequency: 频率，可选 "daily" / "weekly" / "monthly"
     """
+
     code: str
     start_date: Optional[str] = None
     end_date: Optional[str] = None
@@ -98,6 +102,7 @@ class RealtimeQuote:
 
     各数据源返回的字段可能不同，缺失字段用 None 表示。
     """
+
     code: str
     name: str = ""
     source: str = ""
@@ -158,6 +163,7 @@ class ChipDistribution:
 
     反映持仓成本分布和获利情况。
     """
+
     code: str
     date: str = ""
     source: str = ""
@@ -188,6 +194,7 @@ class ChipDistribution:
 @dataclass
 class FundamentalContext:
     """基本面上下文（源自 REFACTOR_PLAN.md 的定义 + 现有代码范式）。"""
+
     code: str
     industry: Optional[str] = None
     market_cap: Optional[float] = None
@@ -205,6 +212,7 @@ class FundamentalContext:
 @dataclass
 class MarketOverview:
     """大盘概览。"""
+
     region: str = "cn"
     up_count: int = 0
     down_count: int = 0

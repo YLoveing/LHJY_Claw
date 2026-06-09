@@ -100,9 +100,7 @@ class AkshareFetcher(BaseFetcher):
 
     # ──────────── K 线：子类必须实现的抽象方法 ────────────
 
-    def _fetch_raw_kline(
-        self, stock_code: str, start_date: str, end_date: str
-    ) -> pd.DataFrame:
+    def _fetch_raw_kline(self, stock_code: str, start_date: str, end_date: str) -> pd.DataFrame:
         """获取原始 K 线数据（委托旧 fetcher）。
 
         注意一下传参：旧 AkshareFetcher._fetch_raw_data 仅支持日线，
@@ -129,9 +127,7 @@ class AkshareFetcher(BaseFetcher):
         if req.start_date:
             start_date = req.start_date
         else:
-            start_dt = datetime.strptime(end_date, "%Y-%m-%d") - timedelta(
-                days=req.days * 2
-            )
+            start_dt = datetime.strptime(end_date, "%Y-%m-%d") - timedelta(days=req.days * 2)
             start_date = start_dt.strftime("%Y-%m-%d")
 
         if req.frequency == "daily":
@@ -146,9 +142,7 @@ class AkshareFetcher(BaseFetcher):
             frequency=req.frequency,
         )
 
-    def _fetch_frequency_kline(
-        self, stock_code: str, start_date: str, end_date: str, frequency: str
-    ) -> pd.DataFrame:
+    def _fetch_frequency_kline(self, stock_code: str, start_date: str, end_date: str, frequency: str) -> pd.DataFrame:
         """获取周线或月线 K 线数据。
 
         akshare 的 stock_zh_a_hist 支持 period="weekly" / "monthly"，
@@ -163,23 +157,17 @@ class AkshareFetcher(BaseFetcher):
 
         # 尝试直接通过 akshare API 获取指定周期数据
         try:
-            result = self._try_fetch_period_kline(
-                stock_code, start_date, end_date, frequency
-            )
+            result = self._try_fetch_period_kline(stock_code, start_date, end_date, frequency)
             if result is not None and not result.empty:
                 df = self._normalize_kline(result, stock_code)
                 df = self._clean_kline(df)
                 df = self._calculate_indicators(df)
                 return df
         except Exception as e:
-            logger.warning(
-                f"[Akshare] {frequency} 直接 API 失败: {e}，降级为日线聚合"
-            )
+            logger.warning(f"[Akshare] {frequency} 直接 API 失败: {e}，降级为日线聚合")
 
         # 降级：获取日线数据并聚合
-        logger.info(
-            f"[Akshare] {stock_code} {frequency} 降级: 从日线 resample"
-        )
+        logger.info(f"[Akshare] {stock_code} {frequency} 降级: 从日线 resample")
         df = self._fetch_raw_kline(stock_code, start_date, end_date)
         if df is None or df.empty:
             return pd.DataFrame()
@@ -206,10 +194,7 @@ class AkshareFetcher(BaseFetcher):
                 pass
 
             if _is_etf_local:
-                logger.info(
-                    f"[API调用] ak.fund_etf_hist_em(symbol={stock_code}, "
-                    f"period={frequency}, ...)"
-                )
+                logger.info(f"[API调用] ak.fund_etf_hist_em(symbol={stock_code}, " f"period={frequency}, ...)")
                 self._inner._enforce_rate_limit()
                 return ak.fund_etf_hist_em(
                     symbol=stock_code,
@@ -219,10 +204,7 @@ class AkshareFetcher(BaseFetcher):
                     adjust="qfq",
                 )
             else:
-                logger.info(
-                    f"[API调用] ak.stock_zh_a_hist(symbol={stock_code}, "
-                    f"period={period}, ...)"
-                )
+                logger.info(f"[API调用] ak.stock_zh_a_hist(symbol={stock_code}, " f"period={period}, ...)")
                 self._inner._enforce_rate_limit()
                 return ak.stock_zh_a_hist(
                     symbol=stock_code,
@@ -243,9 +225,7 @@ class AkshareFetcher(BaseFetcher):
         return None
 
     @staticmethod
-    def _resample_kline(
-        df: pd.DataFrame, frequency: str
-    ) -> pd.DataFrame:
+    def _resample_kline(df: pd.DataFrame, frequency: str) -> pd.DataFrame:
         """将日线 K 线聚合为周线或月线。
 
         仅作为 akshare 不直接支持周期时的降级方案。
@@ -258,9 +238,7 @@ class AkshareFetcher(BaseFetcher):
 
         # 确定聚合标签
         rule = "W" if frequency == "weekly" else "M"
-        label_col = df["date"].dt.strftime(
-            "%Y-%W" if frequency == "weekly" else "%Y-%m"
-        )
+        label_col = df["date"].dt.strftime("%Y-%W" if frequency == "weekly" else "%Y-%m")
         df["_period"] = label_col
 
         agg = {
@@ -284,9 +262,7 @@ class AkshareFetcher(BaseFetcher):
 
         # 计算涨跌幅
         if "close" in df_resampled.columns:
-            df_resampled["pct_chg"] = (
-                df_resampled["close"].pct_change() * 100
-            ).fillna(0)
+            df_resampled["pct_chg"] = (df_resampled["close"].pct_change() * 100).fillna(0)
 
         # 标准化日期格式
         df_resampled["date"] = df_resampled["date"].dt.strftime("%Y-%m-%d")
@@ -362,27 +338,15 @@ class AkshareFetcher(BaseFetcher):
             finances = bundle.get("finances", {})
             if finances:
                 ctx.industry = _safe_str(finances.get("industry"))
-                ctx.market_cap = safe_float(
-                    finances.get("market_cap") or finances.get("总市值")
-                )
-                ctx.pe_ttm = safe_float(
-                    finances.get("pe_ttm") or finances.get("pe")
-                )
-                ctx.pb = safe_float(
-                    finances.get("pb") or finances.get("pb_ratio")
-                )
+                ctx.market_cap = safe_float(finances.get("market_cap") or finances.get("总市值"))
+                ctx.pe_ttm = safe_float(finances.get("pe_ttm") or finances.get("pe"))
+                ctx.pb = safe_float(finances.get("pb") or finances.get("pb_ratio"))
                 ctx.roe = safe_float(finances.get("roe"))
 
             # 增长率
             if finances:
-                ctx.revenue_growth = safe_float(
-                    finances.get("revenue_growth")
-                    or finances.get("营业总收入同比增长率")
-                )
-                ctx.profit_growth = safe_float(
-                    finances.get("profit_growth")
-                    or finances.get("净利润同比增长率")
-                )
+                ctx.revenue_growth = safe_float(finances.get("revenue_growth") or finances.get("营业总收入同比增长率"))
+                ctx.profit_growth = safe_float(finances.get("profit_growth") or finances.get("净利润同比增长率"))
 
             # 板块归属
             belong_boards = bundle.get("belong_boards", [])
@@ -398,10 +362,7 @@ class AkshareFetcher(BaseFetcher):
             status = bundle.get("status", "not_supported")
             if status in ("ok", "partial"):
                 ctx.status = status
-            elif any(
-                v is not None
-                for v in [ctx.pe_ttm, ctx.pb, ctx.roe, ctx.market_cap]
-            ):
+            elif any(v is not None for v in [ctx.pe_ttm, ctx.pb, ctx.roe, ctx.market_cap]):
                 ctx.status = "partial"
             else:
                 ctx.status = status
@@ -409,9 +370,7 @@ class AkshareFetcher(BaseFetcher):
             return ctx
 
         except Exception as e:
-            logger.warning(
-                f"[Akshare] 获取 {code} 基本面数据失败: {e}", exc_info=True
-            )
+            logger.warning(f"[Akshare] 获取 {code} 基本面数据失败: {e}", exc_info=True)
             return FundamentalContext(code=code, status="failed")
 
     # ──────────── 大盘概览 ────────────
@@ -450,12 +409,8 @@ class AkshareFetcher(BaseFetcher):
                 overview.down_count = safe_int(stats.get("down_count"), 0)
                 overview.flat_count = safe_int(stats.get("flat_count"), 0)
                 overview.limit_up = safe_int(stats.get("limit_up_count"), 0)
-                overview.limit_down = safe_int(
-                    stats.get("limit_down_count"), 0
-                )
-                overview.total_amount = safe_float(
-                    stats.get("total_amount"), 0.0
-                )
+                overview.limit_down = safe_int(stats.get("limit_down_count"), 0)
+                overview.total_amount = safe_float(stats.get("total_amount"), 0.0)
         except Exception as e:
             logger.warning(f"[Akshare] 获取市场统计失败: {e}")
 

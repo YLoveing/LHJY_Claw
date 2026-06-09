@@ -17,13 +17,13 @@ import logging
 from typing import Optional
 
 from .models import (
+    BuySignal,
+    MACDStatus,
+    RSIStatus,
+    ScoreBreakdown,
     TrendAnalysisResult,
     TrendStatus,
     VolumeStatus,
-    MACDStatus,
-    RSIStatus,
-    BuySignal,
-    ScoreBreakdown,
 )
 
 logger = logging.getLogger(__name__)
@@ -32,6 +32,7 @@ logger = logging.getLogger(__name__)
 # ═══════════════════════════════════════════
 # 因子评分 — 每个因子对应独立的评分函数
 # ═══════════════════════════════════════════
+
 
 def score_trend(result: TrendAnalysisResult) -> float:
     """趋势评分（满分30分）。
@@ -104,11 +105,11 @@ def score_volume(result: TrendAnalysisResult) -> float:
     原逻辑对应 StockTrendAnalyzer._generate_signal 的量能评分部分。
     """
     volume_scores = {
-        VolumeStatus.SHRINK_VOLUME_DOWN: 15,   # 缩量回调最佳
-        VolumeStatus.HEAVY_VOLUME_UP: 12,      # 放量上涨次之
+        VolumeStatus.SHRINK_VOLUME_DOWN: 15,  # 缩量回调最佳
+        VolumeStatus.HEAVY_VOLUME_UP: 12,  # 放量上涨次之
         VolumeStatus.NORMAL: 10,
-        VolumeStatus.SHRINK_VOLUME_UP: 6,      # 无量上涨较差
-        VolumeStatus.HEAVY_VOLUME_DOWN: 0,     # 放量下跌最差
+        VolumeStatus.SHRINK_VOLUME_UP: 6,  # 无量上涨较差
+        VolumeStatus.HEAVY_VOLUME_DOWN: 0,  # 放量下跌最差
     }
     return float(volume_scores.get(result.volume_status, 8))
 
@@ -133,13 +134,13 @@ def score_macd(result: TrendAnalysisResult) -> float:
     原逻辑对应 StockTrendAnalyzer._generate_signal 的 MACD 评分部分。
     """
     macd_scores = {
-        MACDStatus.GOLDEN_CROSS_ZERO: 15,   # 零轴上金叉最强
-        MACDStatus.GOLDEN_CROSS: 12,        # 金叉
-        MACDStatus.CROSSING_UP: 10,         # 上穿零轴
-        MACDStatus.BULLISH: 8,              # 多头
-        MACDStatus.BEARISH: 2,              # 空头
-        MACDStatus.CROSSING_DOWN: 0,         # 下穿零轴
-        MACDStatus.DEATH_CROSS: 0,           # 死叉
+        MACDStatus.GOLDEN_CROSS_ZERO: 15,  # 零轴上金叉最强
+        MACDStatus.GOLDEN_CROSS: 12,  # 金叉
+        MACDStatus.CROSSING_UP: 10,  # 上穿零轴
+        MACDStatus.BULLISH: 8,  # 多头
+        MACDStatus.BEARISH: 2,  # 空头
+        MACDStatus.CROSSING_DOWN: 0,  # 下穿零轴
+        MACDStatus.DEATH_CROSS: 0,  # 死叉
     }
     return float(macd_scores.get(result.macd_status, 5))
 
@@ -150,11 +151,11 @@ def score_rsi(result: TrendAnalysisResult) -> float:
     原逻辑对应 StockTrendAnalyzer._generate_signal 的 RSI 评分部分。
     """
     rsi_scores = {
-        RSIStatus.OVERSOLD: 10,       # 超卖最佳
-        RSIStatus.STRONG_BUY: 8,      # 强势
-        RSIStatus.NEUTRAL: 5,         # 中性
-        RSIStatus.WEAK: 3,            # 弱势
-        RSIStatus.OVERBOUGHT: 0,      # 超买最差
+        RSIStatus.OVERSOLD: 10,  # 超卖最佳
+        RSIStatus.STRONG_BUY: 8,  # 强势
+        RSIStatus.NEUTRAL: 5,  # 中性
+        RSIStatus.WEAK: 3,  # 弱势
+        RSIStatus.OVERBOUGHT: 0,  # 超买最差
     }
     return float(rsi_scores.get(result.rsi_status, 5))
 
@@ -162,6 +163,7 @@ def score_rsi(result: TrendAnalysisResult) -> float:
 # ═══════════════════════════════════════════
 # 综合评分
 # ═══════════════════════════════════════════
+
 
 def composite_scoring(
     result: TrendAnalysisResult,
@@ -192,6 +194,7 @@ def composite_scoring(
 # ═══════════════════════════════════════════
 # 理由/风险生成（辅助函数）
 # ═══════════════════════════════════════════
+
 
 def generate_reasons(result: TrendAnalysisResult) -> list:
     """生成买入理由列表。
@@ -278,6 +281,7 @@ def generate_risks(result: TrendAnalysisResult) -> list:
 # 评分 → 信号映射
 # ═══════════════════════════════════════════
 
+
 def score_to_buy_signal(
     score: int,
     trend_status: TrendStatus,
@@ -295,9 +299,7 @@ def score_to_buy_signal(
     """
     if score >= 75 and trend_status in [TrendStatus.STRONG_BULL, TrendStatus.BULL]:
         return BuySignal.STRONG_BUY
-    elif score >= 60 and trend_status in [
-        TrendStatus.STRONG_BULL, TrendStatus.BULL, TrendStatus.WEAK_BULL
-    ]:
+    elif score >= 60 and trend_status in [TrendStatus.STRONG_BULL, TrendStatus.BULL, TrendStatus.WEAK_BULL]:
         return BuySignal.BUY
     elif score >= 45:
         return BuySignal.HOLD

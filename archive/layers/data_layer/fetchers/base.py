@@ -76,14 +76,17 @@ class BaseFetcher(ABC):
         子类一般不需要覆盖此方法。
         """
         import math
+
         end_date = req.end_date
         if end_date is None:
             from datetime import datetime
+
             end_date = datetime.now().strftime("%Y-%m-%d")
 
         start_date = req.start_date
         if start_date is None:
-            from datetime import timedelta, datetime
+            from datetime import datetime, timedelta
+
             start_dt = datetime.strptime(end_date, "%Y-%m-%d") - timedelta(days=req.days * 2)
             start_date = start_dt.strftime("%Y-%m-%d")
 
@@ -142,8 +145,10 @@ class BaseFetcher(ABC):
 # 注册机制
 # ═══════════════════════════════════════════
 
+
 class FetcherRegistrationError(Exception):
     """Fetcher 注册异常。"""
+
     pass
 
 
@@ -168,9 +173,7 @@ class FetcherRegistry:
         """注册 fetcher 类。"""
         name = getattr(fetcher_cls, "name", fetcher_cls.__name__)
         if name in cls._registry:
-            raise FetcherRegistrationError(
-                f"Fetcher 名称冲突: {name} 已被 {cls._registry[name].__name__} 注册"
-            )
+            raise FetcherRegistrationError(f"Fetcher 名称冲突: {name} 已被 {cls._registry[name].__name__} 注册")
         cls._registry[name] = fetcher_cls
         logger.info(f"[FetcherRegistry] 已注册: {name} ({fetcher_cls.__name__})")
 

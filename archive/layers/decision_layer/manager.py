@@ -17,18 +17,18 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+from .engine import DecisionEngine, DecisionEngineConfig
 from .models import (
-    TrendAnalysisResult,
-    TrendStatus,
     DecisionSignal,
     DecisionType,
     LLMAnalysisResult,
     ScoreBreakdown,
+    TrendAnalysisResult,
+    TrendStatus,
 )
 from .scoring import run_scoring
 from .signals import generate_signal
 from .strategy import StrategyConfig, get_strategy
-from .engine import DecisionEngine, DecisionEngineConfig
 
 logger = logging.getLogger(__name__)
 
@@ -45,9 +45,10 @@ class AnalysisInput:
         news_context: 新闻内容（可选，供 LLM 使用）
         market_snapshot: 实时行情快照（可选）
     """
+
     code: str
     name: str = ""
-    df: Any = None                # pd.DataFrame
+    df: Any = None  # pd.DataFrame
     technical_context: Optional[Dict[str, Any]] = None
     news_context: Optional[str] = None
     market_snapshot: Optional[Dict[str, Any]] = None
@@ -157,7 +158,11 @@ class DecisionManager:
 
         logger.info(
             "[DecisionManager] %s(%s) → %s (score=%d, source=%s)",
-            name, code, signal.decision.value, signal.score, signal.source,
+            name,
+            code,
+            signal.decision.value,
+            signal.score,
+            signal.source,
         )
 
         return signal

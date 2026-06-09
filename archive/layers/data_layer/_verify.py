@@ -52,16 +52,16 @@ def main():
     section("1. 模块导入")
     try:
         from layers.data_layer import (
+            ChipDistribution,
             DataCache,
             DataProvider,
-            KLineRequest,
-            RealtimeQuote,
-            ChipDistribution,
             FundamentalContext,
+            KLineRequest,
             MarketOverview,
+            RealtimeQuote,
         )
-        from layers.data_layer.models import safe_float, safe_int
         from layers.data_layer.fetchers import AkshareFetcher
+        from layers.data_layer.models import safe_float, safe_int
 
         ok("DataCache / DataProvider / KLineRequest 导入")
         ok("RealtimeQuote / ChipDistribution / FundamentalContext 导入")

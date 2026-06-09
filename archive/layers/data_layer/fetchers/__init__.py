@@ -16,8 +16,8 @@ fetchers/ -- 数据源 fetcher 集合
 或者通过 FetcherRegistry 批量注册（当前已有 AkshareFetcher、EfinanceFetcher、PytdxFetcher）。
 """
 
-from .base import BaseFetcher, FetcherRegistry, FetcherRegistrationError
 from .akshare import AkshareFetcher
+from .base import BaseFetcher, FetcherRegistrationError, FetcherRegistry
 
 __all__ = [
     "BaseFetcher",

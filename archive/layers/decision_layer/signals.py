@@ -11,13 +11,13 @@ import logging
 from typing import Optional
 
 from .models import (
+    BuySignal,
+    DecisionSignal,
+    DecisionType,
+    LLMAnalysisResult,
+    ScoreBreakdown,
     TrendAnalysisResult,
     TrendStatus,
-    BuySignal,
-    DecisionType,
-    DecisionSignal,
-    ScoreBreakdown,
-    LLMAnalysisResult,
 )
 from .scoring import (
     composite_scoring,
@@ -49,21 +49,13 @@ def _resolve_decision_type(
     if llm_result and llm_result.success:
         llm_decision = DecisionType.from_advice(llm_result.operation_advice)
         # 如果 LLM 和技术的方向一致，升级信号
-        if llm_decision == DecisionType.STRONG_SELL and tech_decision in (
-            DecisionType.SELL, DecisionType.WAIT
-        ):
+        if llm_decision == DecisionType.STRONG_SELL and tech_decision in (DecisionType.SELL, DecisionType.WAIT):
             return DecisionType.STRONG_SELL
-        elif llm_decision == DecisionType.SELL and tech_decision in (
-            DecisionType.WAIT, DecisionType.HOLD
-        ):
+        elif llm_decision == DecisionType.SELL and tech_decision in (DecisionType.WAIT, DecisionType.HOLD):
             return DecisionType.SELL
-        elif llm_decision == DecisionType.STRONG_BUY and tech_decision in (
-            DecisionType.BUY, DecisionType.HOLD
-        ):
+        elif llm_decision == DecisionType.STRONG_BUY and tech_decision in (DecisionType.BUY, DecisionType.HOLD):
             return DecisionType.STRONG_BUY
-        elif llm_decision == DecisionType.BUY and tech_decision in (
-            DecisionType.HOLD, DecisionType.WAIT
-        ):
+        elif llm_decision == DecisionType.BUY and tech_decision in (DecisionType.HOLD, DecisionType.WAIT):
             return DecisionType.BUY
 
     return tech_decision

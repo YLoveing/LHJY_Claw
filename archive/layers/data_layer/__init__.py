@@ -5,23 +5,23 @@ data_layer — 数据获取 + 缓存
 多数据源故障切换，磁盘/内存两级缓存。
 """
 
+from .cache import DataCache
+from .definition import (
+    CacheProtocol,
+    DataProtocol,
+    FetcherProtocol,
+)
 from .models import (
-    StockData,
-    KLineData,
-    KLineRequest,
-    RealtimeQuote,
     ChipDistribution,
     FundamentalContext,
+    KLineData,
+    KLineRequest,
     MarketOverview,
+    RealtimeQuote,
+    StockData,
     safe_float,
     safe_int,
 )
-from .definition import (
-    DataProtocol,
-    CacheProtocol,
-    FetcherProtocol,
-)
-from .cache import DataCache
 from .provider import DataProvider
 
 __all__ = [

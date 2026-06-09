@@ -18,8 +18,8 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 try:
     import litellm
-    from litellm import Router as LiteLLMRouter
     from json_repair import repair_json
+    from litellm import Router as LiteLLMRouter
 except ImportError:
     litellm = None
 
@@ -31,6 +31,7 @@ logger = logging.getLogger(__name__)
 # ═══════════════════════════════════════════
 # 引擎配置
 # ═══════════════════════════════════════════
+
 
 @dataclass
 class DecisionEngineConfig:
@@ -45,6 +46,7 @@ class DecisionEngineConfig:
         system_prompt: 自定义系统提示词（可选）
         report_language: 报告语言 zh/en
     """
+
     model: str = "deepseek/deepseek-chat"
     fallback_models: List[str] = field(default_factory=list)
     temperature: float = 0.7
@@ -68,6 +70,7 @@ class DecisionEngineConfig:
 # ═══════════════════════════════════════════
 # 决策引擎
 # ═══════════════════════════════════════════
+
 
 class DecisionEngine:
     """LLM 决策引擎 — 封装 DeepSeek 分析调用。
@@ -181,19 +184,25 @@ class DecisionEngine:
 
         try:
             prompt = self._format_prompt(
-                code, display_name, technical_context, news_context,
+                code,
+                display_name,
+                technical_context,
+                news_context,
                 report_language=effective_language,
             )
             logger.info(
                 "[DecisionEngine] Analyzing %s(%s), prompt len=%d",
-                display_name, code, len(prompt),
+                display_name,
+                code,
+                len(prompt),
             )
 
             if self.config.request_delay > 0:
                 time.sleep(self.config.request_delay)
 
             response_text, model_used, usage = self._call_llm(
-                prompt, system_prompt=self._build_system_prompt(effective_language, stock_code=code),
+                prompt,
+                system_prompt=self._build_system_prompt(effective_language, stock_code=code),
             )
 
             result = self._parse_response(response_text, code, name, effective_language)
@@ -307,9 +316,7 @@ class DecisionEngine:
                 last_error = e
                 continue
 
-        raise RuntimeError(
-            f"All LLM models failed (tried {len(models_to_try)}). Last error: {last_error}"
-        )
+        raise RuntimeError(f"All LLM models failed (tried {len(models_to_try)}). Last error: {last_error}")
 
     # ═══════════════════════════════════════
     # Prompt 构建
@@ -369,29 +376,35 @@ class DecisionEngine:
 
         if "realtime" in context:
             rt = context["realtime"]
-            lines.extend([
-                f"### 实时行情",
-                f"- 当前价格：{rt.get('price', 'N/A')}",
-                f"- 量比：{rt.get('volume_ratio', 'N/A')}",
-                f"- 换手率：{rt.get('turnover_rate', 'N/A')}%\n",
-            ])
+            lines.extend(
+                [
+                    f"### 实时行情",
+                    f"- 当前价格：{rt.get('price', 'N/A')}",
+                    f"- 量比：{rt.get('volume_ratio', 'N/A')}",
+                    f"- 换手率：{rt.get('turnover_rate', 'N/A')}%\n",
+                ]
+            )
 
         if "chip" in context:
             chip = context["chip"]
-            lines.extend([
-                f"### 筹码结构",
-                f"- 获利比例：{chip.get('profit_ratio', 'N/A')}",
-                f"- 平均成本：{chip.get('avg_cost', 'N/A')}",
-                f"- 集中度：{chip.get('concentration', 'N/A')}",
-                f"- 筹码健康：{chip.get('chip_health', 'N/A')}\n",
-            ])
+            lines.extend(
+                [
+                    f"### 筹码结构",
+                    f"- 获利比例：{chip.get('profit_ratio', 'N/A')}",
+                    f"- 平均成本：{chip.get('avg_cost', 'N/A')}",
+                    f"- 集中度：{chip.get('concentration', 'N/A')}",
+                    f"- 筹码健康：{chip.get('chip_health', 'N/A')}\n",
+                ]
+            )
 
         if news_context:
-            lines.extend([
-                f"## 新闻/消息面",
-                news_context,
-                "",
-            ])
+            lines.extend(
+                [
+                    f"## 新闻/消息面",
+                    news_context,
+                    "",
+                ]
+            )
 
         return "\n".join(lines)
 
@@ -498,9 +511,7 @@ class DecisionEngine:
     # 错误结果
     # ═══════════════════════════════════════
 
-    def _make_unavailable_result(
-        self, code: str, name: str, report_language: str = "zh"
-    ) -> LLMAnalysisResult:
+    def _make_unavailable_result(self, code: str, name: str, report_language: str = "zh") -> LLMAnalysisResult:
         """模型不可用时返回的默认结果。"""
         return LLMAnalysisResult(
             code=code,
@@ -516,9 +527,7 @@ class DecisionEngine:
         )
 
     @staticmethod
-    def _make_default_result(
-        code: str, name: str, report_language: str = "zh"
-    ) -> LLMAnalysisResult:
+    def _make_default_result(code: str, name: str, report_language: str = "zh") -> LLMAnalysisResult:
         """解析失败时返回的默认结果。"""
         return LLMAnalysisResult(
             code=code,

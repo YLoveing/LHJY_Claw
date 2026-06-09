@@ -71,17 +71,13 @@ class DataProvider(DataProtocol):
         if not req.force_refresh and self._cache is not None:
             cached = self._cache.get_kline(code, frequency=freq)
             if cached is not None:
-                logger.debug(
-                    f"[DataProvider] 缓存命中: {code} (freq={freq}, {len(cached)}行)"
-                )
+                logger.debug(f"[DataProvider] 缓存命中: {code} (freq={freq}, {len(cached)}行)")
                 return cached
 
         # 轮询 fetcher
         available = self._find_available()
         if not available:
-            raise RuntimeError(
-                f"[DataProvider] 无可用数据源获取 {code} 的 K 线数据 (freq={freq})"
-            )
+            raise RuntimeError(f"[DataProvider] 无可用数据源获取 {code} 的 K 线数据 (freq={freq})")
 
         last_error: Optional[Exception] = None
         for fetcher in available:
@@ -94,15 +90,10 @@ class DataProvider(DataProtocol):
                     return df
             except Exception as e:
                 last_error = e
-                logger.warning(
-                    f"[DataProvider] Fetcher {fetcher.name} 获取 {code} "
-                    f"K 线失败 (freq={freq}): {e}"
-                )
+                logger.warning(f"[DataProvider] Fetcher {fetcher.name} 获取 {code} " f"K 线失败 (freq={freq}): {e}")
                 continue
 
-        raise RuntimeError(
-            f"[DataProvider] 所有数据源获取 {code} K 线均失败 (freq={freq})"
-        ) from last_error
+        raise RuntimeError(f"[DataProvider] 所有数据源获取 {code} K 线均失败 (freq={freq})") from last_error
 
     def get_realtime_quote(self, code: str) -> Optional[RealtimeQuote]:
         """获取实时行情：轮询 fetcher，返回第一个成功的。"""
@@ -113,9 +104,7 @@ class DataProvider(DataProtocol):
                 if quote is not None:
                     return quote
             except Exception as e:
-                logger.debug(
-                    f"[DataProvider] Fetcher {fetcher.name} 获取 {code} 实时行情失败: {e}"
-                )
+                logger.debug(f"[DataProvider] Fetcher {fetcher.name} 获取 {code} 实时行情失败: {e}")
                 continue
         return None
 
@@ -128,9 +117,7 @@ class DataProvider(DataProtocol):
                 if result is not None:
                     return result
             except Exception as e:
-                logger.debug(
-                    f"[DataProvider] Fetcher {fetcher.name} 获取 {code} 筹码分布失败: {e}"
-                )
+                logger.debug(f"[DataProvider] Fetcher {fetcher.name} 获取 {code} 筹码分布失败: {e}")
                 continue
         return None
 
@@ -146,9 +133,7 @@ class DataProvider(DataProtocol):
                 if ctx is not None:
                     return ctx
             except Exception as e:
-                logger.debug(
-                    f"[DataProvider] Fetcher {fetcher.name} 获取 {code} 基本面失败: {e}"
-                )
+                logger.debug(f"[DataProvider] Fetcher {fetcher.name} 获取 {code} 基本面失败: {e}")
                 continue
         return FundamentalContext(code=code, status="failed")
 
@@ -163,9 +148,7 @@ class DataProvider(DataProtocol):
                 if overview is not None:
                     return overview
             except Exception as e:
-                logger.debug(
-                    f"[DataProvider] Fetcher {fetcher.name} 获取大盘数据失败: {e}"
-                )
+                logger.debug(f"[DataProvider] Fetcher {fetcher.name} 获取大盘数据失败: {e}")
                 continue
         return MarketOverview(region=region)
 
@@ -194,8 +177,6 @@ class DataProvider(DataProtocol):
                 if name:
                     return name
             except Exception as e:
-                logger.debug(
-                    f"[DataProvider] Fetcher {fetcher.name} 获取 {code} 名称失败: {e}"
-                )
+                logger.debug(f"[DataProvider] Fetcher {fetcher.name} 获取 {code} 名称失败: {e}")
                 continue
         return ""

@@ -139,9 +139,7 @@ class DataCache(CacheProtocol):
                     ],
                     "updated_at": datetime.now().isoformat(),
                 }
-                self._kline_meta_path(code, frequency).write_text(
-                    json.dumps(meta, ensure_ascii=False, indent=2)
-                )
+                self._kline_meta_path(code, frequency).write_text(json.dumps(meta, ensure_ascii=False, indent=2))
                 logger.info(
                     f"[DataCache] K线已缓存: {code} (freq={frequency}, {len(df_to_save)}行, "
                     f"{meta['date_range'][0]} ~ {meta['date_range'][1]})"
@@ -226,9 +224,7 @@ class DataCache(CacheProtocol):
     def save_screener_snapshot(self, date_str: str, data: list) -> None:
         fpath = self._screener_dir / f"candidates_{date_str}.json"
         try:
-            fpath.write_text(
-                json.dumps(data, ensure_ascii=False, indent=2, default=str)
-            )
+            fpath.write_text(json.dumps(data, ensure_ascii=False, indent=2, default=str))
             logger.info(f"[DataCache] 选股快照已缓存: {date_str}")
         except Exception as e:
             logger.error(f"[DataCache] 选股快照保存失败: {e}")
@@ -252,9 +248,7 @@ class DataCache(CacheProtocol):
         sl_path = self._stock_list_dir / "all_a_codes.json"
         result["stock_list"] = {
             "exists": sl_path.exists(),
-            "size_mb": round(sl_path.stat().st_size / 1024 / 1024, 2)
-            if sl_path.exists()
-            else 0,
+            "size_mb": round(sl_path.stat().st_size / 1024 / 1024, 2) if sl_path.exists() else 0,
         }
 
         snapshots = list(self._screener_dir.glob("candidates_*.json"))

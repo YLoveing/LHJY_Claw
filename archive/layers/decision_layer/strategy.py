@@ -61,15 +61,16 @@ class StrategyConfig:
     rsi_oversold: int = 30
 
     # 信号阈值
-    buy_threshold: int = 75       # ≥75 + 多头 = 强烈买入
+    buy_threshold: int = 75  # ≥75 + 多头 = 强烈买入
     buy_soft_threshold: int = 60  # ≥60 + 多头/弱势多头 = 买入
-    hold_threshold: int = 45     # ≥45 = 持有
-    wait_threshold: int = 30     # ≥30 = 观望
+    hold_threshold: int = 45  # ≥45 = 持有
+    wait_threshold: int = 30  # ≥30 = 观望
 
 
 # ═══════════════════════════════════════════
 # 内置策略简档
 # ═══════════════════════════════════════════
+
 
 def default_strategy() -> StrategyConfig:
     """默认策略 — 标准趋势交易参数。"""

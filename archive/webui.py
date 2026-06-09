@@ -17,8 +17,8 @@ Usage:
 
 from __future__ import annotations
 
-import os
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +37,7 @@ def main() -> int:
 
     try:
         import uvicorn
+
         from src.config import setup_env
         from src.logging_config import setup_logging
 

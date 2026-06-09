@@ -106,8 +106,10 @@ def test_realtime(provider, code: str, label: str = "A 股"):
     if quote is not None:
         check(f"{code} 有名称 '{quote.name}'", bool(quote.name))
         check(f"{code} 有价格", quote.price is not None and quote.price > 0)
-        logger.info(f"  {code} {quote.name}: 价格={quote.price}, 涨跌幅={quote.change_pct}%, "
-                    f"量比={quote.volume_ratio}, 换手率={quote.turnover_rate}%")
+        logger.info(
+            f"  {code} {quote.name}: 价格={quote.price}, 涨跌幅={quote.change_pct}%, "
+            f"量比={quote.volume_ratio}, 换手率={quote.turnover_rate}%"
+        )
 
 
 def test_chip(provider, code: str):
@@ -117,8 +119,10 @@ def test_chip(provider, code: str):
     if chip is not None:
         check(f"{code} 筹码分布有获利比例", chip.profit_ratio > 0)
         check(f"{code} 筹码分布有平均成本", chip.avg_cost > 0)
-        logger.info(f"  {code} 筹码: 获利比例={chip.profit_ratio:.1%}, "
-                    f"平均成本={chip.avg_cost:.2f}, 90%集中度={chip.concentration_90:.2%}")
+        logger.info(
+            f"  {code} 筹码: 获利比例={chip.profit_ratio:.1%}, "
+            f"平均成本={chip.avg_cost:.2f}, 90%集中度={chip.concentration_90:.2%}"
+        )
     else:
         logger.info(f"  {code} 筹码分布: 无数据（对于 ETF/指数/美港股属正常）")
 
@@ -130,9 +134,11 @@ def test_fundamental(provider, code: str, label: str = "A 股"):
     check(f"{code} 基本面返回", ctx is not None)
     if ctx is not None:
         check(f"{code} 基本面对应状态", ctx.status in ("ok", "partial", "failed", "not_supported"))
-        logger.info(f"  {code} 基本面: state={ctx.status}, "
-                    f"pe={ctx.pe_ttm}, pb={ctx.pb}, roe={ctx.roe}, "
-                    f"market_cap={ctx.market_cap}")
+        logger.info(
+            f"  {code} 基本面: state={ctx.status}, "
+            f"pe={ctx.pe_ttm}, pb={ctx.pb}, roe={ctx.roe}, "
+            f"market_cap={ctx.market_cap}"
+        )
 
 
 def test_market_overview(provider):
@@ -166,10 +172,15 @@ def main():
     section("1. 模块导入")
     try:
         from layers.data_layer import (
-            DataCache, DataProvider, KLineRequest,
-            RealtimeQuote, ChipDistribution, FundamentalContext,
+            ChipDistribution,
+            DataCache,
+            DataProvider,
+            FundamentalContext,
+            KLineRequest,
+            RealtimeQuote,
         )
         from layers.data_layer.fetchers import AkshareFetcher
+
         check("DataCache 可导入", True)
         check("DataProvider 可导入", True)
         check("KLineRequest 可导入", True)

@@ -121,6 +121,7 @@ def check_pending_signals():
 def check_disk_space():
     """检查磁盘空间"""
     import shutil
+
     usage = shutil.disk_usage(BASE_DIR)
     pct = usage.used / usage.total * 100
     if pct > 90:
@@ -169,11 +170,17 @@ def main():
         exit_code = 0
 
     # 保存结果
-    HEALTH_LOG.write_text(json.dumps({
-        "time": datetime.now().isoformat(),
-        "issues": [{"level": l, "msg": m} for l, m in all_issues],
-        "exit_code": exit_code,
-    }, ensure_ascii=False, indent=2))
+    HEALTH_LOG.write_text(
+        json.dumps(
+            {
+                "time": datetime.now().isoformat(),
+                "issues": [{"level": l, "msg": m} for l, m in all_issues],
+                "exit_code": exit_code,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
 
     sys.exit(exit_code)
 
