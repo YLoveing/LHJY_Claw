@@ -8,7 +8,7 @@
   1. 波动率择时（中证全指 20日HV百分位） → 仓位 25%~100%
   2. 技术评分（screen_score: MA/RSI/量比等）- 全向量化
   3. 每日选前5只建仓
-  4. 风控：硬止损-15%、时间止损20天、跟踪止损、多级止盈
+  4. 风控：硬止损、时间止损20天、跟踪止损、多级止盈
 
 用法:
   python3 -u scripts/backtest_full.py
@@ -26,14 +26,25 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from layers.execution_layer.fees import DEFAULT_COMMISSION_RATE as COMMISSION_RATE
+from layers.execution_layer.fees import DEFAULT_STAMP_TAX_RATE as STAMP_TAX
+from layers.execution_layer.fees import (
+    calc_buy_fees,
+    calc_sell_fees,
+)
+
+# ── 🔥 生产代码唯一来源 ──
+# 所有参数必须 import 自生产模块，不得自行定义
+from layers.risk_layer.models import RiskConfig
+
 DB_PATH = "/opt/daily_stock_analysis/data/stock_analysis.db"
 INITIAL_CASH = 100_000.0
 TOP_N = 5
 MAX_POSITIONS = 5
-COMMISSION_RATE = 0.00025
-STAMP_TAX = 0.0005
 SLIPPAGE = 0.001
-STOP_LOSS = -0.15
+# 止损/止盈/回撤参数引自生产 RiskConfig
+_CFG = RiskConfig()
+STOP_LOSS = _CFG.stop_loss_pct / 100.0  # -0.08 (对齐生产的 -8%)
 TIME_STOP_DAYS = 20
 TIME_STOP_DRAWDOWN = -0.08
 TRAILING_ACTIVATE = 0.03
@@ -303,9 +314,9 @@ def run_backtest(stocks: dict, vol_df: pd.DataFrame, all_dates: list, invert: bo
             do_sell = False
             reason = ""
 
-            # 硬止损 -15%（用最低价判断）
+            # 硬止损（用最低价判断，阈值引自生产 RiskConfig.stop_loss_pct）
             if unrealized_low <= STOP_LOSS:
-                do_sell, reason = True, "硬止损-15%"
+                do_sell, reason = True, "硬止损"
             # 时间止损（用收盘价合理）
             elif (
                 pd.Timestamp(str(date_str)) - pd.Timestamp(str(pos["entry_date"]))
@@ -324,8 +335,7 @@ def run_backtest(stocks: dict, vol_df: pd.DataFrame, all_dates: list, invert: bo
                     half_qty = 0
                 if half_qty > 0:
                     proceeds = half_qty * cur_price * (1 - SLIPPAGE)
-                    fee = proceeds * (COMMISSION_RATE + STAMP_TAX)
-                    fee = max(fee, 5.0)  # 最低佣金¥5
+                    fee = calc_sell_fees(proceeds)  # 引自生产模块
                     rpnl = proceeds - fee - cost * half_qty
                     cash += proceeds - fee
                     total_fees += fee
@@ -341,11 +351,10 @@ def run_backtest(stocks: dict, vol_df: pd.DataFrame, all_dates: list, invert: bo
                 qty_sell = pos["qty"]
                 # 清仓用收盘价执行（止损已用最低价判断）
                 exec_sell_price = (
-                    min(cur_price, max(low_today, cost * (1 + STOP_LOSS))) if reason == "硬止损-15%" else cur_price
+                    min(cur_price, max(low_today, cost * (1 + STOP_LOSS))) if reason == "硬止损" else cur_price
                 )
                 proceeds = qty_sell * exec_sell_price * (1 - SLIPPAGE)
-                fee = proceeds * (COMMISSION_RATE + STAMP_TAX)
-                fee = max(fee, 5.0)  # 最低佣金¥5
+                fee = calc_sell_fees(proceeds)  # 引自生产模块
                 rpnl = proceeds - fee - cost * qty_sell
                 cash += proceeds - fee
                 total_fees += fee
@@ -386,17 +395,19 @@ def run_backtest(stocks: dict, vol_df: pd.DataFrame, all_dates: list, invert: bo
                 if qty < 100:
                     continue
 
+                cost_before_fees = qty * price
+                fee = calc_buy_fees(cost_before_fees)  # 引自生产模块
                 cost_buy = qty * price * (1 + SLIPPAGE)
-                fee = max(cost_buy * COMMISSION_RATE, 5.0)  # 最低佣金¥5
                 total_cost = cost_buy + fee
 
                 if total_cost > cash:
-                    qty = max(0, int(cash / (price * (1 + SLIPPAGE + COMMISSION_RATE))))
+                    qty = max(0, int(cash / (price * (1 + SLIPPAGE) + price * COMMISSION_RATE)))
                     qty = (qty // 100) * 100
                     if qty < 100:
                         continue
+                    cost_before_fees = qty * price
+                    fee = calc_buy_fees(cost_before_fees)  # 引自生产模块
                     cost_buy = qty * price * (1 + SLIPPAGE)
-                    fee = max(cost_buy * COMMISSION_RATE, 5.0)
                     total_cost = cost_buy + fee
 
                 cash -= total_cost

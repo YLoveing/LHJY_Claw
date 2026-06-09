@@ -26,6 +26,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+# ── 🔥 生产代码唯一来源 ──
+from layers.execution_layer.fees import calc_buy_fees, calc_sell_fees
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -199,11 +202,14 @@ def simulate_backtest(
             if shares <= 0:
                 continue
 
-            cost = shares * buy_price
-            proceeds = shares * sell_price
+            buy_fee = calc_buy_fees(shares * buy_price)  # 引自生产模块
+            sell_fee = calc_sell_fees(shares * sell_price)  # 引自生产模块
+            cost = shares * buy_price + buy_fee
+            proceeds = shares * sell_price - sell_fee
             pnl = proceeds - cost
-            pnl_pct = (sell_price / buy_price - 1) * 100
+            pnl_pct = ((sell_price - buy_price) / buy_price * 100) if buy_price > 0 else 0
 
+            total_fees = buy_fee + sell_fee
             day_pnl += pnl
 
             trades.append(
