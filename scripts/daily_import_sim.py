@@ -14,6 +14,7 @@
   sim_state        → 先清空再写入（快照）
   sim_weekly       → week 去重
 """
+
 import json
 import logging
 import os
@@ -30,6 +31,46 @@ logger = logging.getLogger(__name__)
 
 DB_PATH = "/opt/daily_stock_analysis/data/stock_analysis.db"
 SIM_DIR = "/opt/daily_stock_analysis/simulated_trading"
+
+
+def _ensure_tables(conn):
+    """确保模拟交易表存在。"""
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS sim_state (
+            id INTEGER PRIMARY KEY,
+            cash REAL, total_market_value REAL, total_equity REAL,
+            total_pnl REAL, total_fee REAL, total_return_pct REAL,
+            peak_equity REAL, max_drawdown_pct REAL, last_update TEXT
+        );
+        CREATE TABLE IF NOT EXISTS sim_positions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code TEXT NOT NULL, quantity INTEGER, avg_cost REAL,
+            current_price REAL, invested REAL, entry_score INTEGER,
+            entry_date TEXT, tp_level INTEGER, mode TEXT
+        );
+        CREATE TABLE IF NOT EXISTS sim_trades (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL, code TEXT NOT NULL, side TEXT,
+            price REAL, shares INTEGER, pnl REAL, reason TEXT
+        );
+        CREATE TABLE IF NOT EXISTS sim_equity_daily (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT UNIQUE, equity REAL, cash REAL,
+            market_value REAL, positions INTEGER,
+            return_pct REAL, max_dd_pct REAL,
+            buy_today INTEGER, sell_today INTEGER,
+            total_closed INTEGER, win_rate REAL
+        );
+        CREATE TABLE IF NOT EXISTS sim_weekly (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            week TEXT UNIQUE, start_date TEXT, end_date TEXT,
+            start_equity REAL, end_equity REAL,
+            buy_count INTEGER, sell_count INTEGER,
+            closed_wins INTEGER, closed_losses INTEGER
+        );
+        CREATE INDEX IF NOT EXISTS idx_sim_trades_date ON sim_trades(date);
+        CREATE INDEX IF NOT EXISTS idx_sim_trades_code ON sim_trades(code);
+    """)
 
 
 def get_conn() -> sqlite3.Connection:
@@ -78,9 +119,7 @@ def import_equity_daily(conn: sqlite3.Connection, performance: dict) -> int:
             continue
 
         # 幂等：已有 date 则跳过
-        existing = conn.execute(
-            "SELECT COUNT(*) FROM sim_equity_daily WHERE date = ?", (date,)
-        ).fetchone()[0]
+        existing = conn.execute("SELECT COUNT(*) FROM sim_equity_daily WHERE date = ?", (date,)).fetchone()[0]
         if existing > 0:
             continue
 
@@ -120,9 +159,7 @@ def import_weekly(conn: sqlite3.Connection, performance: dict) -> int:
         if not week:
             continue
 
-        existing = conn.execute(
-            "SELECT COUNT(*) FROM sim_weekly WHERE week = ?", (week,)
-        ).fetchone()[0]
+        existing = conn.execute("SELECT COUNT(*) FROM sim_weekly WHERE week = ?", (week,)).fetchone()[0]
         if existing > 0:
             continue
 
@@ -254,6 +291,7 @@ def import_state_and_positions(conn: sqlite3.Connection, state: dict) -> int:
 
 
 def main():
+    _ensure_tables(get_conn())
     # 检查数据目录
     if not os.path.isdir(SIM_DIR):
         logger.error("数据目录不存在: %s", SIM_DIR)
@@ -330,7 +368,7 @@ def main():
         parts.append("状态已更新")
 
     if parts:
-        logger.info("已导入 %s", ', '.join(parts))
+        logger.info("已导入 %s", ", ".join(parts))
     else:
         logger.info("无新数据导入")
 

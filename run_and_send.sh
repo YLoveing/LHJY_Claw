@@ -108,7 +108,7 @@ fi
 if [ "$HOUR" != "11" ]; then
     run_step "模拟交易" python3 simulated_trading.py
     # Step 2b: 模拟交易数据入库 SQLite
-    run_step "数据入库" python3 /root/.openclaw/workspace/scripts/daily_import_sim.py
+    run_step "数据入库" python3 scripts/daily_import_sim.py
 fi
 
 # ── Step 3: 盘后量化引擎（18:00 仅） ──
