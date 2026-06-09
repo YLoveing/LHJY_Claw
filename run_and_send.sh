@@ -199,6 +199,17 @@ if r:
     [ -n "$VERIFY_RESULT" ] && _push "$VERIFY_RESULT"
 fi
 
+# ── 收盘回测（仅周五 + 非空仓日） ──
+if [ "$HOUR" = "18" ] && [ "$(date +%u)" = "5" ]; then
+    BACKTEST_RESULT=$(python3 scripts/run_backtest.py --scenario=quick --days=30 --save 2>&1 | tail -5)
+    if [ -n "$BACKTEST_RESULT" ]; then
+        _push "$BACKTEST_RESULT"
+        log "📊 收盘回测完成"
+    else
+        log "⚠️ 收盘回测未运行（数据不足或出错）"
+    fi
+fi
+
 # 周五周报（若有）
 if [ -f "$SIMULATED_WEEKLY" ]; then
     _push "$(cat "$SIMULATED_WEEKLY")"
