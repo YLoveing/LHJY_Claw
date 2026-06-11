@@ -9,7 +9,12 @@
 4. ❌ 现金≡权益 → ✅ 现金+持仓市值
 5. ❌ 持有模式用收盘价 → ✅ 用开盘价
 """
-import argparse, json, logging, sys, time
+
+import argparse
+import json
+import logging
+import sys
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -19,9 +24,9 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from data_provider.data_cache import DataCache
 from layers.execution_layer.fees import calc_buy_fees, calc_sell_fees
 from layers.risk_layer.models import RiskConfig
-from data_provider.data_cache import DataCache
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger("backtest_real")
@@ -85,6 +90,7 @@ def compute_signals(df):
 
 # ── 辅助函数 ──────────────────────────────────────────
 
+
 def _get_row(stocks: dict, code: str, date_ts: pd.Timestamp):
     """获取某只股票在指定日期的行，返回 Series 或 None。"""
     df = stocks.get(code)
@@ -111,17 +117,16 @@ def _get_price(row, field: str, direction: str) -> Optional[float]:
 
 def _align_dates(stocks) -> List[str]:
     """取所有股票都有的日期交集（或至少大部分覆盖），排序返回。"""
-    return sorted(set(
-        d.strftime("%Y-%m-%d") for s in stocks.values() for d in s["date"]
-    ))
+    return sorted(set(d.strftime("%Y-%m-%d") for s in stocks.values() for d in s["date"]))
 
 
 # ── 每日全换（修复版） ────────────────────────────────
 
+
 def run_backtest_daytrade_v2(stocks, top_n=5, initial_cash=INITIAL_CASH):
     """
     每日全换 v2 — 开盘价成交 + 滑点
-    
+
     时间线:
         T日收盘 → 计算信号
         T+1开盘 → 卖旧仓、买新仓（按T+1开盘价 + 滑点）
@@ -145,9 +150,9 @@ def run_backtest_daytrade_v2(stocks, top_n=5, initial_cash=INITIAL_CASH):
     # 从第2天开始（下标1=第2个日期，因为我们需要T-1计算信号）
     for i in range(1, len(all_dates)):
         # ds_signal: 信号日（收盘计算评分）
-        ds_entry_str = all_dates[i]      # T+1: 执行交易的日子
-        ds_signal_str = all_dates[i-1]   # T:   信号日
-        
+        ds_entry_str = all_dates[i]  # T+1: 执行交易的日子
+        ds_signal_str = all_dates[i - 1]  # T:   信号日
+
         entry_date = pd.Timestamp(ds_entry_str)
         signal_date = pd.Timestamp(ds_signal_str)
 
@@ -233,14 +238,16 @@ def run_backtest_daytrade_v2(stocks, top_n=5, initial_cash=INITIAL_CASH):
         if daily_eq:
             peak = max(peak, max(e["equity"] for e in daily_eq))
         dd = (equity - peak) / peak * 100 if peak > 0 else 0
-        daily_eq.append({
-            "date": ds_entry_str,
-            "equity": round(equity, 2),
-            "cash": round(cash, 2),
-            "pos_value": round(pos_val, 2),
-            "pos_count": len(positions),
-            "dd": round(dd, 2),
-        })
+        daily_eq.append(
+            {
+                "date": ds_entry_str,
+                "equity": round(equity, 2),
+                "cash": round(cash, 2),
+                "pos_value": round(pos_val, 2),
+                "pos_count": len(positions),
+                "dd": round(dd, 2),
+            }
+        )
 
     # ── 末日出清 ──
     for code, pi in positions.items():
@@ -277,11 +284,11 @@ def run_backtest_daytrade_v2(stocks, top_n=5, initial_cash=INITIAL_CASH):
 
 # ── 持有模式（修复版） ───────────────────────────────
 
-def run_backtest_hold_v2(stocks, top_n=5, initial_cash=INITIAL_CASH,
-                         rebalance_threshold=10):
+
+def run_backtest_hold_v2(stocks, top_n=5, initial_cash=INITIAL_CASH, rebalance_threshold=10):
     """
     持有模式 v2 — 开盘价成交 + 滑点
-    
+
     买入: T日收盘信号 → T+1开盘买入
     卖出: 当评分跌破阈值，下一日开盘卖出
     """
@@ -301,10 +308,10 @@ def run_backtest_hold_v2(stocks, top_n=5, initial_cash=INITIAL_CASH,
 
     for i in range(1, len(all_dates)):
         ds_entry_str = all_dates[i]
-        ds_signal_str = all_dates[i-1]
+        ds_signal_str = all_dates[i - 1]
         entry_date = pd.Timestamp(ds_entry_str)
         signal_date = pd.Timestamp(ds_signal_str)
-        next_date_str = all_dates[i+1] if i + 1 < len(all_dates) else None
+        next_date_str = all_dates[i + 1] if i + 1 < len(all_dates) else None
 
         # 信号
         candidates = []
@@ -378,12 +385,14 @@ def run_backtest_hold_v2(stocks, top_n=5, initial_cash=INITIAL_CASH,
         equity = cash + pos_val
         peak = max(peak, equity)
         dd = (equity - peak) / peak * 100 if peak > 0 else 0
-        daily_eq.append({
-            "date": ds_entry_str,
-            "equity": round(equity, 2),
-            "pos_count": len(positions),
-            "dd": round(dd, 2),
-        })
+        daily_eq.append(
+            {
+                "date": ds_entry_str,
+                "equity": round(equity, 2),
+                "pos_count": len(positions),
+                "dd": round(dd, 2),
+            }
+        )
 
     # 末日出清
     for code, pi in positions.items():
@@ -419,11 +428,14 @@ def run_backtest_hold_v2(stocks, top_n=5, initial_cash=INITIAL_CASH,
 
 # ── 输出 ──────────────────────────────────────────────
 
+
 def format_table(results):
     if not results:
         return
-    h = (f"{'策略':<38} {'交易日':>6} {'交易':>6} {'总收益%':>10} "
-         f"{'胜率%':>6} {'最大回撤%':>10} {'夏普':>8} {'费用':>10}")
+    h = (
+        f"{'策略':<38} {'交易日':>6} {'交易':>6} {'总收益%':>10} "
+        f"{'胜率%':>6} {'最大回撤%':>10} {'夏普':>8} {'费用':>10}"
+    )
     print(f"\n{'=' * 100}")
     print(h)
     print("-" * 100)
@@ -439,8 +451,7 @@ def format_table(results):
             mdd = r.get("max_drawdown_pct", 0)
             sr = r.get("sharpe_ratio", 0)
             tf = r.get("total_fees", 0)
-            print(f"{s:<38} {td:>6} {tt:>6} {tr:>10.2f} "
-                  f"{wr:>6.1f} {mdd:>10.2f} {sr:>8.3f} {tf:>10.2f}")
+            print(f"{s:<38} {td:>6} {tt:>6} {tr:>10.2f} " f"{wr:>6.1f} {mdd:>10.2f} {sr:>8.3f} {tf:>10.2f}")
 
 
 def main():
@@ -468,11 +479,9 @@ def main():
     if args.compare:
         results.append(run_backtest_daytrade_v2(stocks, top_n=args.top))
         for thr in [10, 15]:
-            results.append(run_backtest_hold_v2(stocks, top_n=args.top,
-                                                rebalance_threshold=thr))
+            results.append(run_backtest_hold_v2(stocks, top_n=args.top, rebalance_threshold=thr))
     elif args.hold:
-        results.append(run_backtest_hold_v2(
-            stocks, top_n=args.top, rebalance_threshold=args.rebalance))
+        results.append(run_backtest_hold_v2(stocks, top_n=args.top, rebalance_threshold=args.rebalance))
     else:
         results.append(run_backtest_daytrade_v2(stocks, top_n=args.top))
 
