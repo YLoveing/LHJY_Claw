@@ -181,9 +181,11 @@ def zscore_cross_section(series: np.ndarray) -> np.ndarray:
     横截面 z-score 标准化，nan-safe。
     与 engine._zscore_day 逻辑一致，供回测引擎和生产流水线共用。
     """
+    if len(series) == 0:
+        return np.array([])
     mu = np.nanmean(series)
     sigma = np.nanstd(series)
-    if np.isnan(mu) or sigma is None or sigma < 1e-10:
+    if np.isnan(mu) or np.isnan(sigma) or sigma < 1e-10:
         return np.zeros_like(series)
     return (series - mu) / sigma
 
