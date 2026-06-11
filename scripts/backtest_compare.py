@@ -26,10 +26,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 # ── 🔥 生产代码唯一来源 ──
 from layers.execution_layer.fees import calc_buy_fees, calc_sell_fees
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger("backtest_compare")

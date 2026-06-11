@@ -52,37 +52,41 @@ TRAILING_STOP = -0.04
 
 
 def load_all_kline(db_path: str) -> dict:
-    """从 SQLite 加载全部 K 线，返回 {code: DataFrame}"""
-    import sqlite3
+    """从 DataCache 加载全部 K 线，返回 {code: numpy array}"""
+    from data_provider.data_cache import DataCache
 
-    conn = sqlite3.connect(db_path)
-    cur = conn.execute(
-        "SELECT stock_code, date, open, close, high, low, volume, amount " "FROM kline ORDER BY stock_code, date"
-    )
-    rows = cur.fetchall()
-    conn.close()
-    print(f"  📥 SQLite 读取: {len(rows)} 行", flush=True)
+    cache = DataCache()
+    stats = cache.stats()
+    print(f"  📥 DataCache 加载 ({stats['kline']['stocks']} 只)...", flush=True)
 
-    stocks = defaultdict(list)
-    for code, d, o, c, h, l, v, a in rows:
-        stocks[code].append((d, o, c, h, l, v, a))
-
+    pkl_root = Path(cache._root)
     result = {}
-    for code, pts in stocks.items():
-        arr = np.array(
-            pts,
-            dtype=[
-                ("date", "datetime64[D]"),
-                ("open", "f8"),
-                ("close", "f8"),
-                ("high", "f8"),
-                ("low", "f8"),
-                ("volume", "f8"),
-                ("amount", "f8"),
-            ],
-        )
-        result[code] = arr
-    print(f"  📊 {len(result)} 只股票加载完成", flush=True)
+    count = 0
+    for f in sorted(pkl_root.glob("*.pkl")):
+        code = f.stem
+        if code == "hs300_index":
+            continue
+        try:
+            df = cache.get_kline(code)
+            if df is None or len(df) < 50:
+                continue
+            arr = np.array(
+                list(zip(df["date"], df["open"], df["close"], df["high"], df["low"], df["volume"], df["amount"])),
+                dtype=[
+                    ("date", "datetime64[D]"),
+                    ("open", "f8"),
+                    ("close", "f8"),
+                    ("high", "f8"),
+                    ("low", "f8"),
+                    ("volume", "f8"),
+                    ("amount", "f8"),
+                ],
+            )
+            result[code] = arr
+            count += 1
+        except Exception:
+            continue
+    print(f"  📊 {count} 只股票加载完成", flush=True)
     return result
 
 
