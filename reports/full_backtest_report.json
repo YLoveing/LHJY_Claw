@@ -1,0 +1,5689 @@
+{
+  "period": {
+    "start": "2023-10-30",
+    "end": "2026-06-05"
+  },
+  "total_return_pct": 33.27,
+  "annual_return_pct": 12.17,
+  "annual_vol_pct": 20.89,
+  "sharpe_ratio": 0.49,
+  "calmar_ratio": 0.59,
+  "max_drawdown_pct": -20.61,
+  "final_equity": 133268.56,
+  "total_trades": 510,
+  "win_rate_pct": 33.3,
+  "total_fees": 5213.46,
+  "hs300_return_pct": 28.99,
+  "equity_curve": [
+    {
+      "date": "2023-10-30",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-10-31",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-01",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-02",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-03",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-06",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-07",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-08",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-09",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-10",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-13",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-14",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-15",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-16",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-17",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-20",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-21",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-22",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-23",
+      "equity": 100000.0,
+      "cash": 100000.0,
+      "market_value": 0,
+      "positions": 0,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-11-24",
+      "equity": 99954.89,
+      "cash": 64840.89,
+      "market_value": 35114.0,
+      "positions": 2,
+      "position_pct": 1.0,
+      "dd_pct": -0.05
+    },
+    {
+      "date": "2023-11-27",
+      "equity": 99496.46,
+      "cash": 43674.46,
+      "market_value": 55822.0,
+      "positions": 3,
+      "position_pct": 1.0,
+      "dd_pct": -0.5
+    },
+    {
+      "date": "2023-11-28",
+      "equity": 99472.46,
+      "cash": 43674.46,
+      "market_value": 55798.0,
+      "positions": 3,
+      "position_pct": 1.0,
+      "dd_pct": -0.53
+    },
+    {
+      "date": "2023-11-29",
+      "equity": 99008.46,
+      "cash": 43674.46,
+      "market_value": 55334.0,
+      "positions": 3,
+      "position_pct": 1.0,
+      "dd_pct": -0.99
+    },
+    {
+      "date": "2023-11-30",
+      "equity": 100545.71,
+      "cash": 43615.71,
+      "market_value": 56930.0,
+      "positions": 3,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-12-01",
+      "equity": 100513.71,
+      "cash": 43615.71,
+      "market_value": 56898.0,
+      "positions": 3,
+      "position_pct": 1.0,
+      "dd_pct": -0.03
+    },
+    {
+      "date": "2023-12-04",
+      "equity": 100525.14,
+      "cash": 24026.14,
+      "market_value": 76499.0,
+      "positions": 4,
+      "position_pct": 1.0,
+      "dd_pct": -0.02
+    },
+    {
+      "date": "2023-12-05",
+      "equity": 100261.67,
+      "cash": 23965.67,
+      "market_value": 76296.0,
+      "positions": 4,
+      "position_pct": 1.0,
+      "dd_pct": -0.28
+    },
+    {
+      "date": "2023-12-06",
+      "equity": 100014.67,
+      "cash": 23965.67,
+      "market_value": 76049.0,
+      "positions": 4,
+      "position_pct": 1.0,
+      "dd_pct": -0.53
+    },
+    {
+      "date": "2023-12-07",
+      "equity": 100701.39,
+      "cash": 23904.39,
+      "market_value": 76797.0,
+      "positions": 4,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-12-08",
+      "equity": 99915.6,
+      "cash": 697.6,
+      "market_value": 99218.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -0.78
+    },
+    {
+      "date": "2023-12-11",
+      "equity": 101838.85,
+      "cash": 684.85,
+      "market_value": 101154.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-12-12",
+      "equity": 102176.61,
+      "cash": 1869.05,
+      "market_value": 100307.56,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2023-12-13",
+      "equity": 101743.05,
+      "cash": 1869.05,
+      "market_value": 99874.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.42
+    },
+    {
+      "date": "2023-12-14",
+      "equity": 101369.05,
+      "cash": 1869.05,
+      "market_value": 99500.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -0.79
+    },
+    {
+      "date": "2023-12-15",
+      "equity": 101334.05,
+      "cash": 1869.05,
+      "market_value": 99465.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -0.82
+    },
+    {
+      "date": "2023-12-18",
+      "equity": 101446.05,
+      "cash": 1869.05,
+      "market_value": 99577.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -0.72
+    },
+    {
+      "date": "2023-12-19",
+      "equity": 101786.05,
+      "cash": 1869.05,
+      "market_value": 99917.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -0.38
+    },
+    {
+      "date": "2023-12-20",
+      "equity": 100214.16,
+      "cash": 12.16,
+      "market_value": 100202.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -1.92
+    },
+    {
+      "date": "2023-12-21",
+      "equity": 99709.13,
+      "cash": 171.13,
+      "market_value": 99538.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.41
+    },
+    {
+      "date": "2023-12-22",
+      "equity": 99978.13,
+      "cash": 171.13,
+      "market_value": 99807.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.15
+    },
+    {
+      "date": "2023-12-25",
+      "equity": 99623.13,
+      "cash": 171.13,
+      "market_value": 99452.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.5
+    },
+    {
+      "date": "2023-12-26",
+      "equity": 98861.0,
+      "cash": 171.13,
+      "market_value": 98689.88,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.24
+    },
+    {
+      "date": "2023-12-27",
+      "equity": 100076.13,
+      "cash": 171.13,
+      "market_value": 99905.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.06
+    },
+    {
+      "date": "2023-12-28",
+      "equity": 101498.13,
+      "cash": 171.13,
+      "market_value": 101327.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.66
+    },
+    {
+      "date": "2023-12-29",
+      "equity": 102447.48,
+      "cash": 10889.48,
+      "market_value": 91558.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-01-02",
+      "equity": 101441.36,
+      "cash": 10889.48,
+      "market_value": 90551.88,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -0.98
+    },
+    {
+      "date": "2024-01-03",
+      "equity": 102785.48,
+      "cash": 10889.48,
+      "market_value": 91896.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-01-04",
+      "equity": 102707.48,
+      "cash": 10889.48,
+      "market_value": 91818.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.08
+    },
+    {
+      "date": "2024-01-05",
+      "equity": 102399.48,
+      "cash": 10889.48,
+      "market_value": 91510.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.38
+    },
+    {
+      "date": "2024-01-08",
+      "equity": 101454.48,
+      "cash": 10889.48,
+      "market_value": 90565.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -1.29
+    },
+    {
+      "date": "2024-01-09",
+      "equity": 100532.61,
+      "cash": 17675.61,
+      "market_value": 82857.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -2.19
+    },
+    {
+      "date": "2024-01-10",
+      "equity": 100700.58,
+      "cash": 14745.58,
+      "market_value": 85955.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -2.03
+    },
+    {
+      "date": "2024-01-11",
+      "equity": 100807.58,
+      "cash": 14745.58,
+      "market_value": 86062.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -1.92
+    },
+    {
+      "date": "2024-01-12",
+      "equity": 100735.13,
+      "cash": 19935.13,
+      "market_value": 80800.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -1.99
+    },
+    {
+      "date": "2024-01-15",
+      "equity": 100561.13,
+      "cash": 19935.13,
+      "market_value": 80626.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -2.16
+    },
+    {
+      "date": "2024-01-16",
+      "equity": 100993.13,
+      "cash": 19935.13,
+      "market_value": 81058.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -1.74
+    },
+    {
+      "date": "2024-01-17",
+      "equity": 99672.13,
+      "cash": 19935.13,
+      "market_value": 79737.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -3.03
+    },
+    {
+      "date": "2024-01-18",
+      "equity": 100468.13,
+      "cash": 19935.13,
+      "market_value": 80533.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -2.25
+    },
+    {
+      "date": "2024-01-19",
+      "equity": 100215.13,
+      "cash": 19935.13,
+      "market_value": 80280.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -2.5
+    },
+    {
+      "date": "2024-01-22",
+      "equity": 98471.05,
+      "cash": 22947.05,
+      "market_value": 75524.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -4.2
+    },
+    {
+      "date": "2024-01-23",
+      "equity": 99282.05,
+      "cash": 22947.05,
+      "market_value": 76335.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -3.41
+    },
+    {
+      "date": "2024-01-24",
+      "equity": 101876.73,
+      "cash": 26443.73,
+      "market_value": 75433.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.88
+    },
+    {
+      "date": "2024-01-25",
+      "equity": 104150.85,
+      "cash": 34296.85,
+      "market_value": 69854.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-01-26",
+      "equity": 103840.55,
+      "cash": 34296.85,
+      "market_value": 69543.7,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.3
+    },
+    {
+      "date": "2024-01-29",
+      "equity": 103433.85,
+      "cash": 34296.85,
+      "market_value": 69137.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.69
+    },
+    {
+      "date": "2024-01-30",
+      "equity": 101967.21,
+      "cash": 45569.21,
+      "market_value": 56398.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -2.1
+    },
+    {
+      "date": "2024-01-31",
+      "equity": 100843.21,
+      "cash": 45569.21,
+      "market_value": 55274.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -3.18
+    },
+    {
+      "date": "2024-02-01",
+      "equity": 101283.06,
+      "cash": 38281.06,
+      "market_value": 63002.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -2.75
+    },
+    {
+      "date": "2024-02-02",
+      "equity": 99887.41,
+      "cash": 33111.41,
+      "market_value": 66776.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -4.09
+    },
+    {
+      "date": "2024-02-05",
+      "equity": 99155.41,
+      "cash": 33111.41,
+      "market_value": 66044.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -4.8
+    },
+    {
+      "date": "2024-02-06",
+      "equity": 102131.62,
+      "cash": 40123.62,
+      "market_value": 62008.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.94
+    },
+    {
+      "date": "2024-02-07",
+      "equity": 102914.29,
+      "cash": 36662.29,
+      "market_value": 66252.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.19
+    },
+    {
+      "date": "2024-02-08",
+      "equity": 103608.29,
+      "cash": 36662.29,
+      "market_value": 66946.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.52
+    },
+    {
+      "date": "2024-02-19",
+      "equity": 103335.29,
+      "cash": 36662.29,
+      "market_value": 66673.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.78
+    },
+    {
+      "date": "2024-02-20",
+      "equity": 103616.09,
+      "cash": 36097.09,
+      "market_value": 67519.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.51
+    },
+    {
+      "date": "2024-02-21",
+      "equity": 104380.56,
+      "cash": 35868.86,
+      "market_value": 68511.7,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-02-22",
+      "equity": 104761.86,
+      "cash": 35868.86,
+      "market_value": 68893.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-02-23",
+      "equity": 104639.86,
+      "cash": 35868.86,
+      "market_value": 68771.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.12
+    },
+    {
+      "date": "2024-02-26",
+      "equity": 103970.86,
+      "cash": 35868.86,
+      "market_value": 68102.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.76
+    },
+    {
+      "date": "2024-02-27",
+      "equity": 104414.86,
+      "cash": 35868.86,
+      "market_value": 68546.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.33
+    },
+    {
+      "date": "2024-02-28",
+      "equity": 103499.18,
+      "cash": 43451.18,
+      "market_value": 60048.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.21
+    },
+    {
+      "date": "2024-02-29",
+      "equity": 103960.26,
+      "cash": 35541.26,
+      "market_value": 68419.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.77
+    },
+    {
+      "date": "2024-03-01",
+      "equity": 103437.26,
+      "cash": 35541.26,
+      "market_value": 67896.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.26
+    },
+    {
+      "date": "2024-03-04",
+      "equity": 103747.26,
+      "cash": 35541.26,
+      "market_value": 68206.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.97
+    },
+    {
+      "date": "2024-03-05",
+      "equity": 103913.26,
+      "cash": 35541.26,
+      "market_value": 68372.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.81
+    },
+    {
+      "date": "2024-03-06",
+      "equity": 104114.26,
+      "cash": 35541.26,
+      "market_value": 68573.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.62
+    },
+    {
+      "date": "2024-03-07",
+      "equity": 104491.26,
+      "cash": 35541.26,
+      "market_value": 68950.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -0.26
+    },
+    {
+      "date": "2024-03-08",
+      "equity": 104662.26,
+      "cash": 35541.26,
+      "market_value": 69121.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -0.1
+    },
+    {
+      "date": "2024-03-11",
+      "equity": 104803.68,
+      "cash": 43288.68,
+      "market_value": 61515.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-03-12",
+      "equity": 103967.51,
+      "cash": 14168.51,
+      "market_value": 89799.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.8
+    },
+    {
+      "date": "2024-03-13",
+      "equity": 103370.51,
+      "cash": 14168.51,
+      "market_value": 89202.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.37
+    },
+    {
+      "date": "2024-03-14",
+      "equity": 103354.51,
+      "cash": 14168.51,
+      "market_value": 89186.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.38
+    },
+    {
+      "date": "2024-03-15",
+      "equity": 103649.28,
+      "cash": 6431.28,
+      "market_value": 97218.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.1
+    },
+    {
+      "date": "2024-03-18",
+      "equity": 105426.28,
+      "cash": 6431.28,
+      "market_value": 98995.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-03-19",
+      "equity": 104248.28,
+      "cash": 6431.28,
+      "market_value": 97817.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.12
+    },
+    {
+      "date": "2024-03-20",
+      "equity": 104966.28,
+      "cash": 6431.28,
+      "market_value": 98535.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.44
+    },
+    {
+      "date": "2024-03-21",
+      "equity": 104269.28,
+      "cash": 6431.28,
+      "market_value": 97838.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.1
+    },
+    {
+      "date": "2024-03-22",
+      "equity": 103310.28,
+      "cash": 6431.28,
+      "market_value": 96879.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.01
+    },
+    {
+      "date": "2024-03-25",
+      "equity": 102697.28,
+      "cash": 6431.28,
+      "market_value": 96266.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.59
+    },
+    {
+      "date": "2024-03-26",
+      "equity": 103144.31,
+      "cash": 7216.31,
+      "market_value": 95928.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.16
+    },
+    {
+      "date": "2024-03-27",
+      "equity": 101813.31,
+      "cash": 7216.31,
+      "market_value": 94597.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.43
+    },
+    {
+      "date": "2024-03-28",
+      "equity": 102001.31,
+      "cash": 7216.31,
+      "market_value": 94785.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.25
+    },
+    {
+      "date": "2024-03-29",
+      "equity": 102965.34,
+      "cash": 167.34,
+      "market_value": 102798.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.33
+    },
+    {
+      "date": "2024-04-01",
+      "equity": 104234.34,
+      "cash": 167.34,
+      "market_value": 104067.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.13
+    },
+    {
+      "date": "2024-04-02",
+      "equity": 104432.34,
+      "cash": 167.34,
+      "market_value": 104265.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.94
+    },
+    {
+      "date": "2024-04-03",
+      "equity": 105083.34,
+      "cash": 167.34,
+      "market_value": 104916.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.33
+    },
+    {
+      "date": "2024-04-08",
+      "equity": 104633.75,
+      "cash": 9715.75,
+      "market_value": 94918.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.75
+    },
+    {
+      "date": "2024-04-09",
+      "equity": 105307.75,
+      "cash": 9715.75,
+      "market_value": 95592.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.11
+    },
+    {
+      "date": "2024-04-10",
+      "equity": 104356.75,
+      "cash": 9715.75,
+      "market_value": 94641.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.01
+    },
+    {
+      "date": "2024-04-11",
+      "equity": 103993.75,
+      "cash": 9715.75,
+      "market_value": 94278.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.36
+    },
+    {
+      "date": "2024-04-12",
+      "equity": 102718.75,
+      "cash": 9715.75,
+      "market_value": 93003.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.57
+    },
+    {
+      "date": "2024-04-15",
+      "equity": 103082.86,
+      "cash": 6662.86,
+      "market_value": 96420.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.22
+    },
+    {
+      "date": "2024-04-16",
+      "equity": 101488.86,
+      "cash": 6662.86,
+      "market_value": 94826.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.73
+    },
+    {
+      "date": "2024-04-17",
+      "equity": 103467.86,
+      "cash": 6662.86,
+      "market_value": 96805.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.86
+    },
+    {
+      "date": "2024-04-18",
+      "equity": 103580.86,
+      "cash": 6662.86,
+      "market_value": 96918.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.75
+    },
+    {
+      "date": "2024-04-19",
+      "equity": 102533.86,
+      "cash": 6662.86,
+      "market_value": 95871.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.74
+    },
+    {
+      "date": "2024-04-22",
+      "equity": 103020.86,
+      "cash": 6662.86,
+      "market_value": 96358.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.28
+    },
+    {
+      "date": "2024-04-23",
+      "equity": 101735.54,
+      "cash": 9777.54,
+      "market_value": 91958.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.5
+    },
+    {
+      "date": "2024-04-24",
+      "equity": 102749.25,
+      "cash": 6312.25,
+      "market_value": 96437.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.54
+    },
+    {
+      "date": "2024-04-25",
+      "equity": 102978.93,
+      "cash": 4913.93,
+      "market_value": 98065.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.32
+    },
+    {
+      "date": "2024-04-26",
+      "equity": 106160.57,
+      "cash": 13585.57,
+      "market_value": 92575.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-04-29",
+      "equity": 106222.57,
+      "cash": 13585.57,
+      "market_value": 92637.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-04-30",
+      "equity": 105988.57,
+      "cash": 13585.57,
+      "market_value": 92403.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.22
+    },
+    {
+      "date": "2024-05-06",
+      "equity": 107526.79,
+      "cash": 8161.79,
+      "market_value": 99365.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-05-07",
+      "equity": 107093.79,
+      "cash": 8161.79,
+      "market_value": 98932.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.4
+    },
+    {
+      "date": "2024-05-08",
+      "equity": 106099.79,
+      "cash": 8161.79,
+      "market_value": 97938.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.33
+    },
+    {
+      "date": "2024-05-09",
+      "equity": 107041.79,
+      "cash": 8161.79,
+      "market_value": 98880.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.45
+    },
+    {
+      "date": "2024-05-10",
+      "equity": 108461.79,
+      "cash": 8161.79,
+      "market_value": 100300.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-05-13",
+      "equity": 109652.88,
+      "cash": 20804.88,
+      "market_value": 88848.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-05-14",
+      "equity": 110615.51,
+      "cash": 11096.51,
+      "market_value": 99519.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-05-15",
+      "equity": 109564.51,
+      "cash": 11096.51,
+      "market_value": 98468.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.95
+    },
+    {
+      "date": "2024-05-16",
+      "equity": 110118.51,
+      "cash": 11096.51,
+      "market_value": 99022.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.45
+    },
+    {
+      "date": "2024-05-17",
+      "equity": 111131.27,
+      "cash": 5668.87,
+      "market_value": 105462.4,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-05-20",
+      "equity": 111951.27,
+      "cash": 5668.87,
+      "market_value": 106282.4,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-05-21",
+      "equity": 111490.87,
+      "cash": 5668.87,
+      "market_value": 105822.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -0.41
+    },
+    {
+      "date": "2024-05-22",
+      "equity": 111596.87,
+      "cash": 5668.87,
+      "market_value": 105928.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -0.32
+    },
+    {
+      "date": "2024-05-23",
+      "equity": 109790.06,
+      "cash": 102.06,
+      "market_value": 109688.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -1.93
+    },
+    {
+      "date": "2024-05-24",
+      "equity": 108300.06,
+      "cash": 102.06,
+      "market_value": 108198.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.26
+    },
+    {
+      "date": "2024-05-27",
+      "equity": 108127.06,
+      "cash": 102.06,
+      "market_value": 108025.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.42
+    },
+    {
+      "date": "2024-05-28",
+      "equity": 107124.06,
+      "cash": 102.06,
+      "market_value": 107022.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -4.31
+    },
+    {
+      "date": "2024-05-29",
+      "equity": 106716.51,
+      "cash": 674.51,
+      "market_value": 106042.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.68
+    },
+    {
+      "date": "2024-05-30",
+      "equity": 107735.51,
+      "cash": 674.51,
+      "market_value": 107061.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.77
+    },
+    {
+      "date": "2024-05-31",
+      "equity": 107778.51,
+      "cash": 674.51,
+      "market_value": 107104.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.73
+    },
+    {
+      "date": "2024-06-03",
+      "equity": 105138.9,
+      "cash": 674.51,
+      "market_value": 104464.39,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.09
+    },
+    {
+      "date": "2024-06-04",
+      "equity": 107246.59,
+      "cash": 13755.59,
+      "market_value": 93491.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.2
+    },
+    {
+      "date": "2024-06-05",
+      "equity": 107499.26,
+      "cash": 410.26,
+      "market_value": 107089.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.98
+    },
+    {
+      "date": "2024-06-06",
+      "equity": 105455.42,
+      "cash": 46.42,
+      "market_value": 105409.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -5.8
+    },
+    {
+      "date": "2024-06-07",
+      "equity": 105637.32,
+      "cash": 310.32,
+      "market_value": 105327.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -5.64
+    },
+    {
+      "date": "2024-06-11",
+      "equity": 103843.32,
+      "cash": 310.32,
+      "market_value": 103533.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.24
+    },
+    {
+      "date": "2024-06-12",
+      "equity": 103897.32,
+      "cash": 310.32,
+      "market_value": 103587.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.19
+    },
+    {
+      "date": "2024-06-13",
+      "equity": 102504.32,
+      "cash": 310.32,
+      "market_value": 102194.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.44
+    },
+    {
+      "date": "2024-06-14",
+      "equity": 102280.02,
+      "cash": 310.32,
+      "market_value": 101969.7,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.64
+    },
+    {
+      "date": "2024-06-17",
+      "equity": 101744.26,
+      "cash": 101.26,
+      "market_value": 101643.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.12
+    },
+    {
+      "date": "2024-06-18",
+      "equity": 101160.98,
+      "cash": 101.26,
+      "market_value": 101059.72,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.64
+    },
+    {
+      "date": "2024-06-19",
+      "equity": 101148.26,
+      "cash": 101.26,
+      "market_value": 101047.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.65
+    },
+    {
+      "date": "2024-06-20",
+      "equity": 98703.26,
+      "cash": 101.26,
+      "market_value": 98602.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.83
+    },
+    {
+      "date": "2024-06-21",
+      "equity": 98867.5,
+      "cash": 49.5,
+      "market_value": 98818.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.69
+    },
+    {
+      "date": "2024-06-24",
+      "equity": 96125.5,
+      "cash": 49.5,
+      "market_value": 96076.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -14.14
+    },
+    {
+      "date": "2024-06-25",
+      "equity": 96648.81,
+      "cash": 105.81,
+      "market_value": 96543.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.67
+    },
+    {
+      "date": "2024-06-26",
+      "equity": 98542.81,
+      "cash": 105.81,
+      "market_value": 98437.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.98
+    },
+    {
+      "date": "2024-06-27",
+      "equity": 97006.03,
+      "cash": 788.03,
+      "market_value": 96218.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.35
+    },
+    {
+      "date": "2024-06-28",
+      "equity": 96325.03,
+      "cash": 788.03,
+      "market_value": 95537.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.96
+    },
+    {
+      "date": "2024-07-01",
+      "equity": 97049.03,
+      "cash": 788.03,
+      "market_value": 96261.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.31
+    },
+    {
+      "date": "2024-07-02",
+      "equity": 96865.03,
+      "cash": 788.03,
+      "market_value": 96077.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.48
+    },
+    {
+      "date": "2024-07-03",
+      "equity": 96488.03,
+      "cash": 788.03,
+      "market_value": 95700.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.81
+    },
+    {
+      "date": "2024-07-04",
+      "equity": 94820.03,
+      "cash": 788.03,
+      "market_value": 94032.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.3
+    },
+    {
+      "date": "2024-07-05",
+      "equity": 94725.0,
+      "cash": 858.0,
+      "market_value": 93867.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.39
+    },
+    {
+      "date": "2024-07-08",
+      "equity": 92584.0,
+      "cash": 858.0,
+      "market_value": 91726.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.3
+    },
+    {
+      "date": "2024-07-09",
+      "equity": 93154.0,
+      "cash": 858.0,
+      "market_value": 92296.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.79
+    },
+    {
+      "date": "2024-07-10",
+      "equity": 93081.0,
+      "cash": 858.0,
+      "market_value": 92223.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.86
+    },
+    {
+      "date": "2024-07-11",
+      "equity": 94902.0,
+      "cash": 858.0,
+      "market_value": 94044.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.23
+    },
+    {
+      "date": "2024-07-12",
+      "equity": 94486.0,
+      "cash": 858.0,
+      "market_value": 93628.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.6
+    },
+    {
+      "date": "2024-07-15",
+      "equity": 93965.0,
+      "cash": 858.0,
+      "market_value": 93107.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.07
+    },
+    {
+      "date": "2024-07-16",
+      "equity": 93835.74,
+      "cash": 824.74,
+      "market_value": 93011.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.18
+    },
+    {
+      "date": "2024-07-17",
+      "equity": 93772.74,
+      "cash": 824.74,
+      "market_value": 92948.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.24
+    },
+    {
+      "date": "2024-07-18",
+      "equity": 94113.74,
+      "cash": 824.74,
+      "market_value": 93289.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.93
+    },
+    {
+      "date": "2024-07-19",
+      "equity": 94122.74,
+      "cash": 824.74,
+      "market_value": 93298.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.93
+    },
+    {
+      "date": "2024-07-22",
+      "equity": 93866.74,
+      "cash": 824.74,
+      "market_value": 93042.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.15
+    },
+    {
+      "date": "2024-07-23",
+      "equity": 92205.19,
+      "cash": 760.19,
+      "market_value": 91445.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.64
+    },
+    {
+      "date": "2024-07-24",
+      "equity": 91457.19,
+      "cash": 760.19,
+      "market_value": 90697.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -18.31
+    },
+    {
+      "date": "2024-07-25",
+      "equity": 91790.95,
+      "cash": 505.95,
+      "market_value": 91285.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -18.01
+    },
+    {
+      "date": "2024-07-26",
+      "equity": 92887.95,
+      "cash": 505.95,
+      "market_value": 92382.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.03
+    },
+    {
+      "date": "2024-07-29",
+      "equity": 92862.73,
+      "cash": 841.73,
+      "market_value": 92021.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.05
+    },
+    {
+      "date": "2024-07-30",
+      "equity": 93117.73,
+      "cash": 841.73,
+      "market_value": 92276.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.82
+    },
+    {
+      "date": "2024-07-31",
+      "equity": 95729.79,
+      "cash": 19778.56,
+      "market_value": 75951.22,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -14.49
+    },
+    {
+      "date": "2024-08-01",
+      "equity": 95401.56,
+      "cash": 19778.56,
+      "market_value": 75623.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -14.78
+    },
+    {
+      "date": "2024-08-02",
+      "equity": 94538.56,
+      "cash": 19778.56,
+      "market_value": 74760.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -15.55
+    },
+    {
+      "date": "2024-08-05",
+      "equity": 93070.56,
+      "cash": 19778.56,
+      "market_value": 73292.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -16.87
+    },
+    {
+      "date": "2024-08-06",
+      "equity": 94212.56,
+      "cash": 19778.56,
+      "market_value": 74434.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -15.85
+    },
+    {
+      "date": "2024-08-07",
+      "equity": 93683.56,
+      "cash": 19778.56,
+      "market_value": 73905.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -16.32
+    },
+    {
+      "date": "2024-08-08",
+      "equity": 93986.56,
+      "cash": 19778.56,
+      "market_value": 74208.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.05
+    },
+    {
+      "date": "2024-08-09",
+      "equity": 93474.56,
+      "cash": 19778.56,
+      "market_value": 73696.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.5
+    },
+    {
+      "date": "2024-08-12",
+      "equity": 93047.56,
+      "cash": 19778.56,
+      "market_value": 73269.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.89
+    },
+    {
+      "date": "2024-08-13",
+      "equity": 93226.56,
+      "cash": 19778.56,
+      "market_value": 73448.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.73
+    },
+    {
+      "date": "2024-08-14",
+      "equity": 92306.17,
+      "cash": 1320.17,
+      "market_value": 90986.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.55
+    },
+    {
+      "date": "2024-08-15",
+      "equity": 93278.17,
+      "cash": 1320.17,
+      "market_value": 91958.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -16.68
+    },
+    {
+      "date": "2024-08-16",
+      "equity": 93859.24,
+      "cash": 5235.24,
+      "market_value": 88624.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -16.16
+    },
+    {
+      "date": "2024-08-19",
+      "equity": 94003.24,
+      "cash": 5235.24,
+      "market_value": 88768.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -16.03
+    },
+    {
+      "date": "2024-08-20",
+      "equity": 91845.63,
+      "cash": 1265.63,
+      "market_value": 90580.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.96
+    },
+    {
+      "date": "2024-08-21",
+      "equity": 91260.63,
+      "cash": 1265.63,
+      "market_value": 89995.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -18.48
+    },
+    {
+      "date": "2024-08-22",
+      "equity": 90298.63,
+      "cash": 1265.63,
+      "market_value": 89033.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -19.34
+    },
+    {
+      "date": "2024-08-23",
+      "equity": 90137.63,
+      "cash": 1265.63,
+      "market_value": 88872.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -19.48
+    },
+    {
+      "date": "2024-08-26",
+      "equity": 90534.63,
+      "cash": 1265.63,
+      "market_value": 89269.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -19.13
+    },
+    {
+      "date": "2024-08-27",
+      "equity": 88875.63,
+      "cash": 1265.63,
+      "market_value": 87610.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -20.61
+    },
+    {
+      "date": "2024-08-28",
+      "equity": 88885.63,
+      "cash": 1265.63,
+      "market_value": 87620.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -20.6
+    },
+    {
+      "date": "2024-08-29",
+      "equity": 90189.63,
+      "cash": 1265.63,
+      "market_value": 88924.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -19.44
+    },
+    {
+      "date": "2024-08-30",
+      "equity": 93799.36,
+      "cash": 1327.36,
+      "market_value": 92472.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.21
+    },
+    {
+      "date": "2024-09-02",
+      "equity": 91915.36,
+      "cash": 1327.36,
+      "market_value": 90588.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.9
+    },
+    {
+      "date": "2024-09-03",
+      "equity": 93717.36,
+      "cash": 1327.36,
+      "market_value": 92390.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.29
+    },
+    {
+      "date": "2024-09-04",
+      "equity": 94130.36,
+      "cash": 1327.36,
+      "market_value": 92803.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.92
+    },
+    {
+      "date": "2024-09-05",
+      "equity": 94255.87,
+      "cash": 1327.36,
+      "market_value": 92928.51,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.81
+    },
+    {
+      "date": "2024-09-06",
+      "equity": 94295.36,
+      "cash": 1327.36,
+      "market_value": 92968.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.77
+    },
+    {
+      "date": "2024-09-09",
+      "equity": 93656.36,
+      "cash": 1327.36,
+      "market_value": 92329.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.34
+    },
+    {
+      "date": "2024-09-10",
+      "equity": 93840.36,
+      "cash": 1327.36,
+      "market_value": 92513.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.18
+    },
+    {
+      "date": "2024-09-11",
+      "equity": 93761.36,
+      "cash": 1327.36,
+      "market_value": 92434.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.25
+    },
+    {
+      "date": "2024-09-12",
+      "equity": 93288.36,
+      "cash": 1327.36,
+      "market_value": 91961.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.67
+    },
+    {
+      "date": "2024-09-13",
+      "equity": 92535.36,
+      "cash": 1327.36,
+      "market_value": 91208.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.34
+    },
+    {
+      "date": "2024-09-18",
+      "equity": 93122.87,
+      "cash": 771.87,
+      "market_value": 92351.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.82
+    },
+    {
+      "date": "2024-09-19",
+      "equity": 94948.78,
+      "cash": 233.78,
+      "market_value": 94715.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.19
+    },
+    {
+      "date": "2024-09-20",
+      "equity": 94488.78,
+      "cash": 233.78,
+      "market_value": 94255.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.6
+    },
+    {
+      "date": "2024-09-23",
+      "equity": 95042.78,
+      "cash": 233.78,
+      "market_value": 94809.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.1
+    },
+    {
+      "date": "2024-09-24",
+      "equity": 96886.94,
+      "cash": 16255.02,
+      "market_value": 80631.92,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -13.46
+    },
+    {
+      "date": "2024-09-25",
+      "equity": 97181.72,
+      "cash": 16255.02,
+      "market_value": 80926.69,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -13.19
+    },
+    {
+      "date": "2024-09-26",
+      "equity": 99574.28,
+      "cash": 5348.1,
+      "market_value": 94226.18,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -11.06
+    },
+    {
+      "date": "2024-09-27",
+      "equity": 103166.73,
+      "cash": 7765.22,
+      "market_value": 95401.51,
+      "positions": 4,
+      "position_pct": 0.25,
+      "dd_pct": -7.85
+    },
+    {
+      "date": "2024-09-30",
+      "equity": 116440.15,
+      "cash": 91895.15,
+      "market_value": 24545.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-10-08",
+      "equity": 119148.67,
+      "cash": 79173.67,
+      "market_value": 39975.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-10-09",
+      "equity": 119390.46,
+      "cash": 83665.46,
+      "market_value": 35725.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2024-10-10",
+      "equity": 117615.37,
+      "cash": 882.37,
+      "market_value": 116733.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.49
+    },
+    {
+      "date": "2024-10-11",
+      "equity": 115085.95,
+      "cash": 882.37,
+      "market_value": 114203.58,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -3.61
+    },
+    {
+      "date": "2024-10-14",
+      "equity": 113979.17,
+      "cash": 8911.17,
+      "market_value": 105068.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -4.53
+    },
+    {
+      "date": "2024-10-15",
+      "equity": 111928.17,
+      "cash": 8911.17,
+      "market_value": 103017.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -6.25
+    },
+    {
+      "date": "2024-10-16",
+      "equity": 109661.17,
+      "cash": 8911.17,
+      "market_value": 100750.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -8.15
+    },
+    {
+      "date": "2024-10-17",
+      "equity": 106975.17,
+      "cash": 8911.17,
+      "market_value": 98064.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -10.4
+    },
+    {
+      "date": "2024-10-18",
+      "equity": 109158.17,
+      "cash": 8911.17,
+      "market_value": 100247.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -8.57
+    },
+    {
+      "date": "2024-10-21",
+      "equity": 108881.17,
+      "cash": 8911.17,
+      "market_value": 99970.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -8.8
+    },
+    {
+      "date": "2024-10-22",
+      "equity": 109900.17,
+      "cash": 8911.17,
+      "market_value": 100989.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -7.95
+    },
+    {
+      "date": "2024-10-23",
+      "equity": 110707.17,
+      "cash": 8911.17,
+      "market_value": 101796.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -7.27
+    },
+    {
+      "date": "2024-10-24",
+      "equity": 109661.17,
+      "cash": 8911.17,
+      "market_value": 100750.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -8.15
+    },
+    {
+      "date": "2024-10-25",
+      "equity": 111971.17,
+      "cash": 8911.17,
+      "market_value": 103060.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -6.21
+    },
+    {
+      "date": "2024-10-28",
+      "equity": 111658.17,
+      "cash": 8911.17,
+      "market_value": 102747.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -6.48
+    },
+    {
+      "date": "2024-10-29",
+      "equity": 110897.17,
+      "cash": 8911.17,
+      "market_value": 101986.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -7.11
+    },
+    {
+      "date": "2024-10-30",
+      "equity": 110162.34,
+      "cash": 6238.34,
+      "market_value": 103924.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -7.73
+    },
+    {
+      "date": "2024-10-31",
+      "equity": 108021.33,
+      "cash": 68312.33,
+      "market_value": 39709.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -9.52
+    },
+    {
+      "date": "2024-11-01",
+      "equity": 105659.33,
+      "cash": 62443.33,
+      "market_value": 43216.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -11.5
+    },
+    {
+      "date": "2024-11-04",
+      "equity": 106343.33,
+      "cash": 62443.33,
+      "market_value": 43900.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -10.93
+    },
+    {
+      "date": "2024-11-05",
+      "equity": 107462.33,
+      "cash": 62443.33,
+      "market_value": 45019.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -9.99
+    },
+    {
+      "date": "2024-11-06",
+      "equity": 107551.34,
+      "cash": 26081.34,
+      "market_value": 81470.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -9.92
+    },
+    {
+      "date": "2024-11-07",
+      "equity": 108478.0,
+      "cash": 13699.0,
+      "market_value": 94779.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -9.14
+    },
+    {
+      "date": "2024-11-08",
+      "equity": 108657.76,
+      "cash": 793.76,
+      "market_value": 107864.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.99
+    },
+    {
+      "date": "2024-11-11",
+      "equity": 113411.89,
+      "cash": 1380.89,
+      "market_value": 112031.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -5.01
+    },
+    {
+      "date": "2024-11-12",
+      "equity": 113155.94,
+      "cash": 436.94,
+      "market_value": 112719.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -5.22
+    },
+    {
+      "date": "2024-11-13",
+      "equity": 112454.85,
+      "cash": 557.85,
+      "market_value": 111897.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -5.81
+    },
+    {
+      "date": "2024-11-14",
+      "equity": 110753.85,
+      "cash": 557.85,
+      "market_value": 110196.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.23
+    },
+    {
+      "date": "2024-11-15",
+      "equity": 105965.29,
+      "cash": 425.29,
+      "market_value": 105540.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.24
+    },
+    {
+      "date": "2024-11-18",
+      "equity": 104367.27,
+      "cash": 1230.27,
+      "market_value": 103137.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -12.58
+    },
+    {
+      "date": "2024-11-19",
+      "equity": 103340.5,
+      "cash": 308.5,
+      "market_value": 103032.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.44
+    },
+    {
+      "date": "2024-11-20",
+      "equity": 106246.5,
+      "cash": 308.5,
+      "market_value": 105938.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.01
+    },
+    {
+      "date": "2024-11-21",
+      "equity": 106674.01,
+      "cash": 9616.01,
+      "market_value": 97058.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.65
+    },
+    {
+      "date": "2024-11-22",
+      "equity": 102914.19,
+      "cash": 7452.19,
+      "market_value": 95462.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -13.8
+    },
+    {
+      "date": "2024-11-25",
+      "equity": 102268.19,
+      "cash": 7452.19,
+      "market_value": 94816.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -14.34
+    },
+    {
+      "date": "2024-11-26",
+      "equity": 101283.19,
+      "cash": 7452.19,
+      "market_value": 93831.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -15.17
+    },
+    {
+      "date": "2024-11-27",
+      "equity": 103001.19,
+      "cash": 7452.19,
+      "market_value": 95549.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -13.73
+    },
+    {
+      "date": "2024-11-28",
+      "equity": 102776.27,
+      "cash": 8215.27,
+      "market_value": 94561.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -13.92
+    },
+    {
+      "date": "2024-11-29",
+      "equity": 104450.27,
+      "cash": 8215.27,
+      "market_value": 96235.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -12.51
+    },
+    {
+      "date": "2024-12-02",
+      "equity": 106432.73,
+      "cash": 9741.73,
+      "market_value": 96691.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -10.85
+    },
+    {
+      "date": "2024-12-03",
+      "equity": 109121.57,
+      "cash": 1109.57,
+      "market_value": 108012.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.6
+    },
+    {
+      "date": "2024-12-04",
+      "equity": 107730.57,
+      "cash": 1109.57,
+      "market_value": 106621.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.77
+    },
+    {
+      "date": "2024-12-05",
+      "equity": 107341.57,
+      "cash": 1109.57,
+      "market_value": 106232.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.09
+    },
+    {
+      "date": "2024-12-06",
+      "equity": 109242.96,
+      "cash": 1273.96,
+      "market_value": 107969.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.5
+    },
+    {
+      "date": "2024-12-09",
+      "equity": 108669.96,
+      "cash": 1273.96,
+      "market_value": 107396.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.98
+    },
+    {
+      "date": "2024-12-10",
+      "equity": 110963.34,
+      "cash": 318.76,
+      "market_value": 110644.58,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.06
+    },
+    {
+      "date": "2024-12-11",
+      "equity": 110975.76,
+      "cash": 318.76,
+      "market_value": 110657.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.05
+    },
+    {
+      "date": "2024-12-12",
+      "equity": 111773.76,
+      "cash": 318.76,
+      "market_value": 111455.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.38
+    },
+    {
+      "date": "2024-12-13",
+      "equity": 108563.32,
+      "cash": 472.32,
+      "market_value": 108091.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.07
+    },
+    {
+      "date": "2024-12-16",
+      "equity": 108042.69,
+      "cash": 37.69,
+      "market_value": 108005.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.5
+    },
+    {
+      "date": "2024-12-17",
+      "equity": 107497.69,
+      "cash": 37.69,
+      "market_value": 107460.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.96
+    },
+    {
+      "date": "2024-12-18",
+      "equity": 108378.69,
+      "cash": 37.69,
+      "market_value": 108341.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.22
+    },
+    {
+      "date": "2024-12-19",
+      "equity": 108049.96,
+      "cash": 15804.96,
+      "market_value": 92245.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.5
+    },
+    {
+      "date": "2024-12-20",
+      "equity": 107389.96,
+      "cash": 15804.96,
+      "market_value": 91585.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.05
+    },
+    {
+      "date": "2024-12-23",
+      "equity": 107217.96,
+      "cash": 15804.96,
+      "market_value": 91413.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.2
+    },
+    {
+      "date": "2024-12-24",
+      "equity": 108623.96,
+      "cash": 15804.96,
+      "market_value": 92819.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.02
+    },
+    {
+      "date": "2024-12-25",
+      "equity": 108271.96,
+      "cash": 15804.96,
+      "market_value": 92467.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.31
+    },
+    {
+      "date": "2024-12-26",
+      "equity": 107706.96,
+      "cash": 15804.96,
+      "market_value": 91902.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.79
+    },
+    {
+      "date": "2024-12-27",
+      "equity": 108115.96,
+      "cash": 15804.96,
+      "market_value": 92311.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.44
+    },
+    {
+      "date": "2024-12-30",
+      "equity": 107678.96,
+      "cash": 15804.96,
+      "market_value": 91874.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.81
+    },
+    {
+      "date": "2024-12-31",
+      "equity": 105882.96,
+      "cash": 15804.96,
+      "market_value": 90078.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.31
+    },
+    {
+      "date": "2025-01-02",
+      "equity": 102341.42,
+      "cash": 2157.42,
+      "market_value": 100184.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -14.28
+    },
+    {
+      "date": "2025-01-03",
+      "equity": 99936.42,
+      "cash": 2157.42,
+      "market_value": 97779.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.29
+    },
+    {
+      "date": "2025-01-06",
+      "equity": 99499.42,
+      "cash": 2157.42,
+      "market_value": 97342.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.66
+    },
+    {
+      "date": "2025-01-07",
+      "equity": 100678.42,
+      "cash": 2157.42,
+      "market_value": 98521.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.67
+    },
+    {
+      "date": "2025-01-08",
+      "equity": 99695.9,
+      "cash": 5384.9,
+      "market_value": 94311.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.5
+    },
+    {
+      "date": "2025-01-09",
+      "equity": 99661.15,
+      "cash": 368.15,
+      "market_value": 99293.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.53
+    },
+    {
+      "date": "2025-01-10",
+      "equity": 96866.15,
+      "cash": 368.15,
+      "market_value": 96498.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -18.87
+    },
+    {
+      "date": "2025-01-13",
+      "equity": 97247.28,
+      "cash": 572.28,
+      "market_value": 96675.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -18.55
+    },
+    {
+      "date": "2025-01-14",
+      "equity": 101078.82,
+      "cash": 99.82,
+      "market_value": 100979.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.34
+    },
+    {
+      "date": "2025-01-15",
+      "equity": 100680.82,
+      "cash": 99.82,
+      "market_value": 100581.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.67
+    },
+    {
+      "date": "2025-01-16",
+      "equity": 100679.82,
+      "cash": 99.82,
+      "market_value": 100580.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.67
+    },
+    {
+      "date": "2025-01-17",
+      "equity": 101109.82,
+      "cash": 99.82,
+      "market_value": 101010.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.31
+    },
+    {
+      "date": "2025-01-20",
+      "equity": 102973.0,
+      "cash": 217.0,
+      "market_value": 102756.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.75
+    },
+    {
+      "date": "2025-01-21",
+      "equity": 103319.88,
+      "cash": 132.88,
+      "market_value": 103187.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.46
+    },
+    {
+      "date": "2025-01-22",
+      "equity": 101833.82,
+      "cash": 2359.82,
+      "market_value": 99474.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -14.71
+    },
+    {
+      "date": "2025-01-23",
+      "equity": 102100.82,
+      "cash": 2359.82,
+      "market_value": 99741.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -14.48
+    },
+    {
+      "date": "2025-01-24",
+      "equity": 102305.82,
+      "cash": 2359.82,
+      "market_value": 99946.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -14.31
+    },
+    {
+      "date": "2025-01-27",
+      "equity": 101338.91,
+      "cash": 464.91,
+      "market_value": 100874.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.12
+    },
+    {
+      "date": "2025-02-05",
+      "equity": 100840.91,
+      "cash": 464.91,
+      "market_value": 100376.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.54
+    },
+    {
+      "date": "2025-02-06",
+      "equity": 103304.22,
+      "cash": 416.22,
+      "market_value": 102888.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.47
+    },
+    {
+      "date": "2025-02-07",
+      "equity": 105087.63,
+      "cash": 1355.63,
+      "market_value": 103732.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.98
+    },
+    {
+      "date": "2025-02-10",
+      "equity": 107560.38,
+      "cash": 15572.38,
+      "market_value": 91988.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.91
+    },
+    {
+      "date": "2025-02-11",
+      "equity": 108215.68,
+      "cash": 1541.68,
+      "market_value": 106674.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.36
+    },
+    {
+      "date": "2025-02-12",
+      "equity": 108759.68,
+      "cash": 1541.68,
+      "market_value": 107218.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.9
+    },
+    {
+      "date": "2025-02-13",
+      "equity": 109682.9,
+      "cash": 825.9,
+      "market_value": 108857.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.13
+    },
+    {
+      "date": "2025-02-14",
+      "equity": 109661.9,
+      "cash": 825.9,
+      "market_value": 108836.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.15
+    },
+    {
+      "date": "2025-02-17",
+      "equity": 108503.71,
+      "cash": 2581.71,
+      "market_value": 105922.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.12
+    },
+    {
+      "date": "2025-02-18",
+      "equity": 107369.96,
+      "cash": 3780.96,
+      "market_value": 103589.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.07
+    },
+    {
+      "date": "2025-02-19",
+      "equity": 109083.82,
+      "cash": 218.82,
+      "market_value": 108865.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.63
+    },
+    {
+      "date": "2025-02-20",
+      "equity": 111723.23,
+      "cash": 34794.23,
+      "market_value": 76929.0,
+      "positions": 4,
+      "position_pct": 1.0,
+      "dd_pct": -6.42
+    },
+    {
+      "date": "2025-02-21",
+      "equity": 111916.16,
+      "cash": 301.16,
+      "market_value": 111615.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.26
+    },
+    {
+      "date": "2025-02-24",
+      "equity": 112001.16,
+      "cash": 301.16,
+      "market_value": 111700.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.19
+    },
+    {
+      "date": "2025-02-25",
+      "equity": 110964.66,
+      "cash": 1886.66,
+      "market_value": 109078.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.06
+    },
+    {
+      "date": "2025-02-26",
+      "equity": 111371.66,
+      "cash": 1886.66,
+      "market_value": 109485.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.72
+    },
+    {
+      "date": "2025-02-27",
+      "equity": 111236.66,
+      "cash": 1886.66,
+      "market_value": 109350.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.83
+    },
+    {
+      "date": "2025-02-28",
+      "equity": 111147.66,
+      "cash": 1886.66,
+      "market_value": 109261.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.9
+    },
+    {
+      "date": "2025-03-03",
+      "equity": 111483.66,
+      "cash": 1886.66,
+      "market_value": 109597.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.62
+    },
+    {
+      "date": "2025-03-04",
+      "equity": 111276.66,
+      "cash": 1886.66,
+      "market_value": 109390.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.8
+    },
+    {
+      "date": "2025-03-05",
+      "equity": 111560.58,
+      "cash": 4710.58,
+      "market_value": 106850.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.56
+    },
+    {
+      "date": "2025-03-06",
+      "equity": 111584.59,
+      "cash": 4645.59,
+      "market_value": 106939.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.54
+    },
+    {
+      "date": "2025-03-07",
+      "equity": 110825.59,
+      "cash": 4645.59,
+      "market_value": 106180.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.17
+    },
+    {
+      "date": "2025-03-10",
+      "equity": 110477.59,
+      "cash": 4645.59,
+      "market_value": 105832.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.47
+    },
+    {
+      "date": "2025-03-11",
+      "equity": 110825.59,
+      "cash": 4645.59,
+      "market_value": 106180.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.17
+    },
+    {
+      "date": "2025-03-12",
+      "equity": 109625.59,
+      "cash": 4645.59,
+      "market_value": 104980.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.18
+    },
+    {
+      "date": "2025-03-13",
+      "equity": 107857.07,
+      "cash": 236.07,
+      "market_value": 107621.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.66
+    },
+    {
+      "date": "2025-03-14",
+      "equity": 108842.07,
+      "cash": 236.07,
+      "market_value": 108606.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.84
+    },
+    {
+      "date": "2025-03-17",
+      "equity": 109233.07,
+      "cash": 236.07,
+      "market_value": 108997.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.51
+    },
+    {
+      "date": "2025-03-18",
+      "equity": 108744.82,
+      "cash": 236.07,
+      "market_value": 108508.75,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.92
+    },
+    {
+      "date": "2025-03-19",
+      "equity": 108094.82,
+      "cash": 236.07,
+      "market_value": 107858.75,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.46
+    },
+    {
+      "date": "2025-03-20",
+      "equity": 109045.84,
+      "cash": 1655.84,
+      "market_value": 107390.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.66
+    },
+    {
+      "date": "2025-03-21",
+      "equity": 107220.1,
+      "cash": 356.1,
+      "market_value": 106864.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.19
+    },
+    {
+      "date": "2025-03-24",
+      "equity": 106918.23,
+      "cash": 145.23,
+      "market_value": 106773.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.45
+    },
+    {
+      "date": "2025-03-25",
+      "equity": 107040.23,
+      "cash": 145.23,
+      "market_value": 106895.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.34
+    },
+    {
+      "date": "2025-03-26",
+      "equity": 107390.23,
+      "cash": 145.23,
+      "market_value": 107245.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.05
+    },
+    {
+      "date": "2025-03-27",
+      "equity": 109165.23,
+      "cash": 145.23,
+      "market_value": 109020.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.56
+    },
+    {
+      "date": "2025-03-28",
+      "equity": 107127.23,
+      "cash": 145.23,
+      "market_value": 106982.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.27
+    },
+    {
+      "date": "2025-03-31",
+      "equity": 107583.23,
+      "cash": 145.23,
+      "market_value": 107438.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.89
+    },
+    {
+      "date": "2025-04-01",
+      "equity": 108574.23,
+      "cash": 145.23,
+      "market_value": 108429.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.06
+    },
+    {
+      "date": "2025-04-02",
+      "equity": 107278.23,
+      "cash": 145.23,
+      "market_value": 107133.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.15
+    },
+    {
+      "date": "2025-04-03",
+      "equity": 107251.65,
+      "cash": 640.2,
+      "market_value": 106611.45,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.17
+    },
+    {
+      "date": "2025-04-07",
+      "equity": 98139.07,
+      "cash": 4561.07,
+      "market_value": 93578.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -17.8
+    },
+    {
+      "date": "2025-04-08",
+      "equity": 101308.87,
+      "cash": 7540.42,
+      "market_value": 93768.45,
+      "positions": 4,
+      "position_pct": 0.75,
+      "dd_pct": -15.14
+    },
+    {
+      "date": "2025-04-09",
+      "equity": 103430.18,
+      "cash": 16007.18,
+      "market_value": 87423.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -13.37
+    },
+    {
+      "date": "2025-04-10",
+      "equity": 105361.18,
+      "cash": 16007.18,
+      "market_value": 89354.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.75
+    },
+    {
+      "date": "2025-04-11",
+      "equity": 104319.18,
+      "cash": 16007.18,
+      "market_value": 88312.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -12.62
+    },
+    {
+      "date": "2025-04-14",
+      "equity": 105087.18,
+      "cash": 16007.18,
+      "market_value": 89080.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.98
+    },
+    {
+      "date": "2025-04-15",
+      "equity": 104368.18,
+      "cash": 16007.18,
+      "market_value": 88361.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -12.58
+    },
+    {
+      "date": "2025-04-16",
+      "equity": 104917.18,
+      "cash": 16007.18,
+      "market_value": 88910.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -12.12
+    },
+    {
+      "date": "2025-04-17",
+      "equity": 105138.72,
+      "cash": 9785.72,
+      "market_value": 95353.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.94
+    },
+    {
+      "date": "2025-04-18",
+      "equity": 105519.22,
+      "cash": 6416.22,
+      "market_value": 99103.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.62
+    },
+    {
+      "date": "2025-04-21",
+      "equity": 105516.47,
+      "cash": 6361.47,
+      "market_value": 99155.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.62
+    },
+    {
+      "date": "2025-04-22",
+      "equity": 105471.47,
+      "cash": 6361.47,
+      "market_value": 99110.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.66
+    },
+    {
+      "date": "2025-04-23",
+      "equity": 106088.43,
+      "cash": 7334.43,
+      "market_value": 98754.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.14
+    },
+    {
+      "date": "2025-04-24",
+      "equity": 106242.43,
+      "cash": 7334.43,
+      "market_value": 98908.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.01
+    },
+    {
+      "date": "2025-04-25",
+      "equity": 106161.43,
+      "cash": 7334.43,
+      "market_value": 98827.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.08
+    },
+    {
+      "date": "2025-04-28",
+      "equity": 105283.74,
+      "cash": 5930.74,
+      "market_value": 99353.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.82
+    },
+    {
+      "date": "2025-04-29",
+      "equity": 105031.84,
+      "cash": 6514.84,
+      "market_value": 98517.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -12.03
+    },
+    {
+      "date": "2025-04-30",
+      "equity": 104852.84,
+      "cash": 6514.84,
+      "market_value": 98338.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.18
+    },
+    {
+      "date": "2025-05-06",
+      "equity": 106320.84,
+      "cash": 6514.84,
+      "market_value": 99806.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -10.95
+    },
+    {
+      "date": "2025-05-07",
+      "equity": 107090.84,
+      "cash": 6514.84,
+      "market_value": 100576.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -10.3
+    },
+    {
+      "date": "2025-05-08",
+      "equity": 107168.84,
+      "cash": 6514.84,
+      "market_value": 100654.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.24
+    },
+    {
+      "date": "2025-05-09",
+      "equity": 106385.84,
+      "cash": 6514.84,
+      "market_value": 99871.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.89
+    },
+    {
+      "date": "2025-05-12",
+      "equity": 107440.84,
+      "cash": 6514.84,
+      "market_value": 100926.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.01
+    },
+    {
+      "date": "2025-05-13",
+      "equity": 108373.94,
+      "cash": 64.94,
+      "market_value": 108309.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.23
+    },
+    {
+      "date": "2025-05-14",
+      "equity": 107716.94,
+      "cash": 64.94,
+      "market_value": 107652.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.78
+    },
+    {
+      "date": "2025-05-15",
+      "equity": 106871.94,
+      "cash": 64.94,
+      "market_value": 106807.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.49
+    },
+    {
+      "date": "2025-05-16",
+      "equity": 106721.94,
+      "cash": 64.94,
+      "market_value": 106657.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.61
+    },
+    {
+      "date": "2025-05-19",
+      "equity": 107420.94,
+      "cash": 64.94,
+      "market_value": 107356.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.03
+    },
+    {
+      "date": "2025-05-20",
+      "equity": 107472.94,
+      "cash": 64.94,
+      "market_value": 107408.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.98
+    },
+    {
+      "date": "2025-05-21",
+      "equity": 108731.14,
+      "cash": 817.14,
+      "market_value": 107914.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.93
+    },
+    {
+      "date": "2025-05-22",
+      "equity": 108038.14,
+      "cash": 817.14,
+      "market_value": 107221.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.51
+    },
+    {
+      "date": "2025-05-23",
+      "equity": 106905.14,
+      "cash": 817.14,
+      "market_value": 106088.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.46
+    },
+    {
+      "date": "2025-05-26",
+      "equity": 107009.14,
+      "cash": 817.14,
+      "market_value": 106192.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.37
+    },
+    {
+      "date": "2025-05-27",
+      "equity": 106012.14,
+      "cash": 817.14,
+      "market_value": 105195.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.21
+    },
+    {
+      "date": "2025-05-28",
+      "equity": 106418.14,
+      "cash": 817.14,
+      "market_value": 105601.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.87
+    },
+    {
+      "date": "2025-05-29",
+      "equity": 107402.14,
+      "cash": 817.14,
+      "market_value": 106585.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.04
+    },
+    {
+      "date": "2025-05-30",
+      "equity": 106564.14,
+      "cash": 817.14,
+      "market_value": 105747.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.74
+    },
+    {
+      "date": "2025-06-03",
+      "equity": 104655.07,
+      "cash": 1445.07,
+      "market_value": 103210.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -12.34
+    },
+    {
+      "date": "2025-06-04",
+      "equity": 105106.07,
+      "cash": 1445.07,
+      "market_value": 103661.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.96
+    },
+    {
+      "date": "2025-06-05",
+      "equity": 105342.07,
+      "cash": 1445.07,
+      "market_value": 103897.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.77
+    },
+    {
+      "date": "2025-06-06",
+      "equity": 105702.07,
+      "cash": 1445.07,
+      "market_value": 104257.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.47
+    },
+    {
+      "date": "2025-06-09",
+      "equity": 106179.07,
+      "cash": 1445.07,
+      "market_value": 104734.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.07
+    },
+    {
+      "date": "2025-06-10",
+      "equity": 104619.07,
+      "cash": 1445.07,
+      "market_value": 103174.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -12.37
+    },
+    {
+      "date": "2025-06-11",
+      "equity": 104914.07,
+      "cash": 1445.07,
+      "market_value": 103469.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -12.13
+    },
+    {
+      "date": "2025-06-12",
+      "equity": 104318.21,
+      "cash": 1069.21,
+      "market_value": 103249.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -12.62
+    },
+    {
+      "date": "2025-06-13",
+      "equity": 103008.25,
+      "cash": 296.25,
+      "market_value": 102712.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.72
+    },
+    {
+      "date": "2025-06-16",
+      "equity": 102041.96,
+      "cash": 511.96,
+      "market_value": 101530.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -14.53
+    },
+    {
+      "date": "2025-06-17",
+      "equity": 101651.96,
+      "cash": 511.96,
+      "market_value": 101140.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -14.86
+    },
+    {
+      "date": "2025-06-18",
+      "equity": 101082.96,
+      "cash": 511.96,
+      "market_value": 100571.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -15.33
+    },
+    {
+      "date": "2025-06-19",
+      "equity": 99097.94,
+      "cash": 674.94,
+      "market_value": 98423.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.0
+    },
+    {
+      "date": "2025-06-20",
+      "equity": 99080.26,
+      "cash": 549.26,
+      "market_value": 98531.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -17.01
+    },
+    {
+      "date": "2025-06-23",
+      "equity": 100228.49,
+      "cash": 800.49,
+      "market_value": 99428.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -16.05
+    },
+    {
+      "date": "2025-06-24",
+      "equity": 102019.49,
+      "cash": 800.49,
+      "market_value": 101219.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -14.55
+    },
+    {
+      "date": "2025-06-25",
+      "equity": 103540.49,
+      "cash": 800.49,
+      "market_value": 102740.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.28
+    },
+    {
+      "date": "2025-06-26",
+      "equity": 103223.8,
+      "cash": 1269.8,
+      "market_value": 101954.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -13.54
+    },
+    {
+      "date": "2025-06-27",
+      "equity": 105075.83,
+      "cash": 243.83,
+      "market_value": 104832.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.99
+    },
+    {
+      "date": "2025-06-30",
+      "equity": 105622.35,
+      "cash": 10089.9,
+      "market_value": 95532.46,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -11.53
+    },
+    {
+      "date": "2025-07-01",
+      "equity": 106487.9,
+      "cash": 10089.9,
+      "market_value": 96398.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -10.81
+    },
+    {
+      "date": "2025-07-02",
+      "equity": 107680.89,
+      "cash": 2540.89,
+      "market_value": 105140.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.81
+    },
+    {
+      "date": "2025-07-03",
+      "equity": 107740.89,
+      "cash": 2540.89,
+      "market_value": 105200.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.76
+    },
+    {
+      "date": "2025-07-04",
+      "equity": 107774.15,
+      "cash": 2540.89,
+      "market_value": 105233.26,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.73
+    },
+    {
+      "date": "2025-07-07",
+      "equity": 107731.35,
+      "cash": 2540.89,
+      "market_value": 105190.46,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.77
+    },
+    {
+      "date": "2025-07-08",
+      "equity": 108434.15,
+      "cash": 2540.89,
+      "market_value": 105893.26,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.18
+    },
+    {
+      "date": "2025-07-09",
+      "equity": 109026.35,
+      "cash": 2540.89,
+      "market_value": 106485.46,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.68
+    },
+    {
+      "date": "2025-07-10",
+      "equity": 109634.09,
+      "cash": 539.09,
+      "market_value": 109095.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.17
+    },
+    {
+      "date": "2025-07-11",
+      "equity": 110128.99,
+      "cash": 539.09,
+      "market_value": 109589.9,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.76
+    },
+    {
+      "date": "2025-07-14",
+      "equity": 110104.09,
+      "cash": 539.09,
+      "market_value": 109565.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.78
+    },
+    {
+      "date": "2025-07-15",
+      "equity": 108870.09,
+      "cash": 539.09,
+      "market_value": 108331.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.81
+    },
+    {
+      "date": "2025-07-16",
+      "equity": 108391.09,
+      "cash": 539.09,
+      "market_value": 107852.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -9.21
+    },
+    {
+      "date": "2025-07-17",
+      "equity": 109258.09,
+      "cash": 539.09,
+      "market_value": 108719.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -8.49
+    },
+    {
+      "date": "2025-07-18",
+      "equity": 110476.09,
+      "cash": 539.09,
+      "market_value": 109937.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -7.47
+    },
+    {
+      "date": "2025-07-21",
+      "equity": 113594.7,
+      "cash": 2079.7,
+      "market_value": 111515.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.85
+    },
+    {
+      "date": "2025-07-22",
+      "equity": 114997.64,
+      "cash": 129.74,
+      "market_value": 114867.9,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.68
+    },
+    {
+      "date": "2025-07-23",
+      "equity": 114851.64,
+      "cash": 129.74,
+      "market_value": 114721.9,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.8
+    },
+    {
+      "date": "2025-07-24",
+      "equity": 116229.64,
+      "cash": 129.74,
+      "market_value": 116099.9,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.65
+    },
+    {
+      "date": "2025-07-25",
+      "equity": 114132.95,
+      "cash": 129.74,
+      "market_value": 114003.22,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.4
+    },
+    {
+      "date": "2025-07-28",
+      "equity": 114575.36,
+      "cash": 5817.36,
+      "market_value": 108758.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.03
+    },
+    {
+      "date": "2025-07-29",
+      "equity": 114018.54,
+      "cash": 108.54,
+      "market_value": 113910.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.5
+    },
+    {
+      "date": "2025-07-30",
+      "equity": 114611.54,
+      "cash": 108.54,
+      "market_value": 114503.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.0
+    },
+    {
+      "date": "2025-07-31",
+      "equity": 112906.69,
+      "cash": 46.69,
+      "market_value": 112860.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -5.43
+    },
+    {
+      "date": "2025-08-01",
+      "equity": 113213.69,
+      "cash": 46.69,
+      "market_value": 113167.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -5.17
+    },
+    {
+      "date": "2025-08-04",
+      "equity": 114378.69,
+      "cash": 46.69,
+      "market_value": 114332.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.2
+    },
+    {
+      "date": "2025-08-05",
+      "equity": 114749.69,
+      "cash": 46.69,
+      "market_value": 114703.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.89
+    },
+    {
+      "date": "2025-08-06",
+      "equity": 114956.69,
+      "cash": 46.69,
+      "market_value": 114910.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.71
+    },
+    {
+      "date": "2025-08-07",
+      "equity": 114919.69,
+      "cash": 46.69,
+      "market_value": 114873.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.74
+    },
+    {
+      "date": "2025-08-08",
+      "equity": 113791.58,
+      "cash": 46.69,
+      "market_value": 113744.88,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.69
+    },
+    {
+      "date": "2025-08-11",
+      "equity": 114051.98,
+      "cash": 271.98,
+      "market_value": 113780.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.47
+    },
+    {
+      "date": "2025-08-12",
+      "equity": 114250.88,
+      "cash": 271.98,
+      "market_value": 113978.9,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -4.3
+    },
+    {
+      "date": "2025-08-13",
+      "equity": 114774.98,
+      "cash": 271.98,
+      "market_value": 114503.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.87
+    },
+    {
+      "date": "2025-08-14",
+      "equity": 115102.7,
+      "cash": 185.7,
+      "market_value": 114917.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.59
+    },
+    {
+      "date": "2025-08-15",
+      "equity": 116324.7,
+      "cash": 185.7,
+      "market_value": 116139.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.57
+    },
+    {
+      "date": "2025-08-18",
+      "equity": 115005.76,
+      "cash": 185.7,
+      "market_value": 114820.06,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.67
+    },
+    {
+      "date": "2025-08-19",
+      "equity": 115178.76,
+      "cash": 185.7,
+      "market_value": 114993.06,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.53
+    },
+    {
+      "date": "2025-08-20",
+      "equity": 117916.7,
+      "cash": 185.7,
+      "market_value": 117731.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -1.23
+    },
+    {
+      "date": "2025-08-21",
+      "equity": 117818.7,
+      "cash": 185.7,
+      "market_value": 117633.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -1.32
+    },
+    {
+      "date": "2025-08-22",
+      "equity": 117789.7,
+      "cash": 185.7,
+      "market_value": 117604.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -1.34
+    },
+    {
+      "date": "2025-08-25",
+      "equity": 118886.66,
+      "cash": 185.7,
+      "market_value": 118700.96,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -0.42
+    },
+    {
+      "date": "2025-08-26",
+      "equity": 122641.59,
+      "cash": 1189.22,
+      "market_value": 121452.37,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2025-08-27",
+      "equity": 119814.44,
+      "cash": 168.07,
+      "market_value": 119646.37,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.31
+    },
+    {
+      "date": "2025-08-28",
+      "equity": 121166.83,
+      "cash": 618.83,
+      "market_value": 120548.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -1.2
+    },
+    {
+      "date": "2025-08-29",
+      "equity": 120025.97,
+      "cash": 1290.6,
+      "market_value": 118735.37,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.13
+    },
+    {
+      "date": "2025-09-01",
+      "equity": 119491.14,
+      "cash": 330.14,
+      "market_value": 119161.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.57
+    },
+    {
+      "date": "2025-09-02",
+      "equity": 119080.01,
+      "cash": 277.01,
+      "market_value": 118803.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -2.9
+    },
+    {
+      "date": "2025-09-03",
+      "equity": 116543.01,
+      "cash": 277.01,
+      "market_value": 116266.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -4.97
+    },
+    {
+      "date": "2025-09-04",
+      "equity": 114832.28,
+      "cash": 8598.28,
+      "market_value": 106234.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.37
+    },
+    {
+      "date": "2025-09-05",
+      "equity": 116229.28,
+      "cash": 8598.28,
+      "market_value": 107631.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.23
+    },
+    {
+      "date": "2025-09-08",
+      "equity": 117667.05,
+      "cash": 5380.05,
+      "market_value": 112287.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -4.06
+    },
+    {
+      "date": "2025-09-09",
+      "equity": 118218.47,
+      "cash": 6439.47,
+      "market_value": 111779.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.61
+    },
+    {
+      "date": "2025-09-10",
+      "equity": 118014.33,
+      "cash": 5355.33,
+      "market_value": 112659.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.77
+    },
+    {
+      "date": "2025-09-11",
+      "equity": 118763.88,
+      "cash": 643.88,
+      "market_value": 118120.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.16
+    },
+    {
+      "date": "2025-09-12",
+      "equity": 116854.88,
+      "cash": 643.88,
+      "market_value": 116211.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -4.72
+    },
+    {
+      "date": "2025-09-15",
+      "equity": 116004.88,
+      "cash": 643.88,
+      "market_value": 115361.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.41
+    },
+    {
+      "date": "2025-09-16",
+      "equity": 115620.88,
+      "cash": 643.88,
+      "market_value": 114977.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.72
+    },
+    {
+      "date": "2025-09-17",
+      "equity": 116360.88,
+      "cash": 643.88,
+      "market_value": 115717.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.12
+    },
+    {
+      "date": "2025-09-18",
+      "equity": 114863.88,
+      "cash": 643.88,
+      "market_value": 114220.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.34
+    },
+    {
+      "date": "2025-09-19",
+      "equity": 115947.88,
+      "cash": 643.88,
+      "market_value": 115304.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.46
+    },
+    {
+      "date": "2025-09-22",
+      "equity": 115606.88,
+      "cash": 643.88,
+      "market_value": 114963.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.74
+    },
+    {
+      "date": "2025-09-23",
+      "equity": 116830.88,
+      "cash": 643.88,
+      "market_value": 116187.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -4.74
+    },
+    {
+      "date": "2025-09-24",
+      "equity": 115489.57,
+      "cash": 643.88,
+      "market_value": 114845.69,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.83
+    },
+    {
+      "date": "2025-09-25",
+      "equity": 115412.88,
+      "cash": 643.88,
+      "market_value": 114769.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.89
+    },
+    {
+      "date": "2025-09-26",
+      "equity": 114742.88,
+      "cash": 643.88,
+      "market_value": 114099.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.44
+    },
+    {
+      "date": "2025-09-29",
+      "equity": 115379.88,
+      "cash": 643.88,
+      "market_value": 114736.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.92
+    },
+    {
+      "date": "2025-09-30",
+      "equity": 113775.81,
+      "cash": 4660.81,
+      "market_value": 109115.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.23
+    },
+    {
+      "date": "2025-10-09",
+      "equity": 114434.53,
+      "cash": 4618.84,
+      "market_value": 109815.69,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.69
+    },
+    {
+      "date": "2025-10-10",
+      "equity": 115397.84,
+      "cash": 4618.84,
+      "market_value": 110779.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.91
+    },
+    {
+      "date": "2025-10-13",
+      "equity": 114087.4,
+      "cash": 518.4,
+      "market_value": 113569.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -6.97
+    },
+    {
+      "date": "2025-10-14",
+      "equity": 114443.4,
+      "cash": 518.4,
+      "market_value": 113925.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.68
+    },
+    {
+      "date": "2025-10-15",
+      "equity": 114308.77,
+      "cash": 518.4,
+      "market_value": 113790.37,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.79
+    },
+    {
+      "date": "2025-10-16",
+      "equity": 113985.4,
+      "cash": 518.4,
+      "market_value": 113467.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.06
+    },
+    {
+      "date": "2025-10-17",
+      "equity": 112639.53,
+      "cash": 8210.53,
+      "market_value": 104429.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -8.16
+    },
+    {
+      "date": "2025-10-20",
+      "equity": 112977.53,
+      "cash": 8210.53,
+      "market_value": 104767.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.88
+    },
+    {
+      "date": "2025-10-21",
+      "equity": 113176.53,
+      "cash": 8210.53,
+      "market_value": 104966.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.72
+    },
+    {
+      "date": "2025-10-22",
+      "equity": 112714.53,
+      "cash": 8210.53,
+      "market_value": 104504.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -8.09
+    },
+    {
+      "date": "2025-10-23",
+      "equity": 113953.53,
+      "cash": 8210.53,
+      "market_value": 105743.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.08
+    },
+    {
+      "date": "2025-10-24",
+      "equity": 113291.43,
+      "cash": 8210.53,
+      "market_value": 105080.9,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.62
+    },
+    {
+      "date": "2025-10-27",
+      "equity": 112838.53,
+      "cash": 8210.53,
+      "market_value": 104628.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.99
+    },
+    {
+      "date": "2025-10-28",
+      "equity": 112088.07,
+      "cash": 8788.07,
+      "market_value": 103300.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -8.61
+    },
+    {
+      "date": "2025-10-29",
+      "equity": 111832.07,
+      "cash": 8788.07,
+      "market_value": 103044.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -8.81
+    },
+    {
+      "date": "2025-10-30",
+      "equity": 111855.04,
+      "cash": 9177.04,
+      "market_value": 102678.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -8.8
+    },
+    {
+      "date": "2025-10-31",
+      "equity": 110904.04,
+      "cash": 9177.04,
+      "market_value": 101727.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -9.57
+    },
+    {
+      "date": "2025-11-03",
+      "equity": 110924.04,
+      "cash": 9177.04,
+      "market_value": 101747.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -9.55
+    },
+    {
+      "date": "2025-11-04",
+      "equity": 110428.04,
+      "cash": 9177.04,
+      "market_value": 101251.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -9.96
+    },
+    {
+      "date": "2025-11-05",
+      "equity": 110117.04,
+      "cash": 9177.04,
+      "market_value": 100940.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -10.21
+    },
+    {
+      "date": "2025-11-06",
+      "equity": 110677.04,
+      "cash": 9177.04,
+      "market_value": 101500.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -9.76
+    },
+    {
+      "date": "2025-11-07",
+      "equity": 110303.04,
+      "cash": 9177.04,
+      "market_value": 101126.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -10.06
+    },
+    {
+      "date": "2025-11-10",
+      "equity": 111365.04,
+      "cash": 9177.04,
+      "market_value": 102188.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -9.19
+    },
+    {
+      "date": "2025-11-11",
+      "equity": 110960.04,
+      "cash": 9177.04,
+      "market_value": 101783.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -9.52
+    },
+    {
+      "date": "2025-11-12",
+      "equity": 110320.04,
+      "cash": 9177.04,
+      "market_value": 101143.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -10.05
+    },
+    {
+      "date": "2025-11-13",
+      "equity": 110790.04,
+      "cash": 9177.04,
+      "market_value": 101613.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -9.66
+    },
+    {
+      "date": "2025-11-14",
+      "equity": 110512.04,
+      "cash": 9177.04,
+      "market_value": 101335.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -9.89
+    },
+    {
+      "date": "2025-11-17",
+      "equity": 109693.04,
+      "cash": 9177.04,
+      "market_value": 100516.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -10.56
+    },
+    {
+      "date": "2025-11-18",
+      "equity": 109041.04,
+      "cash": 9177.04,
+      "market_value": 99864.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.09
+    },
+    {
+      "date": "2025-11-19",
+      "equity": 109018.59,
+      "cash": 7900.59,
+      "market_value": 101118.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.11
+    },
+    {
+      "date": "2025-11-20",
+      "equity": 109437.59,
+      "cash": 7900.59,
+      "market_value": 101537.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -10.77
+    },
+    {
+      "date": "2025-11-21",
+      "equity": 107274.59,
+      "cash": 7900.59,
+      "market_value": 99374.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.53
+    },
+    {
+      "date": "2025-11-24",
+      "equity": 107185.38,
+      "cash": 11843.38,
+      "market_value": 95342.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.6
+    },
+    {
+      "date": "2025-11-25",
+      "equity": 108085.38,
+      "cash": 11843.38,
+      "market_value": 96242.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -11.87
+    },
+    {
+      "date": "2025-11-26",
+      "equity": 107187.38,
+      "cash": 11843.38,
+      "market_value": 95344.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.6
+    },
+    {
+      "date": "2025-11-27",
+      "equity": 107420.56,
+      "cash": 11810.56,
+      "market_value": 95610.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.41
+    },
+    {
+      "date": "2025-11-28",
+      "equity": 107400.56,
+      "cash": 11810.56,
+      "market_value": 95590.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.43
+    },
+    {
+      "date": "2025-12-01",
+      "equity": 108559.14,
+      "cash": 16516.14,
+      "market_value": 92043.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -11.48
+    },
+    {
+      "date": "2025-12-02",
+      "equity": 108259.14,
+      "cash": 16516.14,
+      "market_value": 91743.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -11.73
+    },
+    {
+      "date": "2025-12-03",
+      "equity": 107838.14,
+      "cash": 16516.14,
+      "market_value": 91322.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.07
+    },
+    {
+      "date": "2025-12-04",
+      "equity": 107242.14,
+      "cash": 16516.14,
+      "market_value": 90726.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -12.56
+    },
+    {
+      "date": "2025-12-05",
+      "equity": 107235.14,
+      "cash": 16516.14,
+      "market_value": 90719.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.56
+    },
+    {
+      "date": "2025-12-08",
+      "equity": 106769.05,
+      "cash": 21351.19,
+      "market_value": 85417.86,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -12.94
+    },
+    {
+      "date": "2025-12-09",
+      "equity": 105428.19,
+      "cash": 21351.19,
+      "market_value": 84077.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -14.04
+    },
+    {
+      "date": "2025-12-10",
+      "equity": 106050.19,
+      "cash": 21351.19,
+      "market_value": 84699.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -13.53
+    },
+    {
+      "date": "2025-12-11",
+      "equity": 105818.19,
+      "cash": 21351.19,
+      "market_value": 84467.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -13.72
+    },
+    {
+      "date": "2025-12-12",
+      "equity": 105942.09,
+      "cash": 21351.19,
+      "market_value": 84590.9,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -13.62
+    },
+    {
+      "date": "2025-12-15",
+      "equity": 105511.23,
+      "cash": 14958.23,
+      "market_value": 90553.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -13.97
+    },
+    {
+      "date": "2025-12-16",
+      "equity": 104457.23,
+      "cash": 14958.23,
+      "market_value": 89499.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -14.83
+    },
+    {
+      "date": "2025-12-17",
+      "equity": 106205.23,
+      "cash": 14958.23,
+      "market_value": 91247.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -13.4
+    },
+    {
+      "date": "2025-12-18",
+      "equity": 105282.23,
+      "cash": 14958.23,
+      "market_value": 90324.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -14.15
+    },
+    {
+      "date": "2025-12-19",
+      "equity": 106201.23,
+      "cash": 14958.23,
+      "market_value": 91243.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -13.41
+    },
+    {
+      "date": "2025-12-22",
+      "equity": 106266.23,
+      "cash": 14958.23,
+      "market_value": 91308.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -13.35
+    },
+    {
+      "date": "2025-12-23",
+      "equity": 106303.23,
+      "cash": 14958.23,
+      "market_value": 91345.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -13.32
+    },
+    {
+      "date": "2025-12-24",
+      "equity": 107093.63,
+      "cash": 6878.63,
+      "market_value": 100215.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -12.68
+    },
+    {
+      "date": "2025-12-25",
+      "equity": 106702.01,
+      "cash": 7484.01,
+      "market_value": 99218.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -13.0
+    },
+    {
+      "date": "2025-12-26",
+      "equity": 107771.69,
+      "cash": 7421.69,
+      "market_value": 100350.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -12.12
+    },
+    {
+      "date": "2025-12-29",
+      "equity": 109389.98,
+      "cash": 7608.98,
+      "market_value": 101781.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -10.81
+    },
+    {
+      "date": "2025-12-30",
+      "equity": 108090.98,
+      "cash": 7608.98,
+      "market_value": 100482.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.86
+    },
+    {
+      "date": "2025-12-31",
+      "equity": 108376.98,
+      "cash": 7608.98,
+      "market_value": 100768.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -11.63
+    },
+    {
+      "date": "2026-01-05",
+      "equity": 109193.98,
+      "cash": 7608.98,
+      "market_value": 101585.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -10.96
+    },
+    {
+      "date": "2026-01-06",
+      "equity": 110516.84,
+      "cash": 7608.98,
+      "market_value": 102907.86,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -9.89
+    },
+    {
+      "date": "2026-01-07",
+      "equity": 110081.98,
+      "cash": 7608.98,
+      "market_value": 102473.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -10.24
+    },
+    {
+      "date": "2026-01-08",
+      "equity": 109987.85,
+      "cash": 11787.98,
+      "market_value": 98199.86,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -10.32
+    },
+    {
+      "date": "2026-01-09",
+      "equity": 113277.02,
+      "cash": 15597.02,
+      "market_value": 97680.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.64
+    },
+    {
+      "date": "2026-01-12",
+      "equity": 116751.1,
+      "cash": 15798.1,
+      "market_value": 100953.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -4.8
+    },
+    {
+      "date": "2026-01-13",
+      "equity": 115005.05,
+      "cash": 9850.05,
+      "market_value": 105155.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.23
+    },
+    {
+      "date": "2026-01-14",
+      "equity": 114489.05,
+      "cash": 9850.05,
+      "market_value": 104639.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.65
+    },
+    {
+      "date": "2026-01-15",
+      "equity": 113567.05,
+      "cash": 9850.05,
+      "market_value": 103717.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.4
+    },
+    {
+      "date": "2026-01-16",
+      "equity": 111368.05,
+      "cash": 9850.05,
+      "market_value": 101518.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -9.19
+    },
+    {
+      "date": "2026-01-19",
+      "equity": 113004.05,
+      "cash": 9850.05,
+      "market_value": 103154.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -7.86
+    },
+    {
+      "date": "2026-01-20",
+      "equity": 111977.29,
+      "cash": 7532.29,
+      "market_value": 104445.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -8.7
+    },
+    {
+      "date": "2026-01-21",
+      "equity": 114740.29,
+      "cash": 7532.29,
+      "market_value": 107208.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.44
+    },
+    {
+      "date": "2026-01-22",
+      "equity": 114735.77,
+      "cash": 15283.77,
+      "market_value": 99452.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -6.45
+    },
+    {
+      "date": "2026-01-23",
+      "equity": 118326.82,
+      "cash": 11100.82,
+      "market_value": 107226.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.52
+    },
+    {
+      "date": "2026-01-26",
+      "equity": 118412.61,
+      "cash": 16291.71,
+      "market_value": 102120.9,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.45
+    },
+    {
+      "date": "2026-01-27",
+      "equity": 118074.48,
+      "cash": 23721.48,
+      "market_value": 94353.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.72
+    },
+    {
+      "date": "2026-01-28",
+      "equity": 118584.44,
+      "cash": 14.44,
+      "market_value": 118570.0,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.31
+    },
+    {
+      "date": "2026-01-29",
+      "equity": 122335.24,
+      "cash": 11875.24,
+      "market_value": 110460.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.25
+    },
+    {
+      "date": "2026-01-30",
+      "equity": 122599.18,
+      "cash": 20117.18,
+      "market_value": 102482.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.03
+    },
+    {
+      "date": "2026-02-02",
+      "equity": 121336.18,
+      "cash": 20117.18,
+      "market_value": 101219.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.06
+    },
+    {
+      "date": "2026-02-03",
+      "equity": 122389.12,
+      "cash": 22165.12,
+      "market_value": 100224.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -0.21
+    },
+    {
+      "date": "2026-02-04",
+      "equity": 123537.12,
+      "cash": 22165.12,
+      "market_value": 101372.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-02-05",
+      "equity": 123324.12,
+      "cash": 22165.12,
+      "market_value": 101159.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -0.17
+    },
+    {
+      "date": "2026-02-06",
+      "equity": 123058.12,
+      "cash": 22165.12,
+      "market_value": 100893.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.39
+    },
+    {
+      "date": "2026-02-09",
+      "equity": 123930.12,
+      "cash": 22165.12,
+      "market_value": 101765.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-02-10",
+      "equity": 123642.12,
+      "cash": 22165.12,
+      "market_value": 101477.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.23
+    },
+    {
+      "date": "2026-02-11",
+      "equity": 123672.12,
+      "cash": 22165.12,
+      "market_value": 101507.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.21
+    },
+    {
+      "date": "2026-02-12",
+      "equity": 122899.12,
+      "cash": 22165.12,
+      "market_value": 100734.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.83
+    },
+    {
+      "date": "2026-02-13",
+      "equity": 121890.85,
+      "cash": 11129.85,
+      "market_value": 110761.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.65
+    },
+    {
+      "date": "2026-02-24",
+      "equity": 123227.85,
+      "cash": 11129.85,
+      "market_value": 112098.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.57
+    },
+    {
+      "date": "2026-02-25",
+      "equity": 123495.75,
+      "cash": 11129.85,
+      "market_value": 112365.9,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.35
+    },
+    {
+      "date": "2026-02-26",
+      "equity": 123218.85,
+      "cash": 11129.85,
+      "market_value": 112089.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.57
+    },
+    {
+      "date": "2026-02-27",
+      "equity": 124379.85,
+      "cash": 11129.85,
+      "market_value": 113250.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-03-02",
+      "equity": 123950.14,
+      "cash": 18799.14,
+      "market_value": 105151.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.35
+    },
+    {
+      "date": "2026-03-03",
+      "equity": 122800.04,
+      "cash": 18799.14,
+      "market_value": 104000.9,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.27
+    },
+    {
+      "date": "2026-03-04",
+      "equity": 121423.57,
+      "cash": 42761.57,
+      "market_value": 78662.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -2.38
+    },
+    {
+      "date": "2026-03-05",
+      "equity": 122081.57,
+      "cash": 42761.57,
+      "market_value": 79320.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.85
+    },
+    {
+      "date": "2026-03-06",
+      "equity": 124031.93,
+      "cash": 59598.93,
+      "market_value": 64433.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.28
+    },
+    {
+      "date": "2026-03-09",
+      "equity": 123173.93,
+      "cash": 59598.93,
+      "market_value": 63575.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.97
+    },
+    {
+      "date": "2026-03-10",
+      "equity": 124054.93,
+      "cash": 59598.93,
+      "market_value": 64456.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -0.26
+    },
+    {
+      "date": "2026-03-11",
+      "equity": 124761.88,
+      "cash": 22052.88,
+      "market_value": 102709.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-03-12",
+      "equity": 123994.14,
+      "cash": 21869.14,
+      "market_value": 102125.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.62
+    },
+    {
+      "date": "2026-03-13",
+      "equity": 123227.14,
+      "cash": 21869.14,
+      "market_value": 101358.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.23
+    },
+    {
+      "date": "2026-03-16",
+      "equity": 122921.14,
+      "cash": 21869.14,
+      "market_value": 101052.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.48
+    },
+    {
+      "date": "2026-03-17",
+      "equity": 122835.14,
+      "cash": 21869.14,
+      "market_value": 100966.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.54
+    },
+    {
+      "date": "2026-03-18",
+      "equity": 123518.14,
+      "cash": 21869.14,
+      "market_value": 101649.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.0
+    },
+    {
+      "date": "2026-03-19",
+      "equity": 119100.51,
+      "cash": 14184.51,
+      "market_value": 104916.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -4.54
+    },
+    {
+      "date": "2026-03-20",
+      "equity": 117460.51,
+      "cash": 14184.51,
+      "market_value": 103276.0,
+      "positions": 5,
+      "position_pct": 0.5,
+      "dd_pct": -5.85
+    },
+    {
+      "date": "2026-03-23",
+      "equity": 112638.51,
+      "cash": 14184.51,
+      "market_value": 98454.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -9.72
+    },
+    {
+      "date": "2026-03-24",
+      "equity": 113711.01,
+      "cash": 15929.01,
+      "market_value": 97782.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -8.86
+    },
+    {
+      "date": "2026-03-25",
+      "equity": 117406.01,
+      "cash": 15929.01,
+      "market_value": 101477.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -5.9
+    },
+    {
+      "date": "2026-03-26",
+      "equity": 115747.32,
+      "cash": 18743.32,
+      "market_value": 97004.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -7.23
+    },
+    {
+      "date": "2026-03-27",
+      "equity": 116465.24,
+      "cash": 2169.24,
+      "market_value": 114296.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -6.65
+    },
+    {
+      "date": "2026-03-30",
+      "equity": 116741.24,
+      "cash": 2169.24,
+      "market_value": 114572.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -6.43
+    },
+    {
+      "date": "2026-03-31",
+      "equity": 115237.24,
+      "cash": 2169.24,
+      "market_value": 113068.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -7.63
+    },
+    {
+      "date": "2026-04-01",
+      "equity": 117296.24,
+      "cash": 2169.24,
+      "market_value": 115127.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -5.98
+    },
+    {
+      "date": "2026-04-02",
+      "equity": 116929.24,
+      "cash": 2169.24,
+      "market_value": 114760.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -6.28
+    },
+    {
+      "date": "2026-04-03",
+      "equity": 117110.24,
+      "cash": 2169.24,
+      "market_value": 114941.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -6.13
+    },
+    {
+      "date": "2026-04-07",
+      "equity": 119421.24,
+      "cash": 2169.24,
+      "market_value": 117252.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -4.28
+    },
+    {
+      "date": "2026-04-08",
+      "equity": 122006.0,
+      "cash": 21128.0,
+      "market_value": 100878.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -2.21
+    },
+    {
+      "date": "2026-04-09",
+      "equity": 121021.0,
+      "cash": 21128.0,
+      "market_value": 99893.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -3.0
+    },
+    {
+      "date": "2026-04-10",
+      "equity": 122832.0,
+      "cash": 21128.0,
+      "market_value": 101704.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.55
+    },
+    {
+      "date": "2026-04-13",
+      "equity": 120914.0,
+      "cash": 21128.0,
+      "market_value": 99786.0,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -3.08
+    },
+    {
+      "date": "2026-04-14",
+      "equity": 122251.62,
+      "cash": 21128.0,
+      "market_value": 101123.61,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -2.01
+    },
+    {
+      "date": "2026-04-15",
+      "equity": 122415.62,
+      "cash": 21128.0,
+      "market_value": 101287.61,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.88
+    },
+    {
+      "date": "2026-04-16",
+      "equity": 122863.62,
+      "cash": 21128.0,
+      "market_value": 101735.61,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -1.52
+    },
+    {
+      "date": "2026-04-17",
+      "equity": 123914.87,
+      "cash": 21128.0,
+      "market_value": 102786.87,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": -0.68
+    },
+    {
+      "date": "2026-04-20",
+      "equity": 127089.62,
+      "cash": 21128.0,
+      "market_value": 105961.61,
+      "positions": 5,
+      "position_pct": 0.25,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-04-21",
+      "equity": 128573.0,
+      "cash": 21128.0,
+      "market_value": 107445.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-04-22",
+      "equity": 129825.76,
+      "cash": 21128.0,
+      "market_value": 108697.75,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-04-23",
+      "equity": 127906.16,
+      "cash": 21770.55,
+      "market_value": 106135.61,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.48
+    },
+    {
+      "date": "2026-04-24",
+      "equity": 126882.13,
+      "cash": 9097.13,
+      "market_value": 117785.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.27
+    },
+    {
+      "date": "2026-04-27",
+      "equity": 126605.52,
+      "cash": 4247.52,
+      "market_value": 122358.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.48
+    },
+    {
+      "date": "2026-04-28",
+      "equity": 127683.52,
+      "cash": 4247.52,
+      "market_value": 123436.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -1.65
+    },
+    {
+      "date": "2026-04-29",
+      "equity": 130863.69,
+      "cash": 4247.52,
+      "market_value": 126616.17,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-04-30",
+      "equity": 130838.52,
+      "cash": 4247.52,
+      "market_value": 126591.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.02
+    },
+    {
+      "date": "2026-05-06",
+      "equity": 133057.52,
+      "cash": 4247.52,
+      "market_value": 128810.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-05-07",
+      "equity": 132887.52,
+      "cash": 4247.52,
+      "market_value": 128640.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.13
+    },
+    {
+      "date": "2026-05-08",
+      "equity": 132311.52,
+      "cash": 4247.52,
+      "market_value": 128064.0,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -0.56
+    },
+    {
+      "date": "2026-05-11",
+      "equity": 135368.61,
+      "cash": 757.43,
+      "market_value": 134611.17,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-05-12",
+      "equity": 136231.73,
+      "cash": 3805.38,
+      "market_value": 132426.35,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": 0.0
+    },
+    {
+      "date": "2026-05-13",
+      "equity": 134324.2,
+      "cash": 828.85,
+      "market_value": 133495.35,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -1.4
+    },
+    {
+      "date": "2026-05-14",
+      "equity": 130969.21,
+      "cash": 268.43,
+      "market_value": 130700.78,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -3.86
+    },
+    {
+      "date": "2026-05-15",
+      "equity": 130291.02,
+      "cash": 4024.67,
+      "market_value": 126266.35,
+      "positions": 4,
+      "position_pct": 1.0,
+      "dd_pct": -4.36
+    },
+    {
+      "date": "2026-05-18",
+      "equity": 129257.02,
+      "cash": 4024.67,
+      "market_value": 125232.35,
+      "positions": 4,
+      "position_pct": 1.0,
+      "dd_pct": -5.12
+    },
+    {
+      "date": "2026-05-19",
+      "equity": 129398.02,
+      "cash": 4024.67,
+      "market_value": 125373.35,
+      "positions": 4,
+      "position_pct": 1.0,
+      "dd_pct": -5.02
+    },
+    {
+      "date": "2026-05-20",
+      "equity": 129373.75,
+      "cash": 4006.4,
+      "market_value": 125367.35,
+      "positions": 5,
+      "position_pct": 1.0,
+      "dd_pct": -5.03
+    },
+    {
+      "date": "2026-05-21",
+      "equity": 128271.45,
+      "cash": 4659.1,
+      "market_value": 123612.35,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.84
+    },
+    {
+      "date": "2026-05-22",
+      "equity": 128526.77,
+      "cash": 5123.42,
+      "market_value": 123403.35,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -5.66
+    },
+    {
+      "date": "2026-05-25",
+      "equity": 132952.57,
+      "cash": 5123.42,
+      "market_value": 127829.15,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.41
+    },
+    {
+      "date": "2026-05-26",
+      "equity": 132770.57,
+      "cash": 5123.42,
+      "market_value": 127647.15,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.54
+    },
+    {
+      "date": "2026-05-27",
+      "equity": 131896.2,
+      "cash": 3628.05,
+      "market_value": 128268.15,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -3.18
+    },
+    {
+      "date": "2026-05-28",
+      "equity": 132772.77,
+      "cash": 3628.05,
+      "market_value": 129144.72,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.54
+    },
+    {
+      "date": "2026-05-29",
+      "equity": 132691.84,
+      "cash": 3628.05,
+      "market_value": 129063.79,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.6
+    },
+    {
+      "date": "2026-06-01",
+      "equity": 133268.56,
+      "cash": 3628.05,
+      "market_value": 129640.51,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.18
+    },
+    {
+      "date": "2026-06-02",
+      "equity": 133268.56,
+      "cash": 3628.05,
+      "market_value": 129640.51,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.18
+    },
+    {
+      "date": "2026-06-03",
+      "equity": 133268.56,
+      "cash": 3628.05,
+      "market_value": 129640.51,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.18
+    },
+    {
+      "date": "2026-06-04",
+      "equity": 133268.56,
+      "cash": 3628.05,
+      "market_value": 129640.51,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.18
+    },
+    {
+      "date": "2026-06-05",
+      "equity": 133268.56,
+      "cash": 3628.05,
+      "market_value": 129640.51,
+      "positions": 5,
+      "position_pct": 0.75,
+      "dd_pct": -2.18
+    }
+  ]
+}

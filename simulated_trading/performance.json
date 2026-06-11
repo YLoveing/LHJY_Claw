@@ -671,6 +671,48 @@
       "total_closed_trades": 0,
       "win_rate": 0,
       "profit_factor": null
+    },
+    {
+      "date": "20260609",
+      "equity": 22120.85,
+      "cash": 15932.849147999998,
+      "market_value": 6188.0,
+      "positions": 1,
+      "return_pct": -26.26,
+      "max_dd_pct": -26.882942670098064,
+      "buy_today": 0,
+      "sell_today": 0,
+      "total_closed_trades": 0,
+      "win_rate": 0,
+      "profit_factor": null
+    },
+    {
+      "date": "20260610",
+      "equity": 22120.85,
+      "cash": 15932.849147999998,
+      "market_value": 6188.0,
+      "positions": 1,
+      "return_pct": -26.26,
+      "max_dd_pct": -26.882942670098064,
+      "buy_today": 0,
+      "sell_today": 0,
+      "total_closed_trades": 0,
+      "win_rate": 0,
+      "profit_factor": null
+    },
+    {
+      "date": "20260611",
+      "equity": 22120.85,
+      "cash": 15932.849147999998,
+      "market_value": 6188.0,
+      "positions": 1,
+      "return_pct": -26.26,
+      "max_dd_pct": -26.882942670098064,
+      "buy_today": 0,
+      "sell_today": 0,
+      "total_closed_trades": 0,
+      "win_rate": 0,
+      "profit_factor": null
     }
   ],
   "weekly": [
@@ -717,15 +759,26 @@
       "sell_count": 0,
       "closed_wins": 0,
       "closed_losses": 0
+    },
+    {
+      "week": "2026-W23",
+      "start_date": "20260609",
+      "end_date": "20260611",
+      "start_equity": 22120.85,
+      "end_equity": 22120.85,
+      "buy_count": 0,
+      "sell_count": 0,
+      "closed_wins": 0,
+      "closed_losses": 0
     }
   ],
   "summary": {
     "total_return_pct": -26.26,
-    "max_drawdown_pct": -0.29837608875448407,
+    "max_drawdown_pct": -26.882942670098064,
     "win_rate": 0,
     "profit_factor": null,
     "total_closed_trades": 0,
     "active_positions": 1,
-    "last_update": "20260527"
+    "last_update": "20260611"
   }
 }

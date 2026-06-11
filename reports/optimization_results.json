@@ -1,0 +1,1910 @@
+[
+  {
+    "strategy": "B_全面反转",
+    "top_n": 20,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 5.34,
+        "sharpe": 3.143,
+        "max_dd": -3.32,
+        "win_rate": 0.0,
+        "trades": 19
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 4.9,
+        "sharpe": 3.567,
+        "max_dd": -3.21,
+        "win_rate": 0.0,
+        "trades": 20
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 8.88,
+        "sharpe": 4.165,
+        "max_dd": -2.49,
+        "win_rate": 0.0,
+        "trades": 20
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -7.18,
+        "sharpe": -1.97,
+        "max_dd": -7.08,
+        "win_rate": 0.0,
+        "trades": 16
+      }
+    ],
+    "avg_sharpe": 2.226,
+    "std_sharpe": 2.45,
+    "avg_return_pct": 2.99,
+    "avg_max_dd_pct": -4.03,
+    "min_max_dd_pct": -7.08,
+    "total_trades": 75
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 15,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.78,
+        "sharpe": 1.943,
+        "max_dd": -3.5,
+        "win_rate": 0.0,
+        "trades": 15
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 7.45,
+        "sharpe": 4.268,
+        "max_dd": -3.6,
+        "win_rate": 0.0,
+        "trades": 15
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 9.44,
+        "sharpe": 5.014,
+        "max_dd": -1.63,
+        "win_rate": 0.0,
+        "trades": 15
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -8.61,
+        "sharpe": -3.119,
+        "max_dd": -9.99,
+        "win_rate": 0.0,
+        "trades": 11
+      }
+    ],
+    "avg_sharpe": 2.027,
+    "std_sharpe": 3.179,
+    "avg_return_pct": 2.77,
+    "avg_max_dd_pct": -4.68,
+    "min_max_dd_pct": -9.99,
+    "total_trades": 56
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 12,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 4.01,
+        "sharpe": 2.374,
+        "max_dd": -3.14,
+        "win_rate": 0.0,
+        "trades": 12
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 9.99,
+        "sharpe": 5.012,
+        "max_dd": -3.27,
+        "win_rate": 0.0,
+        "trades": 12
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 9.38,
+        "sharpe": 4.202,
+        "max_dd": -2.86,
+        "win_rate": 0.0,
+        "trades": 12
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -9.51,
+        "sharpe": -3.686,
+        "max_dd": -10.8,
+        "win_rate": 0.0,
+        "trades": 9
+      }
+    ],
+    "avg_sharpe": 1.975,
+    "std_sharpe": 3.405,
+    "avg_return_pct": 3.47,
+    "avg_max_dd_pct": -5.02,
+    "min_max_dd_pct": -10.8,
+    "total_trades": 45
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 10,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.55,
+        "sharpe": 1.815,
+        "max_dd": -2.85,
+        "win_rate": 0.0,
+        "trades": 10
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 11.44,
+        "sharpe": 5.236,
+        "max_dd": -3.21,
+        "win_rate": 0.0,
+        "trades": 10
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 10.47,
+        "sharpe": 4.106,
+        "max_dd": -2.99,
+        "win_rate": 0.0,
+        "trades": 10
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -9.31,
+        "sharpe": -3.458,
+        "max_dd": -11.49,
+        "win_rate": 0.0,
+        "trades": 8
+      }
+    ],
+    "avg_sharpe": 1.925,
+    "std_sharpe": 3.343,
+    "avg_return_pct": 3.79,
+    "avg_max_dd_pct": -5.14,
+    "min_max_dd_pct": -11.49,
+    "total_trades": 38
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 8,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 3.03,
+        "sharpe": 1.762,
+        "max_dd": -3.18,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 11.37,
+        "sharpe": 4.92,
+        "max_dd": -3.72,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 10.44,
+        "sharpe": 4.069,
+        "max_dd": -3.47,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -11.37,
+        "sharpe": -3.924,
+        "max_dd": -12.21,
+        "win_rate": 0.0,
+        "trades": 8
+      }
+    ],
+    "avg_sharpe": 1.707,
+    "std_sharpe": 3.45,
+    "avg_return_pct": 3.37,
+    "avg_max_dd_pct": -5.64,
+    "min_max_dd_pct": -12.21,
+    "total_trades": 32
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 20,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 5.15,
+        "sharpe": 4.182,
+        "max_dd": -2.23,
+        "win_rate": 27.5,
+        "trades": 51
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 1.9,
+        "sharpe": 1.569,
+        "max_dd": -4.62,
+        "win_rate": 24.6,
+        "trades": 57
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 8.91,
+        "sharpe": 4.257,
+        "max_dd": -2.94,
+        "win_rate": 18.2,
+        "trades": 55
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -9.94,
+        "sharpe": -3.388,
+        "max_dd": -12.42,
+        "win_rate": 9.8,
+        "trades": 41
+      }
+    ],
+    "avg_sharpe": 1.655,
+    "std_sharpe": 3.106,
+    "avg_return_pct": 1.51,
+    "avg_max_dd_pct": -5.55,
+    "min_max_dd_pct": -12.42,
+    "total_trades": 204
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 15,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 0.54,
+        "sharpe": 1.237,
+        "max_dd": -2.76,
+        "win_rate": 23.7,
+        "trades": 38
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 4.56,
+        "sharpe": 2.309,
+        "max_dd": -5.66,
+        "win_rate": 27.3,
+        "trades": 44
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 10.87,
+        "sharpe": 4.906,
+        "max_dd": -3.73,
+        "win_rate": 16.7,
+        "trades": 42
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -8.06,
+        "sharpe": -2.604,
+        "max_dd": -11.27,
+        "win_rate": 6.5,
+        "trades": 31
+      }
+    ],
+    "avg_sharpe": 1.462,
+    "std_sharpe": 2.7,
+    "avg_return_pct": 1.98,
+    "avg_max_dd_pct": -5.86,
+    "min_max_dd_pct": -11.27,
+    "total_trades": 155
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 12,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 0.73,
+        "sharpe": 1.236,
+        "max_dd": -3.0,
+        "win_rate": 23.3,
+        "trades": 30
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 6.37,
+        "sharpe": 2.768,
+        "max_dd": -5.73,
+        "win_rate": 28.6,
+        "trades": 35
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 10.04,
+        "sharpe": 4.115,
+        "max_dd": -4.12,
+        "win_rate": 15.2,
+        "trades": 33
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -7.99,
+        "sharpe": -2.758,
+        "max_dd": -11.98,
+        "win_rate": 4.2,
+        "trades": 24
+      }
+    ],
+    "avg_sharpe": 1.34,
+    "std_sharpe": 2.576,
+    "avg_return_pct": 2.29,
+    "avg_max_dd_pct": -6.21,
+    "min_max_dd_pct": -11.98,
+    "total_trades": 122
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 5,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.4,
+        "sharpe": 1.229,
+        "max_dd": -4.18,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 13.64,
+        "sharpe": 4.652,
+        "max_dd": -5.29,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 8.74,
+        "sharpe": 2.682,
+        "max_dd": -4.42,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -13.73,
+        "sharpe": -4.214,
+        "max_dd": -14.77,
+        "win_rate": 0.0,
+        "trades": 5
+      }
+    ],
+    "avg_sharpe": 1.087,
+    "std_sharpe": 3.293,
+    "avg_return_pct": 2.76,
+    "avg_max_dd_pct": -7.16,
+    "min_max_dd_pct": -14.77,
+    "total_trades": 20
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 10,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": -1.58,
+        "sharpe": 0.001,
+        "max_dd": -3.53,
+        "win_rate": 20.8,
+        "trades": 24
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 8.06,
+        "sharpe": 3.158,
+        "max_dd": -5.54,
+        "win_rate": 31.0,
+        "trades": 29
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 10.46,
+        "sharpe": 3.95,
+        "max_dd": -4.77,
+        "win_rate": 14.3,
+        "trades": 28
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -7.99,
+        "sharpe": -2.881,
+        "max_dd": -12.09,
+        "win_rate": 5.0,
+        "trades": 20
+      }
+    ],
+    "avg_sharpe": 1.057,
+    "std_sharpe": 2.711,
+    "avg_return_pct": 2.24,
+    "avg_max_dd_pct": -6.48,
+    "min_max_dd_pct": -12.09,
+    "total_trades": 101
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 12,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 8.96,
+        "sharpe": 3.23,
+        "max_dd": -2.41,
+        "win_rate": 0.0,
+        "trades": 12
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 5.44,
+        "sharpe": 1.689,
+        "max_dd": -8.56,
+        "win_rate": 0.0,
+        "trades": 12
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 1.95,
+        "sharpe": 0.905,
+        "max_dd": -6.25,
+        "win_rate": 0.0,
+        "trades": 12
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -11.82,
+        "sharpe": -1.793,
+        "max_dd": -12.85,
+        "win_rate": 0.0,
+        "trades": 12
+      }
+    ],
+    "avg_sharpe": 1.008,
+    "std_sharpe": 1.821,
+    "avg_return_pct": 1.13,
+    "avg_max_dd_pct": -7.52,
+    "min_max_dd_pct": -12.85,
+    "total_trades": 48
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 8,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": -0.01,
+        "sharpe": 0.773,
+        "max_dd": -3.18,
+        "win_rate": 20.0,
+        "trades": 20
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 8.17,
+        "sharpe": 2.931,
+        "max_dd": -6.7,
+        "win_rate": 29.2,
+        "trades": 24
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 4.23,
+        "sharpe": 2.445,
+        "max_dd": -3.47,
+        "win_rate": 9.1,
+        "trades": 22
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -7.55,
+        "sharpe": -2.516,
+        "max_dd": -11.69,
+        "win_rate": 5.6,
+        "trades": 18
+      }
+    ],
+    "avg_sharpe": 0.908,
+    "std_sharpe": 2.133,
+    "avg_return_pct": 1.21,
+    "avg_max_dd_pct": -6.26,
+    "min_max_dd_pct": -11.69,
+    "total_trades": 84
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 10,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 10.74,
+        "sharpe": 3.631,
+        "max_dd": -2.75,
+        "win_rate": 0.0,
+        "trades": 10
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 6.1,
+        "sharpe": 1.703,
+        "max_dd": -9.51,
+        "win_rate": 0.0,
+        "trades": 10
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 3.21,
+        "sharpe": 1.166,
+        "max_dd": -7.07,
+        "win_rate": 0.0,
+        "trades": 10
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -12.19,
+        "sharpe": -2.876,
+        "max_dd": -13.44,
+        "win_rate": 0.0,
+        "trades": 10
+      }
+    ],
+    "avg_sharpe": 0.906,
+    "std_sharpe": 2.368,
+    "avg_return_pct": 1.97,
+    "avg_max_dd_pct": -8.19,
+    "min_max_dd_pct": -13.44,
+    "total_trades": 40
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 10,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 3.36,
+        "sharpe": 1.572,
+        "max_dd": -2.64,
+        "win_rate": 21.1,
+        "trades": 19
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -0.12,
+        "sharpe": 0.276,
+        "max_dd": -8.57,
+        "win_rate": 11.5,
+        "trades": 26
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 3.53,
+        "sharpe": 1.434,
+        "max_dd": -7.07,
+        "win_rate": 15.0,
+        "trades": 20
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -1.17,
+        "sharpe": 0.282,
+        "max_dd": -6.35,
+        "win_rate": 4.0,
+        "trades": 25
+      }
+    ],
+    "avg_sharpe": 0.891,
+    "std_sharpe": 0.614,
+    "avg_return_pct": 1.4,
+    "avg_max_dd_pct": -6.16,
+    "min_max_dd_pct": -8.57,
+    "total_trades": 90
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 20,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 7.01,
+        "sharpe": 3.234,
+        "max_dd": -2.12,
+        "win_rate": 0.0,
+        "trades": 18
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 3.56,
+        "sharpe": 1.452,
+        "max_dd": -6.87,
+        "win_rate": 0.0,
+        "trades": 20
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 3.73,
+        "sharpe": 1.58,
+        "max_dd": -5.1,
+        "win_rate": 0.0,
+        "trades": 18
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -10.65,
+        "sharpe": -2.767,
+        "max_dd": -10.42,
+        "win_rate": 0.0,
+        "trades": 18
+      }
+    ],
+    "avg_sharpe": 0.875,
+    "std_sharpe": 2.217,
+    "avg_return_pct": 0.91,
+    "avg_max_dd_pct": -6.13,
+    "min_max_dd_pct": -10.42,
+    "total_trades": 74
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 8,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.56,
+        "sharpe": 1.144,
+        "max_dd": -2.68,
+        "win_rate": 18.8,
+        "trades": 16
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -2.12,
+        "sharpe": -0.25,
+        "max_dd": -8.93,
+        "win_rate": 9.1,
+        "trades": 22
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 3.25,
+        "sharpe": 1.28,
+        "max_dd": -8.1,
+        "win_rate": 12.5,
+        "trades": 16
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": 0.64,
+        "sharpe": 0.673,
+        "max_dd": -6.22,
+        "win_rate": 5.0,
+        "trades": 20
+      }
+    ],
+    "avg_sharpe": 0.712,
+    "std_sharpe": 0.599,
+    "avg_return_pct": 1.08,
+    "avg_max_dd_pct": -6.48,
+    "min_max_dd_pct": -8.93,
+    "total_trades": 74
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 20,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 8.1,
+        "sharpe": 4.079,
+        "max_dd": -1.92,
+        "win_rate": 24.4,
+        "trades": 41
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -0.84,
+        "sharpe": -0.13,
+        "max_dd": -6.23,
+        "win_rate": 12.8,
+        "trades": 47
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 2.21,
+        "sharpe": 1.081,
+        "max_dd": -5.1,
+        "win_rate": 10.5,
+        "trades": 38
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -8.14,
+        "sharpe": -2.282,
+        "max_dd": -10.66,
+        "win_rate": 4.3,
+        "trades": 46
+      }
+    ],
+    "avg_sharpe": 0.687,
+    "std_sharpe": 2.299,
+    "avg_return_pct": 0.33,
+    "avg_max_dd_pct": -5.98,
+    "min_max_dd_pct": -10.66,
+    "total_trades": 172
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 8,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 18.76,
+        "sharpe": 2.454,
+        "max_dd": -8.67,
+        "win_rate": 20.8,
+        "trades": 24
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 2.3,
+        "sharpe": 0.977,
+        "max_dd": -17.59,
+        "win_rate": 0.0,
+        "trades": 18
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 17.18,
+        "sharpe": 1.456,
+        "max_dd": -22.34,
+        "win_rate": 25.0,
+        "trades": 16
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -8.99,
+        "sharpe": -2.142,
+        "max_dd": -18.9,
+        "win_rate": 5.3,
+        "trades": 19
+      }
+    ],
+    "avg_sharpe": 0.686,
+    "std_sharpe": 1.718,
+    "avg_return_pct": 7.31,
+    "avg_max_dd_pct": -16.88,
+    "min_max_dd_pct": -22.34,
+    "total_trades": 77
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 15,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 7.31,
+        "sharpe": 3.291,
+        "max_dd": -2.14,
+        "win_rate": 23.3,
+        "trades": 30
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -0.79,
+        "sharpe": 0.005,
+        "max_dd": -6.71,
+        "win_rate": 11.1,
+        "trades": 36
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 3.22,
+        "sharpe": 1.469,
+        "max_dd": -6.36,
+        "win_rate": 10.3,
+        "trades": 29
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -7.97,
+        "sharpe": -2.065,
+        "max_dd": -12.37,
+        "win_rate": 0.0,
+        "trades": 32
+      }
+    ],
+    "avg_sharpe": 0.675,
+    "std_sharpe": 1.964,
+    "avg_return_pct": 0.44,
+    "avg_max_dd_pct": -6.9,
+    "min_max_dd_pct": -12.37,
+    "total_trades": 127
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 15,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 6.6,
+        "sharpe": 2.657,
+        "max_dd": -2.77,
+        "win_rate": 0.0,
+        "trades": 15
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 5.25,
+        "sharpe": 1.912,
+        "max_dd": -7.1,
+        "win_rate": 0.0,
+        "trades": 15
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 1.99,
+        "sharpe": 0.904,
+        "max_dd": -6.36,
+        "win_rate": 0.0,
+        "trades": 15
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -12.89,
+        "sharpe": -2.86,
+        "max_dd": -14.03,
+        "win_rate": 0.0,
+        "trades": 13
+      }
+    ],
+    "avg_sharpe": 0.653,
+    "std_sharpe": 2.122,
+    "avg_return_pct": 0.24,
+    "avg_max_dd_pct": -7.56,
+    "min_max_dd_pct": -14.03,
+    "total_trades": 58
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 20,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 8.54,
+        "sharpe": 2.563,
+        "max_dd": -6.29,
+        "win_rate": 14.6,
+        "trades": 48
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -0.92,
+        "sharpe": 0.2,
+        "max_dd": -8.46,
+        "win_rate": 3.2,
+        "trades": 31
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 10.09,
+        "sharpe": 1.313,
+        "max_dd": -11.56,
+        "win_rate": 5.3,
+        "trades": 38
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -5.56,
+        "sharpe": -1.853,
+        "max_dd": -10.03,
+        "win_rate": 7.3,
+        "trades": 41
+      }
+    ],
+    "avg_sharpe": 0.556,
+    "std_sharpe": 1.623,
+    "avg_return_pct": 3.04,
+    "avg_max_dd_pct": -9.09,
+    "min_max_dd_pct": -11.56,
+    "total_trades": 158
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 10,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 26.37,
+        "sharpe": 3.599,
+        "max_dd": -7.41,
+        "win_rate": 23.3,
+        "trades": 30
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 1.94,
+        "sharpe": 0.947,
+        "max_dd": -15.24,
+        "win_rate": 4.5,
+        "trades": 22
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 11.13,
+        "sharpe": 1.136,
+        "max_dd": -19.35,
+        "win_rate": 18.2,
+        "trades": 22
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -14.25,
+        "sharpe": -3.632,
+        "max_dd": -20.87,
+        "win_rate": 4.0,
+        "trades": 25
+      }
+    ],
+    "avg_sharpe": 0.513,
+    "std_sharpe": 2.612,
+    "avg_return_pct": 6.3,
+    "avg_max_dd_pct": -15.72,
+    "min_max_dd_pct": -20.87,
+    "total_trades": 99
+  },
+  {
+    "strategy": "B_全面反转",
+    "top_n": 5,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": -0.69,
+        "sharpe": 0.159,
+        "max_dd": -4.18,
+        "win_rate": 15.4,
+        "trades": 13
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 8.47,
+        "sharpe": 2.925,
+        "max_dd": -6.65,
+        "win_rate": 26.7,
+        "trades": 15
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 3.03,
+        "sharpe": 1.492,
+        "max_dd": -4.42,
+        "win_rate": 6.7,
+        "trades": 15
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -10.32,
+        "sharpe": -3.03,
+        "max_dd": -15.23,
+        "win_rate": 0.0,
+        "trades": 11
+      }
+    ],
+    "avg_sharpe": 0.386,
+    "std_sharpe": 2.202,
+    "avg_return_pct": 0.12,
+    "avg_max_dd_pct": -7.62,
+    "min_max_dd_pct": -15.23,
+    "total_trades": 54
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 15,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 9.88,
+        "sharpe": 2.073,
+        "max_dd": -6.17,
+        "win_rate": 15.9,
+        "trades": 44
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 0.15,
+        "sharpe": 0.582,
+        "max_dd": -8.5,
+        "win_rate": 12.1,
+        "trades": 33
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 14.72,
+        "sharpe": 1.495,
+        "max_dd": -12.71,
+        "win_rate": 10.3,
+        "trades": 29
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -11.25,
+        "sharpe": -3.175,
+        "max_dd": -16.37,
+        "win_rate": 10.8,
+        "trades": 37
+      }
+    ],
+    "avg_sharpe": 0.244,
+    "std_sharpe": 2.044,
+    "avg_return_pct": 3.38,
+    "avg_max_dd_pct": -10.94,
+    "min_max_dd_pct": -16.37,
+    "total_trades": 143
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 12,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 16.64,
+        "sharpe": 2.502,
+        "max_dd": -7.33,
+        "win_rate": 20.0,
+        "trades": 35
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -0.95,
+        "sharpe": 0.509,
+        "max_dd": -9.54,
+        "win_rate": 4.2,
+        "trades": 24
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 11.12,
+        "sharpe": 1.137,
+        "max_dd": -17.29,
+        "win_rate": 16.0,
+        "trades": 25
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -12.89,
+        "sharpe": -3.598,
+        "max_dd": -18.38,
+        "win_rate": 6.9,
+        "trades": 29
+      }
+    ],
+    "avg_sharpe": 0.137,
+    "std_sharpe": 2.274,
+    "avg_return_pct": 3.48,
+    "avg_max_dd_pct": -13.13,
+    "min_max_dd_pct": -18.38,
+    "total_trades": 113
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 5,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.43,
+        "sharpe": 0.368,
+        "max_dd": -13.6,
+        "win_rate": 13.3,
+        "trades": 15
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -4.48,
+        "sharpe": 0.551,
+        "max_dd": -31.71,
+        "win_rate": 0.0,
+        "trades": 13
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 34.72,
+        "sharpe": 1.716,
+        "max_dd": -39.2,
+        "win_rate": 27.3,
+        "trades": 11
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -10.79,
+        "sharpe": -2.337,
+        "max_dd": -28.67,
+        "win_rate": 6.7,
+        "trades": 15
+      }
+    ],
+    "avg_sharpe": 0.074,
+    "std_sharpe": 1.485,
+    "avg_return_pct": 5.47,
+    "avg_max_dd_pct": -28.3,
+    "min_max_dd_pct": -39.2,
+    "total_trades": 54
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 12,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.59,
+        "sharpe": 1.127,
+        "max_dd": -2.63,
+        "win_rate": 23.1,
+        "trades": 26
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -1.6,
+        "sharpe": -0.229,
+        "max_dd": -8.76,
+        "win_rate": 13.3,
+        "trades": 30
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 2.7,
+        "sharpe": 1.289,
+        "max_dd": -6.25,
+        "win_rate": 11.5,
+        "trades": 26
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -9.72,
+        "sharpe": -2.013,
+        "max_dd": -14.1,
+        "win_rate": 3.4,
+        "trades": 29
+      }
+    ],
+    "avg_sharpe": 0.043,
+    "std_sharpe": 1.326,
+    "avg_return_pct": -1.51,
+    "avg_max_dd_pct": -7.94,
+    "min_max_dd_pct": -14.1,
+    "total_trades": 111
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 5,
+    "rebalance_days": 21,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.12,
+        "sharpe": 0.509,
+        "max_dd": -4.3,
+        "win_rate": 23.1,
+        "trades": 13
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": 1.42,
+        "sharpe": 0.741,
+        "max_dd": -8.51,
+        "win_rate": 15.4,
+        "trades": 13
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": -1.74,
+        "sharpe": -0.254,
+        "max_dd": -12.33,
+        "win_rate": 18.2,
+        "trades": 11
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -9.82,
+        "sharpe": -2.166,
+        "max_dd": -14.84,
+        "win_rate": 0.0,
+        "trades": 11
+      }
+    ],
+    "avg_sharpe": -0.292,
+    "std_sharpe": 1.143,
+    "avg_return_pct": -2.0,
+    "avg_max_dd_pct": -10.0,
+    "min_max_dd_pct": -14.84,
+    "total_trades": 48
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 8,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 1.28,
+        "sharpe": 0.06,
+        "max_dd": -11.25,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -2.59,
+        "sharpe": 0.378,
+        "max_dd": -17.59,
+        "win_rate": 0.0,
+        "trades": 7
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 28.43,
+        "sharpe": 2.062,
+        "max_dd": -19.83,
+        "win_rate": 0.0,
+        "trades": 7
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -15.44,
+        "sharpe": -3.883,
+        "max_dd": -19.39,
+        "win_rate": 0.0,
+        "trades": 6
+      }
+    ],
+    "avg_sharpe": -0.346,
+    "std_sharpe": 2.179,
+    "avg_return_pct": 2.92,
+    "avg_max_dd_pct": -17.02,
+    "min_max_dd_pct": -19.83,
+    "total_trades": 28
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 10,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 5.3,
+        "sharpe": 0.616,
+        "max_dd": -14.75,
+        "win_rate": 0.0,
+        "trades": 10
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -0.99,
+        "sharpe": 0.564,
+        "max_dd": -15.24,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 20.09,
+        "sharpe": 1.74,
+        "max_dd": -16.65,
+        "win_rate": 0.0,
+        "trades": 9
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -16.9,
+        "sharpe": -4.38,
+        "max_dd": -19.68,
+        "win_rate": 0.0,
+        "trades": 8
+      }
+    ],
+    "avg_sharpe": -0.365,
+    "std_sharpe": 2.365,
+    "avg_return_pct": 1.88,
+    "avg_max_dd_pct": -16.58,
+    "min_max_dd_pct": -19.68,
+    "total_trades": 35
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 5,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": -6.47,
+        "sharpe": -1.268,
+        "max_dd": -12.02,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -8.47,
+        "sharpe": 0.281,
+        "max_dd": -31.71,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 48.48,
+        "sharpe": 2.008,
+        "max_dd": -39.05,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -12.15,
+        "sharpe": -2.593,
+        "max_dd": -26.62,
+        "win_rate": 0.0,
+        "trades": 5
+      }
+    ],
+    "avg_sharpe": -0.393,
+    "std_sharpe": 1.719,
+    "avg_return_pct": 5.35,
+    "avg_max_dd_pct": -27.35,
+    "min_max_dd_pct": -39.05,
+    "total_trades": 20
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 8,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 5.44,
+        "sharpe": 2.256,
+        "max_dd": -3.78,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -7.36,
+        "sharpe": -1.749,
+        "max_dd": -11.35,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 2.1,
+        "sharpe": 0.857,
+        "max_dd": -8.1,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -13.15,
+        "sharpe": -3.057,
+        "max_dd": -15.09,
+        "win_rate": 0.0,
+        "trades": 8
+      }
+    ],
+    "avg_sharpe": -0.423,
+    "std_sharpe": 2.092,
+    "avg_return_pct": -3.24,
+    "avg_max_dd_pct": -9.58,
+    "min_max_dd_pct": -15.09,
+    "total_trades": 32
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 20,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.93,
+        "sharpe": 0.828,
+        "max_dd": -8.07,
+        "win_rate": 0.0,
+        "trades": 19
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -1.45,
+        "sharpe": -0.095,
+        "max_dd": -5.41,
+        "win_rate": 0.0,
+        "trades": 10
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 12.64,
+        "sharpe": 1.64,
+        "max_dd": -9.87,
+        "win_rate": 0.0,
+        "trades": 18
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -13.84,
+        "sharpe": -4.618,
+        "max_dd": -16.3,
+        "win_rate": 0.0,
+        "trades": 14
+      }
+    ],
+    "avg_sharpe": -0.561,
+    "std_sharpe": 2.421,
+    "avg_return_pct": 0.07,
+    "avg_max_dd_pct": -9.91,
+    "min_max_dd_pct": -16.3,
+    "total_trades": 61
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 15,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": -1.56,
+        "sharpe": -0.374,
+        "max_dd": -11.29,
+        "win_rate": 0.0,
+        "trades": 15
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -2.66,
+        "sharpe": -0.252,
+        "max_dd": -8.62,
+        "win_rate": 0.0,
+        "trades": 11
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 14.83,
+        "sharpe": 1.517,
+        "max_dd": -12.1,
+        "win_rate": 0.0,
+        "trades": 13
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -13.41,
+        "sharpe": -3.589,
+        "max_dd": -17.85,
+        "win_rate": 0.0,
+        "trades": 13
+      }
+    ],
+    "avg_sharpe": -0.674,
+    "std_sharpe": 1.842,
+    "avg_return_pct": -0.7,
+    "avg_max_dd_pct": -12.46,
+    "min_max_dd_pct": -17.85,
+    "total_trades": 52
+  },
+  {
+    "strategy": "C_保守质量",
+    "top_n": 12,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 2.4,
+        "sharpe": 0.211,
+        "max_dd": -13.1,
+        "win_rate": 0.0,
+        "trades": 12
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -4.51,
+        "sharpe": -0.629,
+        "max_dd": -9.45,
+        "win_rate": 0.0,
+        "trades": 8
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 19.29,
+        "sharpe": 1.806,
+        "max_dd": -13.72,
+        "win_rate": 0.0,
+        "trades": 11
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -14.65,
+        "sharpe": -4.096,
+        "max_dd": -17.93,
+        "win_rate": 0.0,
+        "trades": 10
+      }
+    ],
+    "avg_sharpe": -0.677,
+    "std_sharpe": 2.159,
+    "avg_return_pct": 0.63,
+    "avg_max_dd_pct": -13.55,
+    "min_max_dd_pct": -17.93,
+    "total_trades": 41
+  },
+  {
+    "strategy": "A_稳健反转",
+    "top_n": 5,
+    "rebalance_days": 42,
+    "fold_results": [
+      {
+        "fold": 1,
+        "test_start": "2025-07-23",
+        "test_end": "2025-09-18",
+        "return_pct": 4.21,
+        "sharpe": 1.137,
+        "max_dd": -6.1,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 2,
+        "test_start": "2025-09-19",
+        "test_end": "2025-11-25",
+        "return_pct": -4.03,
+        "sharpe": -0.518,
+        "max_dd": -11.45,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 3,
+        "test_start": "2025-11-26",
+        "test_end": "2026-01-26",
+        "return_pct": 0.46,
+        "sharpe": 0.316,
+        "max_dd": -12.33,
+        "win_rate": 0.0,
+        "trades": 5
+      },
+      {
+        "fold": 4,
+        "test_start": "2026-01-27",
+        "test_end": "2026-04-02",
+        "return_pct": -18.44,
+        "sharpe": -4.006,
+        "max_dd": -18.72,
+        "win_rate": 0.0,
+        "trades": 5
+      }
+    ],
+    "avg_sharpe": -0.768,
+    "std_sharpe": 1.959,
+    "avg_return_pct": -4.45,
+    "avg_max_dd_pct": -12.15,
+    "min_max_dd_pct": -18.72,
+    "total_trades": 20
+  }
+]

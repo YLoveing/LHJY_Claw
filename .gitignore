@@ -78,3 +78,9 @@ simulated_trading_backup_*.tar.gz
 
 # coverage
 .coverage
+
+# 多因子策略运行时输出
+multi_factor/
+
+# 数据库文件
+*.db

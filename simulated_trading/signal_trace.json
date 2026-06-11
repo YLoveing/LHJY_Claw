@@ -2147,6 +2147,134 @@
           "rationale": "空头排列，趋势破位，建议卖出或减仓观望。"
         }
       }
+    },
+    {
+      "date": "20260609",
+      "stocks": {
+        "000100": {
+          "score": 85,
+          "operation": "买入",
+          "sentiment": "强烈看多",
+          "rationale": "强势多头趋势明确，回踩MA5可积极介入。"
+        },
+        "000657": {
+          "score": 76,
+          "operation": "买入",
+          "sentiment": "强烈看多",
+          "rationale": "强势多头回踩MA5，可轻仓参与，但估值偏高需控仓。"
+        },
+        "002463": {
+          "score": 70,
+          "operation": "持有",
+          "sentiment": "看多",
+          "rationale": "多头趋势强劲，乖离率合理，建议持有或轻仓回踩介入"
+        },
+        "300408": {
+          "score": 65,
+          "operation": "观望",
+          "sentiment": "看多",
+          "rationale": "短期涨幅过大，乖离率临近警戒线，建议等待回调后再介入。"
+        },
+        "510300": {
+          "score": 43,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "均线空头排列，缩量反弹，建议观望等待企稳"
+        },
+        "300395": {
+          "score": 35,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "均线空头排列，趋势未扭转，建议观望或反弹减仓"
+        },
+        "002410": {
+          "score": 25,
+          "operation": "观望",
+          "sentiment": "强烈看空",
+          "rationale": "空头排列，趋势向下，观望为主。"
+        }
+      }
+    },
+    {
+      "date": "20260610",
+      "stocks": {
+        "002410": {
+          "score": 40,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "空头排列持续下行，建议观望或减仓。"
+        },
+        "510300": {
+          "score": 35,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "均线空头排列，趋势偏弱，建议观望等待企稳。"
+        }
+      }
+    },
+    {
+      "date": "20260610",
+      "stocks": {
+        "300408": {
+          "score": 65,
+          "operation": "买入",
+          "sentiment": "看多",
+          "rationale": "缩量回踩MA5，可轻仓参与多头趋势。"
+        },
+        "510300": {
+          "score": 50,
+          "operation": "观望",
+          "sentiment": "震荡",
+          "rationale": "均线空头排列，缩量回调，建议观望等待均线修复。"
+        },
+        "600183": {
+          "score": 48,
+          "operation": "持有",
+          "sentiment": "看多",
+          "rationale": "多头排列趋势完好，但放量下跌+RSI超买，宜持有观察不宜追高。"
+        },
+        "688012": {
+          "score": 35,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "空头排列，反弹非反转，建议观望或减仓。"
+        },
+        "300316": {
+          "score": 30,
+          "operation": "观望",
+          "sentiment": "看空",
+          "rationale": "空头排列叠加放量下跌，建议持仓者减仓，空仓者观望。"
+        },
+        "688396": {
+          "score": 30,
+          "operation": "卖出",
+          "sentiment": "看空",
+          "rationale": "股价跌破MA5/MA10，放量下跌，建议持仓者减仓，空仓者观望。"
+        },
+        "002410": {
+          "score": 25,
+          "operation": "观望",
+          "sentiment": "强烈看空",
+          "rationale": "空头排列，放量下跌，观望为宜。"
+        }
+      }
+    },
+    {
+      "date": "20260611",
+      "stocks": {
+        "510300": {
+          "score": 45,
+          "operation": "观望",
+          "sentiment": "震荡",
+          "rationale": "空头排列下资金持续流入，建议持基观望，等待趋势明朗。"
+        },
+        "002410": {
+          "score": 35,
+          "operation": "卖出",
+          "sentiment": "强烈看空",
+          "rationale": "空头排列明确，建议持仓者减仓或离场，空仓者继续观望。"
+        }
+      }
     }
   ]
 }

@@ -91,6 +91,23 @@ if [ "$HOUR" = "09" ] || [ "$HOUR" = "11" ]; then
     fi
 fi
 
+# ── Step 0.9: 多因子 B 全面反转策略评分（收盘后跑全量，早盘跑增量）──
+if [ "$HOUR" = "09" ] || [ "$HOUR" = "18" ]; then
+    run_step "多因子策略" python3 scripts/multi_factor_production.py
+    # 如果有再平衡信号，提取持仓注入候选列表
+    if [ -f "multi_factor/signal.json" ]; then
+        MF_CODES=$(python3 -c "
+import json
+s = json.loads(open('multi_factor/signal.json').read())
+print(','.join(s['holdings'][:10]))
+" 2>/dev/null)
+        if [ -n "$MF_CODES" ]; then
+            CANDIDATE_LIST="${CANDIDATE_LIST},${MF_CODES}"
+            log "多因子持仓注入: ${MF_CODES}"
+        fi
+    fi
+fi
+
 # ── Step 1: 全量分析（09:25/18:00 完整, 11:30 精简）──
 if [ "$HOUR" = "11" ]; then
     # 午盘精简：只用 MX 快照数据快速跑 main.py

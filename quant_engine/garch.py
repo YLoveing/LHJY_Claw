@@ -295,7 +295,7 @@ def estimate_garch(stock_code: Optional[str] = None) -> GARCHResult:
         )
 
     except Exception as e:
-        logger.error(f"[GARCH] {e}")
+        logger.debug(f"[GARCH] {e}")
         return GARCHResult(
             omega=np.nan,
             alpha=np.nan,
