@@ -20,6 +20,9 @@ logger = logging.getLogger("hs300_v4")
 import numpy as np
 import pandas as pd
 
+# ── 铁律：费用参数必须来自生产模块 ──
+from layers.execution_layer.fees import calc_buy_fees, calc_sell_fees
+
 OUTPUT_DIR = Path("/opt/daily_stock_analysis/reports")
 CACHE_DIR = Path("/opt/daily_stock_analysis/data/cache")
 MIN_KLINE = 250
@@ -190,7 +193,7 @@ def run_backtest(all_kline, hs300, include_dates, use_market_filter):
                 price = td["close"].iloc[-1] if not td.empty else kline["close"].iloc[-1]
                 pos = position[code]
                 val = pos["qty"] * price
-                fee = val * 0.0005
+                fee = calc_sell_fees(val)
                 cash += val - fee
                 pnl = (price - pos["avg_cost"]) * pos["qty"] - fee
                 trades.append({"date": today, "code": code, "action": "sell", "price": price, "pnl": pnl})
@@ -226,7 +229,7 @@ def run_backtest(all_kline, hs300, include_dates, use_market_filter):
                 if qty <= 0:
                     continue
                 cost = qty * price
-                fee = cost * 0.0005
+                fee = calc_buy_fees(cost)
                 total = cost + fee
                 if total > cash or total > usable:
                     continue
@@ -253,7 +256,7 @@ def run_backtest(all_kline, hs300, include_dates, use_market_filter):
             continue
         price = kline["close"].iloc[-1]
         val = pos["qty"] * price
-        cash += val - val * 0.0005
+        cash += val - calc_sell_fees(val)
     final = cash
 
     total_ret = (final - INITIAL_CASH) / INITIAL_CASH * 100

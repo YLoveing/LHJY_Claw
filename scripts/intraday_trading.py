@@ -37,6 +37,8 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── 导入共享状态模块 ──
 sys.path.insert(0, str(BASE_DIR))
+# ── 引入生产风控模型（铁律：不得自行定义止损/止盈参数） ──
+from layers.risk_layer.models import RiskConfig
 from scripts.trading_calendar import eastmoney_secid
 from simulated_trading import (
     INITIAL_CAPITAL,
@@ -52,15 +54,18 @@ from simulated_trading import (
     save_trades,
 )
 
+# ── 日内交易风控配置 ──
+# 日内信号持仓比日频主策略（stop_loss_pct=-8%）更紧
+_INTRADAY_RISK = RiskConfig(stop_loss_pct=-3.0, take_profit_pct=5.0)
+
 # ── 交易参数 ──
 MAX_POSITIONS = 2  # 最多同时持有2只（30K账户合理）
 PER_TRADE_MAX = 8_000  # 单笔最大买入金额
 MIN_TRADE = 3_000  # 最低买入金额
 NEW_SIGNAL_CUTOFF = "14:30"  # 14:30后不产生新信号（来不及次日执行）
 
-# ── 风控参数（日内信号持仓比日频主策略更紧） ──
-STOP_LOSS_PCT = -3.0  # -3% 止损（硬止损）
-TAKE_PROFIT_PCT = 5.0  # +5% 止盈（全仓止盈）
+# ── 跟踪止损参数 ──
+# 跟踪止损是日内信号独有的概念，RiskConfig 无对应字段，在此定义
 TRAILING_ACTIVATE_PCT = 3.0  # 浮盈超过3%后启动跟踪止损
 TRAILING_STOP_PCT = -4.0  # 跟踪止损：从最高点回撤4%平仓（放宽避免被扫）
 
@@ -474,14 +479,14 @@ def check_positions() -> List[Dict]:
         reason = ""
 
         # 条件①：止盈
-        if pnl_pct >= TAKE_PROFIT_PCT:
+        if pnl_pct >= _INTRADAY_RISK.take_profit_pct:
             action = "take_profit"
-            reason = f"止盈触发：{pnl_pct:+.1f}%（≥{TAKE_PROFIT_PCT}%）"
+            reason = f"止盈触发：{pnl_pct:+.1f}%（≥{_INTRADAY_RISK.take_profit_pct}%）"
 
         # 条件②：止损
-        elif pnl_pct <= STOP_LOSS_PCT:
+        elif pnl_pct <= _INTRADAY_RISK.stop_loss_pct:
             action = "stop_loss"
-            reason = f"止损触发：{pnl_pct:+.1f}%（≤{STOP_LOSS_PCT}%）"
+            reason = f"止损触发：{pnl_pct:+.1f}%（≤{_INTRADAY_RISK.stop_loss_pct}%）"
 
         # 条件③：跟踪止损（浮盈达标后，从最高点回撤）
         elif peak_return >= TRAILING_ACTIVATE_PCT:
@@ -649,7 +654,7 @@ def get_status_text() -> str:
 
     lines.append("")
     lines.append(
-        f"⚙️ 止损-{abs(STOP_LOSS_PCT)}% | 止盈+{TAKE_PROFIT_PCT}% | "
+        f"⚙️ 止损-{abs(_INTRADAY_RISK.stop_loss_pct)}% | 止盈+{_INTRADAY_RISK.take_profit_pct}% | "
         f"跟踪止损从高点回撤{abs(TRAILING_STOP_PCT)}% | 信号→次日开盘执行"
     )
     lines.append(f"📊 最多同时持有{MAX_POSITIONS}只，单笔≤¥{PER_TRADE_MAX:,}")
