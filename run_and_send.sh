@@ -65,6 +65,24 @@ print(','.join(codes))
         log "候选股注入: ${CANDIDATE_CODES}"
     fi
 fi
+
+# ── 注入当前持仓到候选池（确保持仓股能被重新评分） ──
+if [ -f "simulated_trading/state.json" ]; then
+    HOLDING_CODES=$(python3 -c "
+import json
+with open('simulated_trading/state.json') as f:
+    s = json.load(f)
+codes = list(s.get('positions', {}).keys())
+print(','.join(codes))
+" 2>/dev/null)
+    if [ -n "$HOLDING_CODES" ]; then
+        CANDIDATE_LIST="${CANDIDATE_LIST},${HOLDING_CODES}"
+        # 去重：awk按逗号分割，去重后重新拼接
+        CANDIDATE_LIST=$(echo "$CANDIDATE_LIST" | tr ',' '\n' | awk '!seen[\$0]++' | tr '\n' ',' | sed 's/,$//')
+        log "持仓注入候选池: ${HOLDING_CODES}"
+    fi
+fi
+
 export STOCK_LIST="$CANDIDATE_LIST"
 
 # ═══ 时段分支逻辑 ═══

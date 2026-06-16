@@ -185,6 +185,70 @@ SECTOR_MAP_FALLBACK = {
 # ── 大盘择时 ──
 
 
+def _get_hs300_change_pct() -> float | None:
+    """
+    获取沪深300指数当日实时涨跌幅（%）。
+
+    多级降级：
+      1. 东方财富 push2 （主数据源）
+      2. 腾讯财经 qt.gtimg.cn （备用1）
+      3. akshare 日K最新两日价差 （备用2）
+
+    Returns:
+        float 涨跌幅（如 -1.23）或 None（全部失败）
+    """
+    import requests
+
+    # ── 1️⃣ 东方财富 ──
+    try:
+        url = "https://push2.eastmoney.com/api/qt/stock/get"
+        params = {"secid": "1.000300", "fields": "f2,f3,f12,f14", "fltt": 2, "invt": 2}
+        headers = {"User-Agent": "Mozilla/5.0", "Referer": "https://quote.eastmoney.com/"}
+        r = requests.get(url, params=params, headers=headers, timeout=8)
+        data = r.json()
+        change_pct = data.get("data", {}).get("f3")
+        if change_pct is not None:
+            print(f"[风控] 大盘涨跌幅来源: 东方财富 → {change_pct}%")
+            return float(change_pct)
+    except (requests.RequestException, ValueError, KeyError, TypeError) as e:
+        print(f"[风控] 东方财富查询失败: {e}")
+
+    # ── 2️⃣ 腾讯财经 ──
+    try:
+        # 沪深300在腾讯是 sh000300
+        url = "https://qt.gtimg.cn/q=sh000300"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        r = requests.get(url, headers=headers, timeout=8)
+        r.encoding = "gbk"
+        match = re.search(r'v_sh000300="(.+)"', r.text)
+        if match:
+            parts = match.group(1).split("~")
+            if len(parts) > 32:
+                change_pct = float(parts[32]) if parts[32] else None
+                if change_pct is not None:
+                    print(f"[风控] 大盘涨跌幅来源: 腾讯财经 → {change_pct}%")
+                    return change_pct
+    except (requests.RequestException, ValueError, IndexError, TypeError) as e:
+        print(f"[风控] 腾讯财经查询失败: {e}")
+
+    # ── 3️⃣ akshare 日K（取最近两日收盘价算涨跌幅） ──
+    try:
+        import akshare as ak
+
+        df = ak.stock_zh_index_daily_em(symbol="sh000300")
+        df = df.sort_values("date")
+        if len(df) >= 2:
+            last_close = df["close"].iloc[-1]
+            prev_close = df["close"].iloc[-2]
+            change_pct = (last_close - prev_close) / prev_close * 100
+            print(f"[风控] 大盘涨跌幅来源: akshare日K → {change_pct:.2f}%（非实时）")
+            return round(change_pct, 2)
+    except Exception as e:
+        print(f"[风控] akshare日K查询失败: {e}")
+
+    return None
+
+
 def check_market_condition() -> str:
     """
     检查大盘市场状态，用于择时过滤。
@@ -207,49 +271,40 @@ def check_market_condition() -> str:
         ma_scale = 1.0
         ma_state = "error"
 
-    # ── 实时涨跌幅（短线） ──
-    import requests
+    # ── 实时涨跌幅（短线） - 多源降级 ──
+    change_pct = _get_hs300_change_pct()
 
-    url = "https://push2.eastmoney.com/api/qt/stock/get"
-    params = {
-        "secid": "1.000300",
-        "fields": "f2,f3,f12,f14",
-        "fltt": 2,
-        "invt": 2,
-    }
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Referer": "https://quote.eastmoney.com/",
-    }
-    try:
-        r = requests.get(url, params=params, headers=headers, timeout=10)
-        data = r.json()
-        change_pct = data.get("data", {}).get("f3", 0)
-        if change_pct is not None:
-            # 短线状态
-            if change_pct <= -3.0:
-                short_state = "danger"
-            elif change_pct <= -1.5:
-                short_state = "caution"
-            else:
-                short_state = "normal"
-        else:
-            short_state = "normal"
-
-        # ── 综合MA过滤 + 短线涨跌幅，取更保守 ──
-        print(f"[风控] MA趋势: {ma_state}(scale={ma_scale}) | 实时涨跌: {change_pct}%")
-
-        if ma_scale <= 0.25 or short_state == "danger":
+    if change_pct is None:
+        print(f"[风控] ⚠️ 所有数据源均无法获取大盘涨跌幅，降级为normal（不阻断交易）")
+        print(f"[风控] MA趋势: {ma_state}(scale={ma_scale})")
+        # 仅靠MA趋势判断（即使无实时数据也不阻断）
+        if ma_scale <= 0.25:
             print(f"[风控] → DANGER：只卖不买")
             return "danger"
-        elif ma_scale <= 0.5 or short_state == "caution":
+        elif ma_scale <= 0.5:
             print(f"[风控] → CAUTION：不开新仓")
             return "caution"
-        else:
-            return "normal"
-    except Exception as e:
-        print(f"[风控] 大盘择时查询失败（默认 caution）: {e}")
-    return "caution"
+        return "normal"
+
+    # 短线状态
+    if change_pct <= -3.0:
+        short_state = "danger"
+    elif change_pct <= -1.5:
+        short_state = "caution"
+    else:
+        short_state = "normal"
+
+    # ── 综合MA过滤 + 短线涨跌幅，取更保守 ──
+    print(f"[风控] MA趋势: {ma_state}(scale={ma_scale}) | 实时涨跌: {change_pct}%")
+
+    if ma_scale <= 0.25 or short_state == "danger":
+        print(f"[风控] → DANGER：只卖不买")
+        return "danger"
+    elif ma_scale <= 0.5 or short_state == "caution":
+        print(f"[风控] → CAUTION：不开新仓")
+        return "caution"
+    else:
+        return "normal"
 
 
 # ── 行业查询（内存缓存避免重复请求） ──
